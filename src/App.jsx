@@ -7,10 +7,12 @@ import AdminPanel from "./pages/AdminPanel";
 import AddProduct from "./pages/AddProduct";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
+import Header from "./components/Header"; // 👈 import header riêng
 
 function App() {
   return (
     <Router>
+      <Header /> {/* 👈 dùng component đã tách */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

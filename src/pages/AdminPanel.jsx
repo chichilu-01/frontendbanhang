@@ -1,13 +1,18 @@
+// src/pages/AdminPanel.jsx
 import { useEffect, useState } from "react";
 import API from "../api/axios";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminPanel() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchProducts = () => {
     API.get("/products")
       .then((res) => setProducts(res.data))
-      .catch((err) => alert("❌ Lỗi tải sản phẩm"));
+      .catch(() => alert("❌ Lỗi tải sản phẩm"))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -24,17 +29,53 @@ export default function AdminPanel() {
       .catch(() => alert("❌ Không đủ quyền hoặc lỗi"));
   };
 
+  const handleEdit = (id) => {
+    navigate(`/admin/edit/${id}`);
+  };
+
   return (
-    <div>
-      <h1>⚙️ Quản lý sản phẩm (Admin)</h1>
-      {products.map((p) => (
-        <div key={p.id} style={{ borderBottom: "1px solid #ccc" }}>
-          <strong>{p.name}</strong> - {p.price}¥
-          <button onClick={() => handleDelete(p.id)} style={{ marginLeft: 10 }}>
-            ❌ Xoá
-          </button>
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">🛠️ Quản lý sản phẩm</h1>
+        <Link
+          to="/admin/add"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          ➕ Thêm sản phẩm
+        </Link>
+      </div>
+      {loading ? (
+        <p>Đang tải...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="border rounded-xl p-4 shadow hover:shadow-md"
+            >
+              <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
+              <p className="text-gray-600 mb-1">{product.description}</p>
+              <p className="text-green-600 font-bold mb-2">
+                {product.price.toLocaleString()}₫
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleEdit(product.id)}
+                  className="bg-yellow-500 text-white px-3 py-1 rounded"
+                >
+                  Sửa
+                </button>
+                <button
+                  onClick={() => handleDelete(product.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Xoá
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }

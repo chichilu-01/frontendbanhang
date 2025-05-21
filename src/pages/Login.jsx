@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // ✅ dùng context
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,7 +15,7 @@ export default function Login() {
     e.preventDefault();
     API.post("/users/login", form)
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
+        login(res.data.token); // ✅ dùng login từ context
         alert("✅ Đăng nhập thành công");
         navigate("/");
       })

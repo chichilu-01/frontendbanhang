@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });

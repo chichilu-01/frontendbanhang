@@ -13,9 +13,9 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    API.post("/users/login", form)
+    API.post("/api/auth/login", form) // ✅ Đã sửa đúng endpoint
       .then((res) => {
-        login(res.data.token); // ✅ dùng login từ context
+        login(res.data.token); // ✅ lưu token qua context
         alert("✅ Đăng nhập thành công");
         navigate("/");
       })

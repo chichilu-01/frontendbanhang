@@ -11,7 +11,7 @@ export default function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    API.post("/users/register", form)
+    API.post("/api/auth/register", form) // ✅ Đã sửa
       .then(() => {
         alert("✅ Đăng ký thành công, mời đăng nhập");
         navigate("/login");

@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
@@ -40,13 +39,16 @@ export default function Header() {
           </>
         ) : (
           <>
+            <span className="text-gray-500">
+              👋 Chào, <strong>{user.name}</strong>
+            </span>
             <Link to="/profile" className="text-gray-600 hover:underline">
-              👤 {user.name}
+              👤 Hồ sơ
             </Link>
             <button
               onClick={() => {
                 logout();
-                navigate("/login");
+                navigate("/"); // ✅ Về trang chủ
               }}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             >

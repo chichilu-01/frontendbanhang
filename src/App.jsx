@@ -7,19 +7,34 @@ import AdminPanel from "./pages/AdminPanel";
 import AddProduct from "./pages/AddProduct";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
-import Header from "./components/Header"; // 👈 import header riêng
+import Header from "./components/Header";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <Router>
-      <Header /> {/* 👈 dùng component đã tách */}
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/admin" element={<AdminPanel />} />
-        <Route path="/admin/add" element={<AddProduct />} />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute role="admin">
+              <AdminPanel />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/add"
+          element={
+            <PrivateRoute role="admin">
+              <AddProduct />
+            </PrivateRoute>
+          }
+        />
         <Route path="/products/:id" element={<ProductDetail />} />
         <Route path="/checkout" element={<Checkout />} />
       </Routes>

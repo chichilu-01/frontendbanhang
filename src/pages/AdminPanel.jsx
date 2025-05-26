@@ -1,4 +1,3 @@
-// src/pages/AdminPanel.jsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "@/api/axios";
@@ -46,42 +45,54 @@ export default function AdminPanel() {
           ➕ Thêm sản phẩm
         </Link>
       </div>
+
       {loading ? (
         <p>Đang tải...</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-6">
           {products.map((product) => (
             <div
               key={product.id}
-              className="border rounded-xl p-4 shadow hover:shadow-md"
+              className="border rounded-2xl p-5 shadow-md hover:shadow-lg transition"
             >
-              <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-              <p className="text-gray-600 mb-1">{product.description}</p>
-              <p className="text-green-600 font-bold mb-2">
+              <h2 className="text-xl font-bold mb-1">{product.name}</h2>
+              <p className="text-gray-700 mb-1">{product.description}</p>
+              <p className="text-green-600 font-semibold mb-3">
                 {product.price.toLocaleString()}₫
               </p>
 
-              {/* Hiển thị media */}
-              <ProductMedia productId={product.id} />
+              {/* 👉 Media hiển thị (nếu có) */}
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Media đã upload:
+                </h3>
+                <ProductMedia productId={product.id} />
+              </div>
 
-              {/* Upload ảnh/video */}
-              <UploadMediaInline
-                productId={product.id}
-                onUploaded={fetchProducts} // gọi lại khi upload xong
-              />
+              {/* 👉 Form upload ảnh/video */}
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Upload ảnh hoặc video:
+                </h3>
+                <UploadMediaInline
+                  productId={product.id}
+                  onUploaded={fetchProducts}
+                />
+              </div>
 
-              <div className="flex gap-2 mt-3">
+              {/* 👉 Các nút quản lý */}
+              <div className="flex gap-2 mt-2">
                 <button
                   onClick={() => handleEdit(product.id)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded"
+                  className="bg-yellow-500 text-white px-4 py-1 rounded hover:bg-yellow-600"
                 >
-                  Sửa
+                  ✏️ Sửa
                 </button>
                 <button
                   onClick={() => handleDelete(product.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
                 >
-                  Xoá
+                  🗑️ Xoá
                 </button>
               </div>
             </div>

@@ -1,23 +1,35 @@
-// src/pages/ProductDetail.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import MediaList from "../components/MediaList";
+import ProductMedia from "../components/ProductMedia";
+import UploadMultipleMedia from "../components/UploadMultipleMedia";
+import { AuthContext } from "../context/AuthContext"; // 👈 dùng để kiểm tra quyền
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshMedia, setRefreshMedia] = useState(0);
+
+  const { user } = useContext(AuthContext); // 👈 lấy user từ context
+  const isAdmin = user?.role === "admin";  // 👈 kiểm tra quyền
 
   useEffect(() => {
     axios
-      .get(`https://de2b0412-6002-4dc6-a768-b1b88140a428-00-2m5ffvxgjg8v.pike.replit.dev/products/${id}`)
+      .get(
+        `https://de2b0412-6002-4dc6-a768-b1b88140a428-00-2m5ffvxgjg8v.pike.replit.dev/products/${id}`
+      )
       .then((res) => setProduct(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, [id]);
 
+  const triggerReload = () => setRefreshMedia((prev) => prev + 1);
+
   if (loading) return <p className="p-6">Đang tải...</p>;
-  if (!product) return <p className="p-6 text-red-500">Không tìm thấy sản phẩm.</p>;
+  if (!product)
+    return <p className="p-6 text-red-500">Không tìm thấy sản phẩm.</p>;
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -37,6 +49,27 @@ export default function ProductDetail() {
         <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700">
           Thêm vào giỏ hàng
         </button>
+      </div>
+
+      {/* 👉 Chỉ admin được upload và xoá media */}
+      {isAdmin && (
+        <>
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold mb-2">📤 Upload ảnh/video</h2>
+            <UploadMultipleMedia productId={id} onUploaded={triggerReload} />
+          </div>
+
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-2">🗂️ Media đã upload</h2>
+            <MediaList productId={id} refreshTrigger={refreshMedia} />
+          </div>
+        </>
+      )}
+
+      {/* 👉 Gallery công khai cho tất cả người dùng */}
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold mb-2">🖼️ Thư viện sản phẩm</h2>
+        <ProductMedia productId={id} />
       </div>
     </div>
   );

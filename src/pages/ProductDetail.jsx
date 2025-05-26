@@ -7,11 +7,10 @@ import UploadMultipleMedia from "../components/UploadMultipleMedia";
 import { AuthContext } from "../context/AuthContext";
 
 export default function ProductDetail() {
-  const { id } = useParams(); // Lấy productId từ URL
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshMedia, setRefreshMedia] = useState(0);
-
   const { user } = useContext(AuthContext);
   const isAdmin = user?.role === "admin";
 
@@ -21,7 +20,7 @@ export default function ProductDetail() {
         `https://de2b0412-6002-4dc6-a768-b1b88140a428-00-2m5ffvxgjg8v.pike.replit.dev/products/${id}`,
       )
       .then((res) => setProduct(res.data))
-      .catch((err) => console.error("Lỗi tải sản phẩm:", err))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -33,15 +32,16 @@ export default function ProductDetail() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      {/* ✅ Phần hiển thị thông tin sản phẩm */}
       <div className="border rounded-2xl p-6 shadow-md">
-        {product.image && (
+        {/* ✅ Ưu tiên hiển thị ảnh chính */}
+        {product.main_image && (
           <img
-            src={product.image}
+            src={product.main_image}
             alt={product.name}
             className="w-full h-64 object-cover rounded-xl mb-6"
           />
         )}
+
         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
         <p className="text-gray-700 mb-4">{product.description}</p>
         <p className="text-green-600 font-bold text-xl mb-4">
@@ -52,7 +52,7 @@ export default function ProductDetail() {
         </button>
       </div>
 
-      {/* ✅ Chỉ admin mới được upload và xoá */}
+      {/* 👉 Chỉ admin có thể upload / xoá */}
       {isAdmin && (
         <>
           <div className="mt-8">
@@ -67,7 +67,7 @@ export default function ProductDetail() {
         </>
       )}
 
-      {/* ✅ Gallery cho tất cả mọi người */}
+      {/* 👉 Thư viện công khai */}
       <div className="mt-6">
         <h2 className="text-xl font-semibold mb-2">🖼️ Thư viện sản phẩm</h2>
         <ProductMedia productId={id} />

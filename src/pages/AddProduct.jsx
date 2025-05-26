@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -6,17 +6,36 @@ export default function AddProduct() {
   const [form, setForm] = useState({ name: "", price: "", description: "" });
   const navigate = useNavigate();
 
+  // Kiểm tra token
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("⚠️ Bạn chưa đăng nhập");
+      navigate("/login");
+    } else {
+      console.log("✅ Token hiện tại:", token);
+    }
+  }, [navigate]);
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    API.post("/admin/products", form)
-      .then(() => {
-        alert("✅ Đã thêm sản phẩm");
-        navigate("/admin");
-      })
-      .catch(() => alert("❌ Không đủ quyền hoặc lỗi dữ liệu"));
+    try {
+      const res = await API.post("/products", form);
+      alert("✅ Đã thêm sản phẩm");
+      navigate("/admin");
+    } catch (err) {
+      console.error(
+        "❌ Lỗi khi thêm sản phẩm:",
+        err.response?.data || err.message,
+      );
+      alert(
+        err.response?.data?.error ||
+          "❌ Không đủ quyền hoặc lỗi dữ liệu. Xem console để biết thêm.",
+      );
+    }
   };
 
   return (

@@ -1,7 +1,8 @@
 // src/pages/AdminPanel.jsx
 import { useEffect, useState } from "react";
-import API from "../api/axios";
 import { Link, useNavigate } from "react-router-dom";
+import API from "@/api/axios";
+import UploadMediaInline from "./UploadWithInput.jsx";
 
 export default function AdminPanel() {
   const [products, setProducts] = useState([]);
@@ -58,7 +59,17 @@ export default function AdminPanel() {
               <p className="text-green-600 font-bold mb-2">
                 {product.price.toLocaleString()}₫
               </p>
-              <div className="flex gap-2">
+
+              {/* Hiển thị media */}
+              <ProductMedia productId={product.id} />
+
+              {/* Upload ảnh/video */}
+              <UploadMediaInline
+                productId={product.id}
+                onUploaded={fetchProducts} // gọi lại khi upload xong
+              />
+
+              <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => handleEdit(product.id)}
                   className="bg-yellow-500 text-white px-3 py-1 rounded"

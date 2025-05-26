@@ -26,7 +26,7 @@ export default function UploadMultipleMedia({ productId, onUploaded }) {
 
         if (res.ok) {
           console.log("✅ Upload thành công:", file.name);
-          onUploaded?.(); // reload media sau mỗi file
+          onUploaded?.(); // reload media
         } else {
           alert(`❌ ${file.name}: ${data.error}`);
         }
@@ -36,7 +36,7 @@ export default function UploadMultipleMedia({ productId, onUploaded }) {
     }
 
     setUploading(false);
-    setFiles([]); // reset sau khi upload xong
+    setFiles([]);
   };
 
   return (

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "@/api/axios";
 import ProductMedia from "../components/ProductMedia.jsx";
-import UploadMediaInline from "./UploadWithInput.jsx";
+import UploadMultipleMedia from "./UploadMultipleMedia.jsx"; // ✅ đổi ở đây
 
 export default function AdminPanel() {
   const [products, setProducts] = useState([]);
@@ -61,7 +61,7 @@ export default function AdminPanel() {
                 {product.price.toLocaleString()}₫
               </p>
 
-              {/* 👉 Media hiển thị (nếu có) */}
+              {/* 👉 Media hiển thị */}
               <div className="mb-4">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">
                   Media đã upload:
@@ -69,12 +69,12 @@ export default function AdminPanel() {
                 <ProductMedia productId={product.id} />
               </div>
 
-              {/* 👉 Form upload ảnh/video */}
+              {/* 👉 Upload nhiều ảnh/video */}
               <div className="mb-4">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">
                   Upload ảnh hoặc video:
                 </h3>
-                <UploadMediaInline
+                <UploadMultipleMedia
                   productId={product.id}
                   onUploaded={fetchProducts}
                 />

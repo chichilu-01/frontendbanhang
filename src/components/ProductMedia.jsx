@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export default function ProductMedia({ productId }) {
   const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState(null); // ID ảnh đang xử lý
+  const [updatingId, setUpdatingId] = useState(null);
 
   const fetchMedia = () => {
     setLoading(true);
@@ -34,6 +34,19 @@ export default function ProductMedia({ productId }) {
     setUpdatingId(null);
   };
 
+  const deleteMedia = async (id) => {
+    if (!window.confirm("Bạn có chắc muốn xoá ảnh/video này?")) return;
+    const res = await fetch(
+      `https://backendbanhang-production.up.railway.app/api/upload/${id}`,
+      { method: "DELETE" },
+    );
+    if (res.ok) {
+      fetchMedia();
+    } else {
+      alert("❌ Lỗi xoá media");
+    }
+  };
+
   if (loading)
     return <p className="text-sm text-gray-500 italic">Đang tải media...</p>;
 
@@ -57,29 +70,44 @@ export default function ProductMedia({ productId }) {
                 Ảnh chính
               </div>
             )}
-            {!item.is_main && (
+            <div className="mt-1 space-y-1">
+              {!item.is_main && (
+                <button
+                  onClick={() => setAsMain(item.id)}
+                  disabled={updatingId === item.id}
+                  className={`w-full text-sm py-1 rounded ${
+                    updatingId === item.id
+                      ? "bg-gray-300 cursor-wait"
+                      : "bg-gray-200 hover:bg-gray-300"
+                  }`}
+                >
+                  {updatingId === item.id
+                    ? "Đang cập nhật..."
+                    : "Đặt làm ảnh chính"}
+                </button>
+              )}
               <button
-                onClick={() => setAsMain(item.id)}
-                disabled={updatingId === item.id}
-                className={`mt-1 w-full text-sm py-1 rounded ${
-                  updatingId === item.id
-                    ? "bg-gray-300 cursor-wait"
-                    : "bg-gray-200 hover:bg-gray-300"
-                }`}
+                onClick={() => deleteMedia(item.id)}
+                className="w-full text-sm text-red-600 hover:underline"
               >
-                {updatingId === item.id
-                  ? "Đang cập nhật..."
-                  : "Đặt làm ảnh chính"}
+                Xoá
               </button>
-            )}
+            </div>
           </div>
         ) : (
-          <video
-            key={item.id}
-            controls
-            className="w-full h-40 object-cover border rounded"
-            src={item.url}
-          />
+          <div key={item.id} className="relative">
+            <video
+              controls
+              className="w-full h-40 object-cover border rounded"
+              src={item.url}
+            />
+            <button
+              onClick={() => deleteMedia(item.id)}
+              className="w-full mt-1 text-sm text-red-600 hover:underline"
+            >
+              Xoá
+            </button>
+          </div>
         ),
       )}
     </div>

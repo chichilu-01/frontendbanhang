@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "@/api/axios";
+import ProductMedia from "../components/ProductMedia.jsx";
 import UploadMediaInline from "./UploadWithInput.jsx";
 
 export default function AdminPanel() {

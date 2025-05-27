@@ -1,3 +1,4 @@
+
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -28,9 +29,6 @@ export default function Profile() {
           <strong>Vai trò:</strong> {user.role}
         </p>
       </div>
-    </div>
-  );
-}iv>
     </div>
   );
 }

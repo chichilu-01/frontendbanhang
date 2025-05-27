@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 
 export default function ProductMedia({ productId }) {
@@ -108,13 +109,7 @@ export default function ProductMedia({ productId }) {
               Xoá
             </button>
           </div>
-        )}
-      </div>
-    );
-  });
-}
-          </div>
-        ),
+        )
       )}
     </div>
   );

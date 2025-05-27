@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
@@ -25,7 +26,6 @@ export default function Header() {
             📦 Đơn hàng
           </Link>
         )}
-        )}
       </div>
 
       <div className="flex items-center gap-4">
@@ -49,18 +49,12 @@ export default function Header() {
             <button
               onClick={() => {
                 logout();
-                navigate("/"); // ✅ Về trang chủ
+                navigate("/");
               }}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             >
               Đăng xuất
             </button>
-          </>
-        )}
-      </div>
-    </header>
-  );
-}
           </>
         )}
       </div>

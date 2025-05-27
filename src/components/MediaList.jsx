@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 
 export default function MediaList({ productId, refreshTrigger }) {
@@ -63,11 +64,6 @@ export default function MediaList({ productId, refreshTrigger }) {
           >
             ❌
           </button>
-        </div>
-      ))}
-    </div>
-  );
-}
         </div>
       ))}
     </div>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 export default function UploadMultipleMedia({ productId, onUploaded }) {
@@ -17,7 +16,7 @@ export default function UploadMultipleMedia({ productId, onUploaded }) {
 
       try {
         const res = await fetch(
-          "https://backendbanhang-production.up.railway.app/upload",
+          "https://backendbanhang-production.up.railway.app/products/upload",
           {
             method: "POST",
             body: formData,

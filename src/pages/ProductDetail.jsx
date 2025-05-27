@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import API from "../api/axios";
 import MediaList from "../components/MediaList";
 import ProductMedia from "../components/ProductMedia";
 import UploadMultipleMedia from "../components/UploadMultipleMedia";
@@ -24,6 +25,37 @@ export default function ProductDetail() {
   }, [id]);
 
   const triggerReload = () => setRefreshMedia((prev) => prev + 1);
+
+  const addToCart = async () => {
+    try {
+      const response = await API.post("/cart/add", {
+        product_id: id,
+        quantity: 1,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        // Tạo hiệu ứng thông báo
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
+        notification.textContent = `✅ Đã thêm "${product.name}" vào giỏ hàng`;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 3000);
+      }
+    } catch (err) {
+      console.error("Lỗi thêm vào giỏ:", err);
+      if (err.response?.status === 401) {
+        alert("❌ Cần đăng nhập trước");
+      } else {
+        alert("❌ Có lỗi xảy ra khi thêm vào giỏ hàng");
+      }
+    }
+  };
 
   if (loading) return <p className="p-6">Đang tải...</p>;
   if (!product)
@@ -54,7 +86,10 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        <button className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 font-semibold text-lg shadow-lg">
+        <button 
+          onClick={addToCart}
+          className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 font-semibold text-lg shadow-lg"
+        >
           🛒 Thêm vào giỏ hàng
         </button>
       </div>

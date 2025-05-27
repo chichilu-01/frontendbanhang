@@ -7,6 +7,7 @@ export default function ProductRating({ productId }) {
   const { user } = useContext(AuthContext);
   const [ratings, setRatings] = useState([]);
   const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const [averageRating, setAverageRating] = useState(0);
@@ -60,22 +61,26 @@ export default function ProductRating({ productId }) {
     }
   };
 
-  const renderStars = (rating, interactive = false, onStarClick = null) => {
+  const renderStars = (rating, interactive = false, onStarClick = null, hoverRating = 0) => {
     return (
       <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => interactive && onStarClick && onStarClick(star)}
-            className={`text-2xl ${
-              star <= rating ? "text-yellow-400" : "text-gray-300"
-            } ${interactive ? "hover:text-yellow-400 cursor-pointer" : ""} transition-colors`}
-            disabled={!interactive}
-          >
-            ⭐
-          </button>
-        ))}
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isActive = interactive ? (hoverRating >= star || (!hoverRating && rating >= star)) : (rating >= star);
+          
+          return (
+            <button
+              key={star}
+              type="button"
+              onClick={() => interactive && onStarClick && onStarClick(star)}
+              className={`text-2xl transition-all duration-200 ${
+                isActive ? "text-yellow-400 scale-110" : "text-gray-300"
+              } ${interactive ? "hover:text-yellow-400 hover:scale-110 cursor-pointer" : ""}`}
+              disabled={!interactive}
+            >
+              ⭐
+            </button>
+          );
+        })}
       </div>
     );
   };
@@ -108,7 +113,33 @@ export default function ProductRating({ productId }) {
           
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Số sao:</label>
-            {renderStars(userRating, true, setUserRating)}
+            <div 
+              onMouseLeave={() => setHoverRating(0)}
+              className="inline-block"
+            >
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => {
+                  const isActive = hoverRating >= star || (!hoverRating && userRating >= star);
+                  
+                  return (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setUserRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      className={`text-3xl transition-all duration-200 transform ${
+                        isActive ? "text-yellow-400 scale-110" : "text-gray-300"
+                      } hover:text-yellow-400 hover:scale-110 cursor-pointer`}
+                    >
+                      ⭐
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                {hoverRating > 0 ? `${hoverRating} sao` : (userRating > 0 ? `Đã chọn ${userRating} sao` : "Chọn số sao")}
+              </p>
+            </div>
           </div>
 
           <div className="mb-4">

@@ -20,23 +20,32 @@ export default function Home() {
 
   const addToCart = async (productId, productName) => {
     try {
-      await API.post("/cart/add", {
+      const response = await API.post("/cart/add", {
         product_id: productId,
         quantity: 1,
       });
 
-      // Tạo hiệu ứng thông báo
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
-      notification.textContent = `✅ Đã thêm "${productName}" vào giỏ hàng`;
-      document.body.appendChild(notification);
+      if (response.status === 200 || response.status === 201) {
+        // Tạo hiệu ứng thông báo
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
+        notification.textContent = `✅ Đã thêm "${productName}" vào giỏ hàng`;
+        document.body.appendChild(notification);
 
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 3000);
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 3000);
+      }
     } catch (err) {
-      alert("❌ Cần đăng nhập trước");
+      console.error("Lỗi thêm vào giỏ:", err);
+      if (err.response?.status === 401) {
+        alert("❌ Cần đăng nhập trước");
+      } else {
+        alert("❌ Có lỗi xảy ra khi thêm vào giỏ hàng");
+      }
     }
   };
 

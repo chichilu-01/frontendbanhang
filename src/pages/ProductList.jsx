@@ -1,4 +1,3 @@
-// src/pages/ProductList.jsx
 import { useEffect, useState } from "react";
 import API from "@/api/axios";
 import { Link } from "react-router-dom";
@@ -13,6 +12,37 @@ export default function ProductList() {
       .catch((err) => console.error("Lỗi khi tải sản phẩm:", err))
       .finally(() => setLoading(false));
   }, []);
+
+  const addToCart = async (productId, productName) => {
+    try {
+      const response = await API.post("/cart/add", {
+        product_id: productId,
+        quantity: 1,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        // Tạo hiệu ứng thông báo
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
+        notification.textContent = `✅ Đã thêm "${productName}" vào giỏ hàng`;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 3000);
+      }
+    } catch (err) {
+      console.error("Lỗi thêm vào giỏ:", err);
+      if (err.response?.status === 401) {
+        alert("❌ Cần đăng nhập trước");
+      } else {
+        alert("❌ Có lỗi xảy ra khi thêm vào giỏ hàng");
+      }
+    }
+  };
 
   return (
     <div className="p-3 sm:p-6 max-w-7xl mx-auto">
@@ -41,7 +71,10 @@ export default function ProductList() {
                 >
                   Chi tiết
                 </Link>
-                <button className="bg-green-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-green-700 transition-colors font-semibold min-h-[48px]">
+                <button 
+                  onClick={() => addToCart(product.id, product.name)}
+                  className="bg-green-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-green-700 transition-colors font-semibold min-h-[48px] flex items-center justify-center"
+                >
                   Thêm giỏ
                 </button>
               </div>
@@ -52,4 +85,3 @@ export default function ProductList() {
     </div>
   );
 }
-```The code is modified to improve the responsive design of the product list page, ensuring it adapts well to different screen sizes.

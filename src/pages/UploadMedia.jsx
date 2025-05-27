@@ -1,10 +1,10 @@
 import { useState } from "react";
 import API from "@/api/axios";
-import axios from "axios";
 
 function UploadMedia({ productId }) {
   const [file, setFile] = useState(null);
   const [uploadResult, setUploadResult] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleUpload = async () => {
     if (!file || !productId) {
@@ -12,35 +12,31 @@ function UploadMedia({ productId }) {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("product_id", productId);
+    formData.append("type", file.type.startsWith("image") ? "image" : "video");
+
     try {
-      // 1. Upload lên Cloudinary
-      const cloudForm = new FormData();
-      cloudForm.append("file", file);
-      cloudForm.append("upload_preset", "unsigned_upload"); // ✅ đúng preset
-
-      const cloudRes = await axios.post(
-        "https://api.cloudinary.com/v1_1/di3kcy96q/auto/upload",
-        cloudForm,
-      );
-
-      const imageUrl = cloudRes.data.secure_url;
-
-      // 2. Gửi URL về backend
-      const res = await API.post("/products/upload", {
-        product_id: productId,
-        url: imageUrl,
-        type: file.type.startsWith("image") ? "image" : "video",
+      const res = await API.post("/products/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      setUploadResult("✅ Upload thành công: " + imageUrl);
+      setUploadResult("✅ Upload thành công: " + res.data.url);
+      setShowSuccess(true);
+
+      // Tự động ẩn sau 3 giây
+      setTimeout(() => setShowSuccess(false), 3000);
     } catch (err) {
-      const msg = err.response?.data?.error || "❌ Lỗi kết nối hoặc Cloudinary";
+      const msg = err.response?.data?.error || "❌ Lỗi kết nối server";
       setUploadResult(msg);
     }
   };
 
   return (
-    <div className="p-4 border rounded w-full max-w-md mx-auto">
+    <div className="p-4 border rounded w-full max-w-md mx-auto relative">
       <h2 className="text-lg font-semibold mb-2">Upload ảnh hoặc video</h2>
       <input
         type="file"
@@ -53,7 +49,15 @@ function UploadMedia({ productId }) {
       >
         Tải lên
       </button>
-      {uploadResult && <p className="mt-2">{uploadResult}</p>}
+
+      {uploadResult && <p className="mt-2 text-sm">{uploadResult}</p>}
+
+      {/* ✅ Modal nổi khi thành công */}
+      {showSuccess && (
+        <div className="absolute top-2 right-2 bg-green-500 text-white px-4 py-2 rounded shadow-md animate-fade-in-out z-10">
+          ✅ Đã upload thành công
+        </div>
+      )}
     </div>
   );
 }

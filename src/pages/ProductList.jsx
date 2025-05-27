@@ -1,6 +1,6 @@
 // src/pages/ProductList.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "@/api/axios";
 import { Link } from "react-router-dom";
 
 export default function ProductList() {
@@ -8,10 +8,9 @@ export default function ProductList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("https://backendbanhang-production.up.railway.app/products")
+    API.get("/products")
       .then((res) => setProducts(res.data))
-      .catch((err) => console.error(err))
+      .catch((err) => console.error("Lỗi khi tải sản phẩm:", err))
       .finally(() => setLoading(false));
   }, []);
 

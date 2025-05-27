@@ -1,4 +1,5 @@
 import { useState } from "react";
+import API from "@/api/axios";
 import axios from "axios";
 
 export default function UploadMultipleMedia({ productId, onUploaded }) {
@@ -7,36 +8,34 @@ export default function UploadMultipleMedia({ productId, onUploaded }) {
 
   const handleUpload = async () => {
     if (!files.length) return alert("Vui lòng chọn ít nhất 1 file");
-
     setUploading(true);
 
     for (const file of files) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("product_id", productId);
-      formData.append(
-        "type",
-        file.type.startsWith("image") ? "image" : "video",
-      );
-
       try {
-        const token = localStorage.getItem("token");
-        const res = await axios.post(
-          "https://backendbanhang-production.up.railway.app/products/upload",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          },
+        // 1. Upload lên Cloudinary
+        const cloudForm = new FormData();
+        cloudForm.append("file", file);
+        cloudForm.append("upload_preset", "unsigned_upload");
+
+        const cloudRes = await axios.post(
+          "https://api.cloudinary.com/v1_1/di3kcy96q/auto/upload",
+          cloudForm,
         );
 
+        const imageUrl = cloudRes.data.secure_url;
+
+        // 2. Gửi URL về backend
+        await API.post("/products/upload", {
+          product_id: productId,
+          url: imageUrl,
+          type: file.type.startsWith("image") ? "image" : "video",
+        });
+
         console.log("✅ Upload thành công:", file.name);
-        onUploaded?.(); // reload media
+        onUploaded?.(); // reload media nếu có
       } catch (err) {
-        const msg = err.response?.data?.error || "Lỗi kết nối server";
-        alert(`❌ ${file.name}: ${msg}`);
+        console.error(`❌ ${file.name}:`, err);
+        alert(`❌ Lỗi upload ${file.name}`);
       }
     }
 

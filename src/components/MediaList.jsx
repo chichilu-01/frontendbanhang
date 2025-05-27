@@ -31,6 +31,13 @@ export default function MediaList({ productId, refreshTrigger }) {
     loadMedia();
   }, [productId, refreshTrigger]);
 
+  const transformURL = (url, width = 400, height = 400) => {
+    return url.replace(
+      "/upload/",
+      `/upload/w_${width},h_${height},c_fill,f_auto,q_auto/`,
+    );
+  };
+
   if (loading) return <p>Đang tải media...</p>;
   if (mediaList.length === 0)
     return <p className="text-sm text-gray-500">Chưa có media</p>;
@@ -41,13 +48,13 @@ export default function MediaList({ productId, refreshTrigger }) {
         <div key={media.id} className="relative border rounded p-1 group">
           {media.type === "image" ? (
             <img
-              src={media.url}
+              src={transformURL(media.url)}
               alt=""
               className="w-full h-40 object-cover rounded"
             />
           ) : (
             <video
-              src={media.url}
+              src={transformURL(media.url, 600, 400)}
               controls
               className="w-full h-40 object-cover rounded"
             />

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "@/api/axios";
+import axios from "axios";
 
 function UploadMedia({ productId }) {
   const [file, setFile] = useState(null);
@@ -11,21 +12,29 @@ function UploadMedia({ productId }) {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("product_id", productId);
-    formData.append("type", file.type.startsWith("image") ? "image" : "video");
-
     try {
-      const res = await API.post("/products/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      // 1. Upload lên Cloudinary
+      const cloudForm = new FormData();
+      cloudForm.append("file", file);
+      cloudForm.append("upload_preset", "unsigned_upload"); // ✅ đúng preset
+
+      const cloudRes = await axios.post(
+        "https://api.cloudinary.com/v1_1/di3kcy96q/auto/upload",
+        cloudForm,
+      );
+
+      const imageUrl = cloudRes.data.secure_url;
+
+      // 2. Gửi URL về backend
+      const res = await API.post("/products/upload", {
+        product_id: productId,
+        url: imageUrl,
+        type: file.type.startsWith("image") ? "image" : "video",
       });
 
-      setUploadResult("✅ Upload thành công: " + res.data.url);
+      setUploadResult("✅ Upload thành công: " + imageUrl);
     } catch (err) {
-      const msg = err.response?.data?.error || "❌ Lỗi kết nối server";
+      const msg = err.response?.data?.error || "❌ Lỗi kết nối hoặc Cloudinary";
       setUploadResult(msg);
     }
   };

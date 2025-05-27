@@ -63,7 +63,7 @@ export default function Cart() {
                 {Math.floor(total).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
               </p>
             </div>
-            <button className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105 font-semibold text-lg shadow-lg">
+            <button className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 text-lg sm:text-lg rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105 font-bold shadow-lg min-h-[56px]">
               💳 Thanh toán
             </button>
           </div>

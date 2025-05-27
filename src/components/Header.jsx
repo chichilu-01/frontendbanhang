@@ -19,15 +19,15 @@ export default function Header() {
         <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="logo-animation bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 p-3 rounded-2xl group-hover:scale-110 transition-transform duration-300 relative overflow-hidden">
+            <div className="logo-animation bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 p-3 sm:p-3 rounded-2xl group-hover:scale-110 transition-transform duration-300 relative overflow-hidden">
               <div className="absolute inset-0 bg-white opacity-20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-              <span className="text-white text-2xl font-bold relative z-10">🛍️</span>
+              <span className="text-white text-3xl sm:text-2xl font-bold relative z-10">🛍️</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold holographic leading-tight">
+              <span className="text-xl sm:text-xl font-bold holographic leading-tight">
                 ChiChiLu-Shop
               </span>
-              <span className="text-xs text-gray-500 font-medium tracking-wide">
+              <span className="text-sm sm:text-xs text-gray-500 font-medium tracking-wide">
                 Premium Store
               </span>
             </div>

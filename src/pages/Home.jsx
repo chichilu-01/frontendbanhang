@@ -117,15 +117,15 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3 mt-4">
                     <Link
                       to={`/products/${product.id}`}
-                      className="flex-1 btn-hologram text-center text-white rounded-xl py-3 font-semibold"
+                      className="bg-blue-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-blue-700 transition-all duration-200 text-center font-semibold min-h-[48px] flex items-center justify-center"
                     >
-                      Xem chi tiết
+                      👁️ Xem chi tiết
                     </Link>
-                    <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-110 hover:rotate-12">
-                      🛒
+                    <button className="bg-green-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-green-700 transition-all duration-200 font-semibold min-h-[48px]">
+                      🛒 Thêm giỏ hàng
                     </button>
                   </div>
                 </div>

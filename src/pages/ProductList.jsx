@@ -37,11 +37,11 @@ export default function ProductList() {
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:justify-between">
                 <Link
                   to={`/products/${product.id}`}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-center text-sm sm:text-base"
+                  className="bg-blue-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-blue-700 transition-colors text-center font-semibold min-h-[48px] flex items-center justify-center"
                 >
                   Chi tiết
                 </Link>
-                <button className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition-colors text-sm sm:text-base">
+                <button className="bg-green-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-green-700 transition-colors font-semibold min-h-[48px]">
                   Thêm giỏ
                 </button>
               </div>

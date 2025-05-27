@@ -16,9 +16,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     axios
-      .get(
-        `https://de2b0412-6002-4dc6-a768-b1b88140a428-00-2m5ffvxgjg8v.pike.replit.dev/products/${id}`,
-      )
+      .get(`https://backendbanhang-production.up.railway.app/products/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

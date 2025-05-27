@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "@/api/axios";
+import axios from "axios";
 import ProductMedia from "../components/ProductMedia.jsx";
 import UploadMultipleMedia from "../components/UploadMultipleMedia.jsx";
+
+// ✅ Gán trực tiếp link backend
+const API = axios.create({
+  baseURL: "https://backendbanhang-production.up.railway.app",
+});
 
 export default function AdminPanel() {
   const [products, setProducts] = useState([]);

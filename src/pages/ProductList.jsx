@@ -9,7 +9,7 @@ export default function ProductList() {
 
   useEffect(() => {
     axios
-      .get("https://de2b0412-6002-4dc6-a768-b1b88140a428-00-2m5ffvxgjg8v.pike.replit.dev/products")
+      .get("https://backendbanhang-production.up.railway.app/products")
       .then((res) => setProducts(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

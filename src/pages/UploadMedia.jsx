@@ -16,7 +16,7 @@ function UploadMedia({ productId }) {
 
     try {
       const res = await fetch(
-        "https://backendbanhang-production.up.railway.app/api/upload",
+        "https://backendbanhang-production.up.railway.app/products/upload",
         {
           method: "POST",
           body: formData,

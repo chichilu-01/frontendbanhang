@@ -9,12 +9,9 @@ export default function MyOrders() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get(
-        "https://de2b0412-6002-4dc6-a768-b1b88140a428-00-2m5ffvxgjg8v.pike.replit.dev/orders/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
+      .get("https://backendbanhang-production.up.railway.app/orders/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => setOrders(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

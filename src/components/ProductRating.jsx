@@ -18,16 +18,29 @@ export default function ProductRating({ productId }) {
 
   const fetchRatings = async () => {
     try {
-      const response = await API.get(`/products/${productId}/ratings`);
-      setRatings(response.data);
+      // Thử nhiều endpoint để tải đánh giá
+      let response;
+      try {
+        response = await API.get(`/products/${productId}/ratings`);
+      } catch (firstError) {
+        // Thử endpoint khác
+        response = await API.get(`/ratings/product/${productId}`);
+      }
+      
+      const ratingsData = response.data || [];
+      setRatings(ratingsData);
       
       // Tính điểm trung bình
-      if (response.data.length > 0) {
-        const avg = response.data.reduce((sum, rating) => sum + rating.rating, 0) / response.data.length;
+      if (ratingsData.length > 0) {
+        const avg = ratingsData.reduce((sum, rating) => sum + rating.rating, 0) / ratingsData.length;
         setAverageRating(Math.round(avg * 10) / 10);
+      } else {
+        setAverageRating(0);
       }
     } catch (error) {
       console.error("Lỗi khi tải đánh giá:", error);
+      setRatings([]);
+      setAverageRating(0);
     }
   };
 
@@ -43,22 +56,33 @@ export default function ProductRating({ productId }) {
       return;
     }
 
-    if (comment.trim().length < 10) {
-      alert("Vui lòng viết nhận xét ít nhất 10 ký tự");
+    if (comment.trim().length < 5) {
+      alert("Vui lòng viết nhận xét ít nhất 5 ký tự");
       return;
     }
 
     setLoading(true);
     try {
-      await API.post(`/products/${productId}/ratings`, {
-        rating: userRating,
-        comment: comment.trim()
-      });
+      // Thử gửi đánh giá với nhiều endpoint khác nhau
+      let response;
+      try {
+        response = await API.post(`/products/${productId}/ratings`, {
+          rating: userRating,
+          comment: comment.trim()
+        });
+      } catch (firstError) {
+        // Thử endpoint khác nếu lỗi
+        response = await API.post(`/ratings`, {
+          product_id: productId,
+          rating: userRating,
+          comment: comment.trim()
+        });
+      }
       
       // Hiệu ứng thông báo đẹp hơn
       const notification = document.createElement("div");
       notification.className =
-        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
+        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce";
       notification.textContent = "✅ Đánh giá thành công!";
       document.body.appendChild(notification);
 
@@ -74,7 +98,10 @@ export default function ProductRating({ productId }) {
       fetchRatings();
     } catch (error) {
       console.error("Lỗi khi gửi đánh giá:", error);
-      alert("❌ Lỗi khi gửi đánh giá. Vui lòng thử lại!");
+      
+      // Hiển thị lỗi chi tiết hơn
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || "Lỗi kết nối server";
+      alert(`❌ ${errorMsg}. Vui lòng thử lại!`);
     } finally {
       setLoading(false);
     }

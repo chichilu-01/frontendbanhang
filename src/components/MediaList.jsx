@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import API from "@/api/axios";
+import { AuthContext } from "@/context/AuthContext"; // Assuming AuthContext is in this path
 
 export default function MediaList({ productId, refreshTrigger }) {
   const [mediaList, setMediaList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { user } = useContext(AuthContext);
+  const isAdmin = user?.role === "admin";
 
   const loadMedia = async () => {
     try {
@@ -59,12 +62,14 @@ export default function MediaList({ productId, refreshTrigger }) {
               className="w-full h-40 object-cover rounded"
             />
           )}
-          <button
-            onClick={() => handleDelete(media.id)}
-            className="absolute top-1 right-1 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs opacity-80 hover:opacity-100"
-          >
-            ❌
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => handleDelete(media.id)}
+              className="absolute top-1 right-1 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs opacity-80 hover:opacity-100"
+            >
+              ❌
+            </button>
+          )}
         </div>
       ))}
     </div>

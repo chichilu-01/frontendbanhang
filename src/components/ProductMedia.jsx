@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import API from "@/api/axios";
+import { AuthContext } from "../context/AuthContext";
 
 export default function ProductMedia({ productId }) {
   const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
+  const { user } = useContext(AuthContext);
+  const isAdmin = user?.role === "admin";
 
   const fetchMedia = () => {
     setLoading(true);
@@ -72,7 +75,7 @@ export default function ProductMedia({ productId }) {
           )}
 
           <div className="mt-1 space-y-1">
-            {!item.is_main && (
+            {isAdmin && !item.is_main && (
               <button
                 onClick={() => setAsMain(item.id)}
                 disabled={updatingId === item.id}
@@ -87,12 +90,19 @@ export default function ProductMedia({ productId }) {
                   : "Đặt làm ảnh chính"}
               </button>
             )}
-            <button
-              onClick={() => deleteMedia(item.id)}
-              className="w-full text-sm text-red-600 hover:underline"
-            >
-              Xoá
-            </button>
+            {isAdmin && (
+              <button
+                onClick={() => deleteMedia(item.id)}
+                className="w-full text-sm text-red-600 hover:underline"
+              >
+                🗑️ Xoá
+              </button>
+            )}
+            {!isAdmin && (
+              <p className="text-xs text-gray-400 text-center py-1">
+                Chỉ admin mới có thể chỉnh sửa
+              </p>
+            )}
           </div>
         </div>
       ))}

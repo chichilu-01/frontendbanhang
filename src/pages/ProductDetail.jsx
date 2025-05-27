@@ -38,27 +38,7 @@ export default function ProductDetail() {
         quantity: 1,
       });
 
-      // Hiển thị thông báo thành công
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce";
-      notification.textContent = "✅ Đã thêm vào giỏ hàng!";
-      document.body.appendChild(notification);
-
-      setTimeout(() => {
-        if (document.body.contains(notification)) {
-          document.body.removeChild(notification);
-        }
-      }, 3000);
-
-    } catch (error) {
-      console.error("Lỗi thêm vào giỏ hàng:", error);
-      const errorMsg = error.response?.data?.message || "Lỗi khi thêm vào giỏ hàng";
-      alert(`❌ ${errorMsg}`);
-      });
-
       if (response.status === 200 || response.status === 201) {
-        // Tạo hiệu ứng thông báo
         const notification = document.createElement("div");
         notification.className =
           "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
@@ -71,13 +51,11 @@ export default function ProductDetail() {
           }
         }, 3000);
       }
-    } catch (err) {
-      console.error("Lỗi thêm vào giỏ:", err);
-      if (err.response?.status === 401) {
-        alert("❌ Cần đăng nhập trước");
-      } else {
-        alert("❌ Có lỗi xảy ra khi thêm vào giỏ hàng");
-      }
+    } catch (error) {
+      console.error("Lỗi thêm vào giỏ hàng:", error);
+      const errorMsg =
+        error.response?.data?.message || "Lỗi khi thêm vào giỏ hàng";
+      alert(`❌ ${errorMsg}`);
     }
   };
 
@@ -95,13 +73,17 @@ export default function ProductDetail() {
             className="w-full h-64 object-cover rounded-xl mb-6"
           />
         )}
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 text-center sm:text-left">{product.name}</h1>
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 text-center sm:text-left">
+          {product.name}
+        </h1>
 
-        <p className="text-gray-700 mb-4 text-sm sm:text-base leading-relaxed">{product.description}</p>
+        <p className="text-gray-700 mb-4 text-sm sm:text-base leading-relaxed">
+          {product.description}
+        </p>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <p className="text-green-600 font-bold text-xl sm:text-2xl lg:text-3xl">
-            {Math.floor(product.price).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
+            {Math.floor(product.price).toLocaleString("vi-VN")} ₫
           </p>
 
           <div className="flex items-center text-yellow-400 text-lg">
@@ -110,7 +92,7 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        <button 
+        <button
           onClick={addToCart}
           className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 font-semibold text-lg shadow-lg"
         >
@@ -118,7 +100,7 @@ export default function ProductDetail() {
         </button>
       </div>
 
-      {/* 👉 Phần dành cho admin */}
+      {/* 👉 Admin chỉ */}
       {isAdmin && (
         <>
           <div className="mt-8 bg-white rounded-2xl shadow-lg p-4 sm:p-6">
@@ -129,7 +111,9 @@ export default function ProductDetail() {
           </div>
 
           <div className="mt-6 bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">🗂️ Media đã upload</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+              🗂️ Media đã upload
+            </h2>
             <MediaList productId={id} refreshTrigger={refreshMedia} />
           </div>
         </>
@@ -142,7 +126,6 @@ export default function ProductDetail() {
         <ProductMedia productId={id} />
       </div>
 
-      {/* Component đánh giá sản phẩm */}
       <ProductRating productId={id} />
     </div>
   );

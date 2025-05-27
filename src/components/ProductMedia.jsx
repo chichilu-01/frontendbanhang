@@ -8,7 +8,7 @@ export default function ProductMedia({ productId }) {
   const fetchMedia = () => {
     setLoading(true);
     fetch(
-      `https://backendbanhang-production.up.railway.app/api/products/${productId}/media`,
+      `https://backendbanhang-production.up.railway.app/products/${productId}/media`,
     )
       .then((res) => res.json())
       .then((data) => setMedia(data.reverse()))
@@ -23,7 +23,7 @@ export default function ProductMedia({ productId }) {
   const setAsMain = async (id) => {
     setUpdatingId(id);
     const res = await fetch(
-      `https://backendbanhang-production.up.railway.app/api/upload/${id}/set-main`,
+      `https://backendbanhang-production.up.railway.app/upload/${id}/set-main`,
       { method: "PATCH" },
     );
     if (res.ok) {
@@ -37,7 +37,7 @@ export default function ProductMedia({ productId }) {
   const deleteMedia = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xoá ảnh/video này?")) return;
     const res = await fetch(
-      `https://backendbanhang-production.up.railway.app/api/upload/${id}`,
+      `https://backendbanhang-production.up.railway.app/upload/${id}`,
       { method: "DELETE" },
     );
     if (res.ok) {

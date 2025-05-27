@@ -16,7 +16,7 @@ export default function UploadMultipleMedia({ productId, onUploaded }) {
 
       try {
         const res = await fetch(
-          "https://backendbanhang-production.up.railway.app/api/upload",
+          "https://backendbanhang-production.up.railway.app/upload",
           {
             method: "POST",
             body: formData,

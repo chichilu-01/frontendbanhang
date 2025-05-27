@@ -23,7 +23,7 @@ export default function MediaList({ productId, refreshTrigger }) {
     if (!window.confirm("Bạn có chắc muốn xoá?")) return;
     try {
       await fetch(
-        `https://backendbanhang-production.up.railway.app/api/upload/${id}`,
+        `https://backendbanhang-production.up.railway.app/upload/${id}`,
         { method: "DELETE" },
       );
       loadMedia(); // reload sau khi xoá

@@ -29,9 +29,8 @@ export default function ProductDetail() {
     return <p className="p-6 text-red-500">Không tìm thấy sản phẩm.</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="border rounded-2xl p-6 shadow-md bg-white">
-        {/* ✅ Ảnh chính nếu có */}
+    <div className="p-3 sm:p-6 max-w-4xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6">
         {product.main_image && (
           <img
             src={product.main_image}
@@ -39,15 +38,22 @@ export default function ProductDetail() {
             className="w-full h-64 object-cover rounded-xl mb-6"
           />
         )}
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 text-center sm:text-left">{product.name}</h1>
 
-        <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-        <p className="text-gray-700 mb-4">{product.description}</p>
+        <p className="text-gray-700 mb-4 text-sm sm:text-base leading-relaxed">{product.description}</p>
 
-        <p className="text-green-600 font-bold text-xl mb-4">
-          {Math.floor(product.price).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
-        </p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <p className="text-green-600 font-bold text-xl sm:text-2xl lg:text-3xl">
+            {Math.floor(product.price).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
+          </p>
 
-        <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition duration-200">
+          <div className="flex items-center text-yellow-400 text-lg">
+            <span>⭐⭐⭐⭐⭐</span>
+            <span className="text-gray-600 ml-2 text-sm">(128 đánh giá)</span>
+          </div>
+        </div>
+
+        <button className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 font-semibold text-lg shadow-lg">
           🛒 Thêm vào giỏ hàng
         </button>
       </div>
@@ -55,23 +61,24 @@ export default function ProductDetail() {
       {/* 👉 Phần dành cho admin */}
       {isAdmin && (
         <>
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-2">
+          <div className="mt-8 bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
               📤 Upload ảnh / video
             </h2>
             <UploadMultipleMedia productId={id} onUploaded={triggerReload} />
           </div>
 
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-2">🗂️ Media đã upload</h2>
+          <div className="mt-6 bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">🗂️ Media đã upload</h2>
             <MediaList productId={id} refreshTrigger={refreshMedia} />
           </div>
         </>
       )}
 
-      {/* 👉 Thư viện công khai */}
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-2">🖼️ Thư viện sản phẩm</h2>
+      <div className="mt-6 bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+          🖼️ Thư viện sản phẩm
+        </h2>
         <ProductMedia productId={id} />
       </div>
     </div>

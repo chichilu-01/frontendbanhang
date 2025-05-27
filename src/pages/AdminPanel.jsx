@@ -64,16 +64,16 @@ export default function AdminPanel() {
 
               {/* 👉 Media hiển thị */}
               <div className="mb-4">
-                <h3 className="text-sm font-medium text-gray-500 mb-1">
-                  Media đã upload:
+                <h3 className="text-sm font-semibold text-blue-700 mb-1 flex items-center gap-2">
+                  📸 Media đã upload:
                 </h3>
                 <ProductMedia productId={product.id} />
               </div>
 
               {/* 👉 Upload nhiều ảnh/video */}
               <div className="mb-4">
-                <h3 className="text-sm font-medium text-gray-500 mb-1">
-                  Upload ảnh hoặc video:
+                <h3 className="text-sm font-semibold text-purple-700 mb-1 flex items-center gap-2">
+                  ⬆️ Upload ảnh hoặc video:
                 </h3>
                 <UploadMultipleMedia
                   productId={product.id}

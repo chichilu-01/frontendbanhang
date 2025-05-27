@@ -24,6 +24,7 @@ export default function AddProduct() {
     e.preventDefault();
     try {
       const res = await API.post("/products", form);
+      console.log("✅ Sản phẩm đã được tạo:", res.data);
       alert("✅ Đã thêm sản phẩm");
       navigate("/admin");
     } catch (err) {

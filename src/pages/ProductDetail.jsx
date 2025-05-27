@@ -43,7 +43,7 @@ export default function ProductDetail() {
         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
         <p className="text-gray-700 mb-4">{product.description}</p>
         <p className="text-green-600 font-bold text-xl mb-4">
-          {product.price.toLocaleString()}₫
+          {product.price.toLocaleString()} VNĐ
         </p>
         <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700">
           Thêm vào giỏ hàng

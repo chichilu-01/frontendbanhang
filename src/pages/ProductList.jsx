@@ -47,7 +47,7 @@ export default function ProductList() {
               <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
               <p className="text-gray-700 mb-2">{product.description}</p>
               <p className="text-green-600 font-bold">
-                {product.price.toLocaleString()}₫
+                {product.price.toLocaleString()} VNĐ
               </p>
               <div className="mt-4 flex justify-between">
                 <Link

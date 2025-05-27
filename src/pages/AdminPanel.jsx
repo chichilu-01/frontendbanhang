@@ -59,7 +59,7 @@ export default function AdminPanel() {
               <h2 className="text-xl font-bold mb-1">{product.name}</h2>
               <p className="text-gray-700 mb-1">{product.description}</p>
               <p className="text-green-600 font-semibold mb-3">
-                {product.price.toLocaleString()}₫
+                {product.price.toLocaleString()} VNĐ
               </p>
 
               {/* 👉 Media hiển thị */}

@@ -18,7 +18,7 @@ export default function ProductDetail() {
     axios
       .get(`https://backendbanhang-production.up.railway.app/products/${id}`)
       .then((res) => setProduct(res.data))
-      .catch((err) => console.error(err))
+      .catch((err) => console.error("❌ Lỗi khi lấy sản phẩm:", err))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -30,8 +30,8 @@ export default function ProductDetail() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <div className="border rounded-2xl p-6 shadow-md">
-        {/* ✅ Ưu tiên hiển thị ảnh chính */}
+      <div className="border rounded-2xl p-6 shadow-md bg-white">
+        {/* ✅ Ảnh chính nếu có */}
         {product.main_image && (
           <img
             src={product.main_image}
@@ -42,19 +42,26 @@ export default function ProductDetail() {
 
         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
         <p className="text-gray-700 mb-4">{product.description}</p>
+
         <p className="text-green-600 font-bold text-xl mb-4">
-          {product.price.toLocaleString()} VNĐ
+          {product.price.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
         </p>
-        <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700">
-          Thêm vào giỏ hàng
+
+        <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition duration-200">
+          🛒 Thêm vào giỏ hàng
         </button>
       </div>
 
-      {/* 👉 Chỉ admin có thể upload / xoá */}
+      {/* 👉 Phần dành cho admin */}
       {isAdmin && (
         <>
           <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-2">📤 Upload ảnh/video</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              📤 Upload ảnh / video
+            </h2>
             <UploadMultipleMedia productId={id} onUploaded={triggerReload} />
           </div>
 

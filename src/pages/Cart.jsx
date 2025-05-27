@@ -16,19 +16,31 @@ export default function Cart() {
   );
 
   return (
-    <div>
-      <h1>🛒 Giỏ hàng</h1>
+    <div className="p-6 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">🛒 Giỏ hàng</h1>
       {items.length === 0 ? (
         <p>Không có sản phẩm nào</p>
       ) : (
-        <div>
+        <div className="space-y-2">
           {items.map((item) => (
-            <div key={item.product_id}>
-              <strong>{item.name}</strong> - {item.quantity} × {item.price}¥
+            <div key={item.product_id} className="flex justify-between">
+              <span>
+                <strong>{item.name}</strong> - {item.quantity} ×{" "}
+                {item.price.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </span>
             </div>
           ))}
-          <hr />
-          <h3>Tổng cộng: {total}¥</h3>
+          <hr className="my-4" />
+          <h3 className="text-lg font-semibold">
+            Tổng cộng:{" "}
+            {total.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </h3>
         </div>
       )}
     </div>

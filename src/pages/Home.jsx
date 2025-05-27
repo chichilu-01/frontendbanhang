@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import API from "../api/axios";
@@ -25,13 +24,14 @@ export default function Home() {
         product_id: productId,
         quantity: 1,
       });
-      
-      // Tạo hiệu ứng thông báo đẹp
-      const notification = document.createElement('div');
-      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out';
+
+      // Tạo hiệu ứng thông báo
+      const notification = document.createElement("div");
+      notification.className =
+        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
       notification.textContent = `✅ Đã thêm "${productName}" vào giỏ hàng`;
       document.body.appendChild(notification);
-      
+
       setTimeout(() => {
         document.body.removeChild(notification);
       }, 3000);
@@ -114,7 +114,7 @@ export default function Home() {
                   <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
                     {product.name}
                   </h3>
-                  
+
                   {product.description && (
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                       {product.description}
@@ -123,7 +123,10 @@ export default function Home() {
 
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-2xl font-bold text-green-600">
-                      {product.price?.toLocaleString()} VNĐ
+                      {product.price?.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
                     </span>
                     <div className="flex items-center text-yellow-400">
                       <span className="text-sm">⭐⭐⭐⭐⭐</span>
@@ -138,7 +141,7 @@ export default function Home() {
                     >
                       🛒 Thêm vào giỏ
                     </button>
-                    
+
                     <Link
                       to={`/products/${product.id}`}
                       className="block w-full text-center bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors duration-200"
@@ -160,7 +163,9 @@ export default function Home() {
             <div className="text-center">
               <div className="text-4xl mb-4">🚚</div>
               <h3 className="text-xl font-semibold mb-2">Giao hàng nhanh</h3>
-              <p className="text-gray-600">Miễn phí giao hàng cho đơn từ 500k</p>
+              <p className="text-gray-600">
+                Miễn phí giao hàng cho đơn từ 500k
+              </p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">🔒</div>

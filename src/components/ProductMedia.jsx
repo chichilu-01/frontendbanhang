@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 export default function ProductMedia({ productId }) {
@@ -24,7 +23,7 @@ export default function ProductMedia({ productId }) {
   const setAsMain = async (id) => {
     setUpdatingId(id);
     const res = await fetch(
-      `https://backendbanhang-production.up.railway.app/upload/${id}/set-main`,
+      `https://backendbanhang-production.up.railway.app/products/upload/${id}/set-main`,
       { method: "PATCH" },
     );
     if (res.ok) {
@@ -38,7 +37,7 @@ export default function ProductMedia({ productId }) {
   const deleteMedia = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xoá ảnh/video này?")) return;
     const res = await fetch(
-      `https://backendbanhang-production.up.railway.app/upload/${id}`,
+      `https://backendbanhang-production.up.railway.app/products/upload/${id}`,
       { method: "DELETE" },
     );
     if (res.ok) {
@@ -109,7 +108,7 @@ export default function ProductMedia({ productId }) {
               Xoá
             </button>
           </div>
-        )
+        ),
       )}
     </div>
   );

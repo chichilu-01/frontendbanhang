@@ -43,7 +43,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+        <div className="spinner-pro"></div>
       </div>
     );
   }
@@ -87,64 +87,49 @@ export default function Home() {
             <p className="text-xl text-gray-500">Chưa có sản phẩm nào</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {products.map((product) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map((product, index) => (
               <div
                 key={product.id}
-                className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100"
+                className="card-3d bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {/* Product Image */}
-                <div className="relative overflow-hidden">
-                  {product.main_image ? (
-                    <img
-                      src={product.main_image}
-                      alt={product.name}
-                      className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <span className="text-4xl">📷</span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                <div className="relative aspect-w-16 aspect-h-9 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-600/20"></div>
+                  <span className="text-5xl relative z-10 animate-bounce">📦</span>
+                  <div className="absolute top-2 right-2 glass-pro rounded-full px-3 py-1">
+                    <span className="text-xs font-semibold text-purple-600">HOT</span>
+                  </div>
                 </div>
+                <div className="p-6 relative">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
 
-                {/* Product Info */}
-                <div className="p-6">
-                  <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-purple-600 transition-colors">
                     {product.name}
                   </h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {product.description}
+                  </p>
 
-                  {product.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {product.description}
-                    </p>
-                  )}
-
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-green-600">
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-2xl font-bold gradient-text">
                       {Math.floor(product.price)?.toLocaleString('vi-VN').replace(/,/g, '.')} ₫
                     </span>
                     <div className="flex items-center text-yellow-400">
-                      <span className="text-sm">⭐⭐⭐⭐⭐</span>
+                      <span className="text-sm animate-pulse">⭐⭐⭐⭐⭐</span>
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => addToCart(product.id, product.name)}
-                      className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-                    >
-                      🛒 Thêm vào giỏ
-                    </button>
-
+                  <div className="flex gap-3">
                     <Link
                       to={`/products/${product.id}`}
-                      className="block w-full text-center bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors duration-200"
+                      className="flex-1 btn-hologram text-center text-white rounded-xl py-3 font-semibold"
                     >
-                      👁️ Xem chi tiết
+                      Xem chi tiết
                     </Link>
+                    <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-110 hover:rotate-12">
+                      🛒
+                    </button>
                   </div>
                 </div>
               </div>

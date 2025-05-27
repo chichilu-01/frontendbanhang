@@ -108,6 +108,12 @@ export default function ProductMedia({ productId }) {
               Xoá
             </button>
           </div>
+        )}
+      </div>
+    );
+  });
+}
+          </div>
         ),
       )}
     </div>

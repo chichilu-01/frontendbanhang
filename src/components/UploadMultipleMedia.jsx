@@ -60,7 +60,7 @@ export default function UploadMultipleMedia({ productId, onUploaded }) {
           {files.map((file, i) => (
             <li key={i}>{file.name}</li>
           ))}
-        </ul>
+        </ul>/ul>
       )}
     </div>
   );

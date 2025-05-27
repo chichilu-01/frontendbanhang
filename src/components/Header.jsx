@@ -25,6 +25,7 @@ export default function Header() {
             📦 Đơn hàng
           </Link>
         )}
+        )}
       </div>
 
       <div className="flex items-center gap-4">
@@ -54,6 +55,12 @@ export default function Header() {
             >
               Đăng xuất
             </button>
+          </>
+        )}
+      </div>
+    </header>
+  );
+}
           </>
         )}
       </div>

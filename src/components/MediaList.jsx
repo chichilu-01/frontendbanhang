@@ -68,3 +68,8 @@ export default function MediaList({ productId, refreshTrigger }) {
     </div>
   );
 }
+        </div>
+      ))}
+    </div>
+  );
+}

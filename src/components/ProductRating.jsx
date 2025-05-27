@@ -43,19 +43,38 @@ export default function ProductRating({ productId }) {
       return;
     }
 
+    if (comment.trim().length < 10) {
+      alert("Vui lòng viết nhận xét ít nhất 10 ký tự");
+      return;
+    }
+
     setLoading(true);
     try {
       await API.post(`/products/${productId}/ratings`, {
         rating: userRating,
-        comment: comment
+        comment: comment.trim()
       });
       
-      alert("✅ Đánh giá thành công!");
+      // Hiệu ứng thông báo đẹp hơn
+      const notification = document.createElement("div");
+      notification.className =
+        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
+      notification.textContent = "✅ Đánh giá thành công!";
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 3000);
+      
       setUserRating(0);
       setComment("");
+      setHoverRating(0);
       fetchRatings();
     } catch (error) {
-      alert("❌ Lỗi khi gửi đánh giá");
+      console.error("Lỗi khi gửi đánh giá:", error);
+      alert("❌ Lỗi khi gửi đánh giá. Vui lòng thử lại!");
     } finally {
       setLoading(false);
     }

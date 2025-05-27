@@ -133,7 +133,9 @@ export default function Home() {
                     >
                       👁️ Xem chi tiết
                     </Link>
-                    <button className="bg-green-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-green-700 transition-all duration-200 font-semibold min-h-[48px]">
+                    <button 
+                      onClick={() => addToCart(product.id, product.name)}
+                      className="bg-green-600 text-white px-6 py-3 text-base sm:text-sm rounded-xl hover:bg-green-700 transition-all duration-200 font-semibold min-h-[48px]">
                       🛒 Thêm giỏ hàng
                     </button>
                   </div>

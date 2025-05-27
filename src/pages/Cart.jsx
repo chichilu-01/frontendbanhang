@@ -26,14 +26,14 @@ export default function Cart() {
             <div key={item.product_id} className="flex justify-between">
               <span>
                 <strong>{item.name}</strong> - {item.quantity} ×{" "}
-                {item.price.toLocaleString('vi-VN').replace(/,/g, '.')} ₫
+                {Math.floor(item.price).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
               </span>
             </div>
           ))}
           <hr className="my-4" />
           <h3 className="text-lg font-semibold">
             Tổng cộng:{" "}
-            {total.toLocaleString('vi-VN').replace(/,/g, '.')} ₫
+            {Math.floor(total).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
           </h3>
         </div>
       )}

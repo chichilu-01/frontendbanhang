@@ -27,10 +27,34 @@ export default function ProductDetail() {
   const triggerReload = () => setRefreshMedia((prev) => prev + 1);
 
   const addToCart = async () => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để thêm vào giỏ hàng");
+      return;
+    }
+
     try {
       const response = await API.post("/cart/add", {
-        product_id: id,
+        product_id: parseInt(id),
         quantity: 1,
+      });
+
+      // Hiển thị thông báo thành công
+      const notification = document.createElement("div");
+      notification.className =
+        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce";
+      notification.textContent = "✅ Đã thêm vào giỏ hàng!";
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 3000);
+
+    } catch (error) {
+      console.error("Lỗi thêm vào giỏ hàng:", error);
+      const errorMsg = error.response?.data?.message || "Lỗi khi thêm vào giỏ hàng";
+      alert(`❌ ${errorMsg}`);
       });
 
       if (response.status === 200 || response.status === 201) {

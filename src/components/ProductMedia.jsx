@@ -82,7 +82,7 @@ export default function ProductMedia({ productId }) {
                 className={`w-full text-sm py-1 rounded ${
                   updatingId === item.id
                     ? "bg-gray-300 cursor-wait"
-                    : "bg-gray-200 hover:bg-gray-300"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
                 }`}
               >
                 {updatingId === item.id
@@ -93,15 +93,17 @@ export default function ProductMedia({ productId }) {
             {isAdmin && (
               <button
                 onClick={() => deleteMedia(item.id)}
-                className="w-full text-sm text-red-600 hover:underline"
+                className="w-full text-sm bg-red-500 text-white py-1 rounded hover:bg-red-600"
               >
                 🗑️ Xoá
               </button>
             )}
             {!isAdmin && (
-              <p className="text-xs text-gray-400 text-center py-1">
-                Chỉ admin mới có thể chỉnh sửa
-              </p>
+              <div className="bg-gray-100 rounded p-2 text-center">
+                <p className="text-xs text-gray-500">
+                  🔒 Chỉ admin mới có thể xóa ảnh
+                </p>
+              </div>
             )}
           </div>
         </div>

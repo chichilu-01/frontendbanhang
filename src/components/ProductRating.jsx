@@ -18,15 +18,7 @@ export default function ProductRating({ productId }) {
 
   const fetchRatings = async () => {
     try {
-      // Thử nhiều endpoint để tải đánh giá
-      let response;
-      try {
-        response = await API.get(`/products/${productId}/ratings`);
-      } catch (firstError) {
-        // Thử endpoint khác
-        response = await API.get(`/ratings/product/${productId}`);
-      }
-      
+      const response = await API.get(`/ratings/product/${productId}`);
       const ratingsData = response.data || [];
       setRatings(ratingsData);
       
@@ -63,21 +55,12 @@ export default function ProductRating({ productId }) {
 
     setLoading(true);
     try {
-      // Thử gửi đánh giá với nhiều endpoint khác nhau
-      let response;
-      try {
-        response = await API.post(`/products/${productId}/ratings`, {
-          rating: userRating,
-          comment: comment.trim()
-        });
-      } catch (firstError) {
-        // Thử endpoint khác nếu lỗi
-        response = await API.post(`/ratings`, {
-          product_id: productId,
-          rating: userRating,
-          comment: comment.trim()
-        });
-      }
+      // Gửi đánh giá với endpoint chuẩn
+      const response = await API.post(`/ratings`, {
+        product_id: parseInt(productId),
+        rating: parseInt(userRating),
+        comment: comment.trim()
+      });
       
       // Hiệu ứng thông báo đẹp hơn
       const notification = document.createElement("div");

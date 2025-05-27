@@ -4,6 +4,7 @@ import axios from "axios";
 import MediaList from "../components/MediaList";
 import ProductMedia from "../components/ProductMedia";
 import UploadMultipleMedia from "../components/UploadMultipleMedia";
+import ProductRating from "../components/ProductRating";
 import { AuthContext } from "../context/AuthContext";
 
 export default function ProductDetail() {
@@ -81,6 +82,9 @@ export default function ProductDetail() {
         </h2>
         <ProductMedia productId={id} />
       </div>
+
+      {/* Component đánh giá sản phẩm */}
+      <ProductRating productId={id} />
     </div>
   );
 }

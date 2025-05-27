@@ -82,12 +82,11 @@ export default function Home() {
         </div>
 
         {products.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">📦</div>
-            <p className="text-xl text-gray-500">Chưa có sản phẩm nào</p>
-          </div>
+          <p className="text-center text-gray-500 py-8">
+            Chưa có sản phẩm nào
+          </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {products.map((product, index) => (
               <div
                 key={product.id}
@@ -101,18 +100,16 @@ export default function Home() {
                     <span className="text-xs font-semibold text-purple-600">HOT</span>
                   </div>
                 </div>
-                <div className="p-6 relative">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">
+                  <p className="text-gray-600 mb-3 sm:mb-4 line-clamp-2 text-sm sm:text-base">
                     {product.description}
                   </p>
 
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-2xl font-bold gradient-text">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+                    <span className="text-xl sm:text-2xl font-bold gradient-text">
                       {Math.floor(product.price)?.toLocaleString('vi-VN').replace(/,/g, '.')} ₫
                     </span>
                     <div className="flex items-center text-yellow-400">

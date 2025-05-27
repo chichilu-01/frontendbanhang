@@ -36,12 +36,12 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">🛠️ Quản lý sản phẩm</h1>
+    <div className="p-3 sm:p-6 max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold">🛠️ Quản lý sản phẩm</h1>
         <Link
           to="/admin/add"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto text-center"
         >
           ➕ Thêm sản phẩm
         </Link>
@@ -50,15 +50,15 @@ export default function AdminPanel() {
       {loading ? (
         <p>Đang tải...</p>
       ) : (
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
           {products.map((product) => (
             <div
               key={product.id}
-              className="border rounded-2xl p-5 shadow-md hover:shadow-lg transition"
+              className="border rounded-2xl p-3 sm:p-5 shadow-md hover:shadow-lg transition"
             >
-              <h2 className="text-xl font-bold mb-1">{product.name}</h2>
-              <p className="text-gray-700 mb-1">{product.description}</p>
-              <p className="text-green-600 font-semibold mb-3">
+              <h2 className="text-lg sm:text-xl font-bold mb-2">{product.name}</h2>
+              <p className="text-gray-700 mb-2 text-sm sm:text-base line-clamp-2">{product.description}</p>
+              <p className="text-green-600 font-semibold mb-3 text-lg">
                 {Math.floor(product.price).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
               </p>
 
@@ -82,16 +82,16 @@ export default function AdminPanel() {
               </div>
 
               {/* 👉 Các nút quản lý */}
-              <div className="flex gap-2 mt-2">
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
                 <button
                   onClick={() => handleEdit(product.id)}
-                  className="bg-yellow-500 text-white px-4 py-1 rounded hover:bg-yellow-600"
+                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex-1 sm:flex-none"
                 >
                   ✏️ Sửa
                 </button>
                 <button
                   onClick={() => handleDelete(product.id)}
-                  className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 flex-1 sm:flex-none"
                 >
                   🗑️ Xoá
                 </button>

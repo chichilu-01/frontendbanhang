@@ -141,7 +141,13 @@ body {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+}
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -156,6 +162,23 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #2563eb, #7c3aed);
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  .card-3d:hover {
+    transform: none;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .floating-card {
+    animation: none;
+  }
+  
+  .neon-glow {
+    animation: none;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+  }
 }
 
 /* Loading spinner */

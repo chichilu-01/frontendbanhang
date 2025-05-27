@@ -1,5 +1,5 @@
-
 import { useEffect, useState } from "react";
+import API from "@/api/axios";
 
 export default function MediaList({ productId, refreshTrigger }) {
   const [mediaList, setMediaList] = useState([]);
@@ -8,11 +8,8 @@ export default function MediaList({ productId, refreshTrigger }) {
   const loadMedia = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
-        `https://backendbanhang-production.up.railway.app/api/products/${productId}/media`,
-      );
-      const data = await res.json();
-      setMediaList(data.reverse()); // mới nhất lên trước
+      const res = await API.get(`/products/${productId}/media`);
+      setMediaList(res.data.reverse()); // mới nhất lên trước
     } catch (err) {
       alert("Lỗi tải media");
     } finally {
@@ -23,10 +20,7 @@ export default function MediaList({ productId, refreshTrigger }) {
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xoá?")) return;
     try {
-      await fetch(
-        `https://backendbanhang-production.up.railway.app/upload/${id}`,
-        { method: "DELETE" },
-      );
+      await API.delete(`/upload/${id}`);
       loadMedia(); // reload sau khi xoá
     } catch {
       alert("Không xoá được media");
@@ -47,13 +41,13 @@ export default function MediaList({ productId, refreshTrigger }) {
         <div key={media.id} className="relative border rounded p-1 group">
           {media.type === "image" ? (
             <img
-              src={`https://backendbanhang-production.up.railway.app${media.url}`}
+              src={media.url}
               alt=""
               className="w-full h-40 object-cover rounded"
             />
           ) : (
             <video
-              src={`https://backendbanhang-production.up.railway.app${media.url}`}
+              src={media.url}
               controls
               className="w-full h-40 object-cover rounded"
             />

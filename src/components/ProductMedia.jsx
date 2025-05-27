@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
+import API from "@/api/axios";
 
 export default function ProductMedia({ productId }) {
   const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
 
-  const fetchMedia = () => {
-    setLoading(true);
-    fetch(
-      `https://backendbanhang-production.up.railway.app/products/${productId}/media`,
-    )
-      .then((res) => res.json())
-      .then((data) => setMedia(data.reverse()))
-      .catch(() => console.error("Không thể tải media"))
-      .finally(() => setLoading(false));
+  const fetchMedia = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get(`/products/${productId}/media`);
+      setMedia(res.data.reverse());
+    } catch (err) {
+      console.error("Không thể tải media");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -21,28 +23,23 @@ export default function ProductMedia({ productId }) {
   }, [productId]);
 
   const setAsMain = async (id) => {
-    setUpdatingId(id);
-    const res = await fetch(
-      `https://backendbanhang-production.up.railway.app/products/upload/${id}/set-main`,
-      { method: "PATCH" },
-    );
-    if (res.ok) {
+    try {
+      setUpdatingId(id);
+      await API.patch(`/products/upload/${id}/set-main`);
       fetchMedia();
-    } else {
+    } catch (err) {
       alert("❌ Lỗi đặt ảnh chính");
+    } finally {
+      setUpdatingId(null);
     }
-    setUpdatingId(null);
   };
 
   const deleteMedia = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xoá ảnh/video này?")) return;
-    const res = await fetch(
-      `https://backendbanhang-production.up.railway.app/products/upload/${id}`,
-      { method: "DELETE" },
-    );
-    if (res.ok) {
+    try {
+      await API.delete(`/products/upload/${id}`);
       fetchMedia();
-    } else {
+    } catch (err) {
       alert("❌ Lỗi xoá media");
     }
   };

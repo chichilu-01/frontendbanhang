@@ -1,4 +1,5 @@
 import { useState } from "react";
+import API from "@/api/axios";
 
 function UploadMedia({ productId }) {
   const [file, setFile] = useState(null);
@@ -13,24 +14,19 @@ function UploadMedia({ productId }) {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("product_id", productId);
+    formData.append("type", file.type.startsWith("image") ? "image" : "video");
 
     try {
-      const res = await fetch(
-        "https://backendbanhang-production.up.railway.app/products/upload",
-        {
-          method: "POST",
-          body: formData,
+      const res = await API.post("/products/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-      );
+      });
 
-      const data = await res.json();
-      if (res.ok) {
-        setUploadResult("✅ Upload thành công: " + data.url);
-      } else {
-        setUploadResult("❌ Lỗi: " + data.error);
-      }
+      setUploadResult("✅ Upload thành công: " + res.data.url);
     } catch (err) {
-      setUploadResult("❌ Lỗi kết nối server");
+      const msg = err.response?.data?.error || "❌ Lỗi kết nối server";
+      setUploadResult(msg);
     }
   };
 

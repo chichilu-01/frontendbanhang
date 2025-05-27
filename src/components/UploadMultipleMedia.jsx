@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 export default function UploadMultipleMedia({ productId, onUploaded }) {
   const [files, setFiles] = useState([]);
@@ -13,25 +14,29 @@ export default function UploadMultipleMedia({ productId, onUploaded }) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("product_id", productId);
+      formData.append(
+        "type",
+        file.type.startsWith("image") ? "image" : "video",
+      );
 
       try {
-        const res = await fetch(
+        const token = localStorage.getItem("token");
+        const res = await axios.post(
           "https://backendbanhang-production.up.railway.app/products/upload",
+          formData,
           {
-            method: "POST",
-            body: formData,
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
           },
         );
-        const data = await res.json();
 
-        if (res.ok) {
-          console.log("✅ Upload thành công:", file.name);
-          onUploaded?.(); // reload media
-        } else {
-          alert(`❌ ${file.name}: ${data.error}`);
-        }
+        console.log("✅ Upload thành công:", file.name);
+        onUploaded?.(); // reload media
       } catch (err) {
-        alert(`❌ ${file.name}: Lỗi kết nối server`);
+        const msg = err.response?.data?.error || "Lỗi kết nối server";
+        alert(`❌ ${file.name}: ${msg}`);
       }
     }
 

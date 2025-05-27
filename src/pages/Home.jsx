@@ -123,10 +123,7 @@ export default function Home() {
 
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-2xl font-bold text-green-600">
-                      {product.price?.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
+                      {product.price?.toLocaleString('vi-VN').replace(/,/g, '.')} ₫
                     </span>
                     <div className="flex items-center text-yellow-400">
                       <span className="text-sm">⭐⭐⭐⭐⭐</span>

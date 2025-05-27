@@ -25,3 +25,15 @@ externalPort = 80
 localPort = 5173
 externalPort = 3000
 exposeLocalhost = true
+
+[workflows]
+runButton = "Dev Server"
+
+[[workflows.workflow]]
+name = "Dev Server"
+author = 42720599
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"

@@ -80,6 +80,17 @@ export default function ProductDetail() {
         <p className="text-gray-700 mb-4 text-sm sm:text-base leading-relaxed">
           {product.description}
         </p>
+        {/* 👉 Thông tin bổ sung */}
+        <div className="grid sm:grid-cols-2 gap-4 text-sm sm:text-base mb-6">
+          <p><strong>👕 Giới tính:</strong> {product.gender || "Không rõ"}</p>
+          <p><strong>📏 Kích thước:</strong> {product.dimensions || "Không có thông tin"}</p>
+          <p><strong>📐 Size:</strong> {product.sizes || "Không có size"}</p>
+          <p><strong>🎨 Màu sắc:</strong> {product.colors || "Không có màu"}</p>
+          <p className="sm:col-span-2">
+            <strong>👥 Phù hợp với:</strong> {product.target_customer || "Mọi đối tượng"}
+          </p>
+        </div>
+
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <p className="text-green-600 font-bold text-xl sm:text-2xl lg:text-3xl">

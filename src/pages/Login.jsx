@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { showToast } from "../utils/toast";
 import OAuthLoginButtons from "../components/OAuthLoginButtons";
 
 export default function Login() {
@@ -27,10 +28,10 @@ export default function Login() {
         } else {
           localStorage.removeItem("rememberEmail");
         }
-        alert("✅ Đăng nhập thành công");
+        showToast("✅ Đăng nhập thành công");
         navigate("/");
       })
-      .catch(() => alert("❌ Sai email hoặc mật khẩu"))
+      .catch(() => showToast("❌ Sai email hoặc mật khẩu"))
       .finally(() => setLoading(false));
   };
 

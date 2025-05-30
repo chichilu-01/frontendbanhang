@@ -20,7 +20,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    API.post("/api/auth/login", form)
+    API.post("/api/login", form)
       .then((res) => {
         login(res.data.token);
         if (remember) {

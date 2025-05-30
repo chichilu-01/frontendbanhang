@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import API from "../api/axios";
@@ -18,13 +17,14 @@ export default function ProductRating({ productId }) {
 
   const fetchRatings = async () => {
     try {
-      const response = await API.get(`/ratings/product/${productId}`);
+      const response = await API.get(`/api/ratings/product/${productId}`); // ✅ sửa path
       const ratingsData = response.data || [];
       setRatings(ratingsData);
-      
-      // Tính điểm trung bình
+
       if (ratingsData.length > 0) {
-        const avg = ratingsData.reduce((sum, rating) => sum + rating.rating, 0) / ratingsData.length;
+        const avg =
+          ratingsData.reduce((sum, rating) => sum + rating.rating, 0) /
+          ratingsData.length;
         setAverageRating(Math.round(avg * 10) / 10);
       } else {
         setAverageRating(0);
@@ -42,7 +42,7 @@ export default function ProductRating({ productId }) {
       alert("Vui lòng đăng nhập để đánh giá");
       return;
     }
-    
+
     if (userRating === 0) {
       alert("Vui lòng chọn số sao");
       return;
@@ -55,52 +55,57 @@ export default function ProductRating({ productId }) {
 
     setLoading(true);
     try {
-      // Gửi đánh giá với endpoint chuẩn
-      const response = await API.post(`/ratings`, {
+      await API.post(`/api/ratings`, {
         product_id: parseInt(productId),
         rating: parseInt(userRating),
-        comment: comment.trim()
+        comment: comment.trim(),
       });
-      
-      // Hiệu ứng thông báo đẹp hơn
+
+      // Giao diện feedback đẹp
       const notification = document.createElement("div");
       notification.className =
         "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce";
       notification.textContent = "✅ Đánh giá thành công!";
       document.body.appendChild(notification);
-
       setTimeout(() => {
         if (document.body.contains(notification)) {
           document.body.removeChild(notification);
         }
       }, 3000);
-      
+
       setUserRating(0);
       setComment("");
       setHoverRating(0);
       fetchRatings();
     } catch (error) {
       console.error("Lỗi khi gửi đánh giá:", error);
-      
-      // Hiển thị lỗi chi tiết hơn
-      const errorMsg = error.response?.data?.message || error.response?.data?.error || "Lỗi kết nối server";
+      const errorMsg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Lỗi kết nối server";
       alert(`❌ ${errorMsg}. Vui lòng thử lại!`);
     } finally {
       setLoading(false);
     }
   };
 
-  const renderStars = (rating, interactive = false, onStarClick = null, hoverRating = 0) => {
+  const renderStars = (
+    rating,
+    interactive = false,
+    onStarClick = null,
+    hoverRating = 0,
+  ) => {
     return (
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => {
-          const isActive = interactive ? (hoverRating >= star || (!hoverRating && rating >= star)) : (rating >= star);
-          
+          const isActive = interactive
+            ? hoverRating >= star || (!hoverRating && rating >= star)
+            : rating >= star;
           return (
             <button
               key={star}
               type="button"
-              onClick={() => interactive && onStarClick && onStarClick(star)}
+              onClick={() => interactive && onStarClick?.(star)}
               className={`text-2xl transition-all duration-200 ${
                 isActive ? "text-yellow-400 scale-110" : "text-gray-300"
               } ${interactive ? "hover:text-yellow-400 hover:scale-110 cursor-pointer" : ""}`}
@@ -135,21 +140,26 @@ export default function ProductRating({ productId }) {
         )}
       </div>
 
-      {/* Form đánh giá cho user đã đăng nhập */}
+      {/* Form đánh giá */}
       {user && (
-        <form onSubmit={handleSubmitRating} className="mb-8 p-4 bg-blue-50 rounded-xl">
-          <h3 className="font-semibold mb-4 text-blue-800">Viết đánh giá của bạn</h3>
-          
+        <form
+          onSubmit={handleSubmitRating}
+          className="mb-8 p-4 bg-blue-50 rounded-xl"
+        >
+          <h3 className="font-semibold mb-4 text-blue-800">
+            Viết đánh giá của bạn
+          </h3>
+
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Số sao:</label>
-            <div 
+            <div
               onMouseLeave={() => setHoverRating(0)}
               className="inline-block"
             >
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => {
-                  const isActive = hoverRating >= star || (!hoverRating && userRating >= star);
-                  
+                  const isActive =
+                    hoverRating >= star || (!hoverRating && userRating >= star);
                   return (
                     <button
                       key={star}
@@ -166,7 +176,11 @@ export default function ProductRating({ productId }) {
                 })}
               </div>
               <p className="text-sm text-gray-600 mt-2">
-                {hoverRating > 0 ? `${hoverRating} sao` : (userRating > 0 ? `Đã chọn ${userRating} sao` : "Chọn số sao")}
+                {hoverRating > 0
+                  ? `${hoverRating} sao`
+                  : userRating > 0
+                    ? `Đã chọn ${userRating} sao`
+                    : "Chọn số sao"}
               </p>
             </div>
           </div>
@@ -192,19 +206,25 @@ export default function ProductRating({ productId }) {
         </form>
       )}
 
-      {/* Hiển thị danh sách đánh giá */}
+      {/* Danh sách đánh giá */}
       <div className="space-y-4">
         {ratings.length === 0 ? (
           <p className="text-center text-gray-500 py-8">
-            Chưa có đánh giá nào. {user ? "Hãy là người đầu tiên đánh giá!" : "Đăng nhập để đánh giá sản phẩm."}
+            Chưa có đánh giá nào.{" "}
+            {user
+              ? "Hãy là người đầu tiên đánh giá!"
+              : "Đăng nhập để đánh giá sản phẩm."}
           </p>
         ) : (
           ratings.map((rating) => (
-            <div key={rating.id} className="border rounded-xl p-4 hover:shadow-md transition-shadow">
+            <div
+              key={rating.id}
+              className="border rounded-xl p-4 hover:shadow-md transition-shadow"
+            >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    {rating.user_name ? rating.user_name.charAt(0).toUpperCase() : "U"}
+                    {rating.user_name?.charAt(0).toUpperCase() || "U"}
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">
@@ -213,13 +233,15 @@ export default function ProductRating({ productId }) {
                     <div className="flex items-center gap-2">
                       {renderStars(rating.rating)}
                       <span className="text-sm text-gray-500">
-                        {new Date(rating.created_at).toLocaleDateString("vi-VN")}
+                        {new Date(rating.created_at).toLocaleDateString(
+                          "vi-VN",
+                        )}
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               {rating.comment && (
                 <p className="text-gray-700 mt-2 leading-relaxed">
                   {rating.comment}

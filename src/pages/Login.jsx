@@ -2,11 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext.jsx";
+import OAuthLoginButtons from "../components/OAuthLoginButtons";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -15,6 +17,8 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+
     API.post("/api/auth/login", form)
       .then((res) => {
         login(res.data.token);
@@ -26,7 +30,8 @@ export default function Login() {
         alert("✅ Đăng nhập thành công");
         navigate("/");
       })
-      .catch(() => alert("❌ Sai email hoặc mật khẩu"));
+      .catch(() => alert("❌ Sai email hoặc mật khẩu"))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -80,10 +85,13 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          disabled={loading}
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:opacity-60"
         >
-          Đăng nhập
+          {loading ? "🔄 Đang đăng nhập..." : "Đăng nhập"}
         </button>
+
+        <OAuthLoginButtons />
       </form>
     </div>
   );

@@ -18,7 +18,7 @@ function UploadMedia({ productId }) {
     formData.append("type", file.type.startsWith("image") ? "image" : "video");
 
     try {
-      const res = await API.post("/products/upload", formData, {
+      const res = await API.post("/api/products/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

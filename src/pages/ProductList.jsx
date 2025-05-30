@@ -30,7 +30,7 @@ export default function ProductList() {
     setLoading(true);
     setError(null);
     try {
-      const res = await API.get("/products", {
+      const res = await API.get("/api/products", {
         params: {
           gender: filter.gender,
           sizes: filter.sizes.join(","),
@@ -58,7 +58,7 @@ export default function ProductList() {
   const fetchSuggestions = async (text) => {
     if (!text) return setSuggestions([]);
     try {
-      const res = await API.get("/products/suggest", {
+      const res = await API.get("/api/products/suggest", {
         params: { keyword: text },
       });
       setSuggestions(res.data);
@@ -110,7 +110,7 @@ export default function ProductList() {
 
   const addToCart = async (productId, productName) => {
     try {
-      const response = await API.post("/cart/add", {
+      const response = await API.post("/api/cart/add", {
         product_id: productId,
         quantity: 1,
       });
@@ -119,7 +119,7 @@ export default function ProductList() {
         const notification = document.createElement("div");
         notification.className =
           "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out";
-        notification.textContent = `✅ Đã thêm "${productName}" vào giỏ hàng`;
+        notification.textContent = `✅ Đã thêm \"${productName}\" vào giỏ hàng`;
         document.body.appendChild(notification);
 
         setTimeout(() => {

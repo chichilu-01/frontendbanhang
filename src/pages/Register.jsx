@@ -29,7 +29,7 @@ export default function Register() {
     })
       .then(() => {
         alert("✅ Tạo tài khoản thành công, mời đăng nhập");
-        navigate("/login");
+        navigate("/api/login");
       })
       .catch(() => alert("❌ Mã xác nhận không đúng hoặc đã hết hạn"));
   };

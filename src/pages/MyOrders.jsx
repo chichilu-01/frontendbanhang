@@ -9,11 +9,11 @@ export default function MyOrders() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("https://backendbanhang-production.up.railway.app/orders/me", {
+      .get("https://backendbanhang-production.up.railway.app/api/orders/me", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setOrders(res.data))
-      .catch((err) => console.error(err))
+      .catch((err) => console.error("❌ Lỗi khi tải đơn hàng:", err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -33,7 +33,7 @@ export default function MyOrders() {
               </p>
               <p>
                 <strong>Ngày:</strong>{" "}
-                {new Date(order.created_at).toLocaleDateString()}
+                {new Date(order.created_at).toLocaleDateString("vi-VN")}
               </p>
               <p>
                 <strong>Trạng thái:</strong> {order.status}

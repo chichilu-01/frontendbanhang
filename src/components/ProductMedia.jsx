@@ -11,7 +11,7 @@ export default function ProductMedia({ productId }) {
 
   const fetchMedia = () => {
     setLoading(true);
-    API.get(`/products/${productId}/media`)
+    API.get(`/api/media/product/${productId}`) // ✅ sửa từ /products/... → /api/media/product/...
       .then((res) => setMedia(res.data.reverse()))
       .catch(() => console.error("Không thể tải media"))
       .finally(() => setLoading(false));
@@ -23,7 +23,7 @@ export default function ProductMedia({ productId }) {
 
   const setAsMain = async (id) => {
     setUpdatingId(id);
-    const res = await API.patch(`/products/upload/${id}/set-main`);
+    const res = await API.patch(`/api/upload/${id}/set-main`); // ✅ sửa từ /products/upload/... → /api/upload/...
     if (res.status === 200) fetchMedia();
     else alert("❌ Lỗi đặt ảnh chính");
     setUpdatingId(null);
@@ -31,7 +31,7 @@ export default function ProductMedia({ productId }) {
 
   const deleteMedia = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xoá ảnh/video này?")) return;
-    const res = await API.delete(`/products/upload/${id}`);
+    const res = await API.delete(`/api/upload/${id}`); // ✅ sửa từ /products/upload/... → /api/upload/...
     if (res.status === 200) fetchMedia();
     else alert("❌ Lỗi xoá media");
   };

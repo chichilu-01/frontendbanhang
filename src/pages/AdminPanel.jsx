@@ -1,34 +1,54 @@
-// src/pages/AdminPanel.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "@/api/axios";
 import ProductMedia from "../components/ProductMedia.jsx";
 import UploadMultipleMedia from "../components/UploadMultipleMedia.jsx";
+import { AuthContext } from "../context/AuthContext";
 
 export default function AdminPanel() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
-  const fetchProducts = () => {
-    API.get("/products")
-      .then((res) => setProducts(res.data))
-      .catch(() => alert("❌ Lỗi tải sản phẩm"))
-      .finally(() => setLoading(false));
+  // Nếu không phải admin, chuyển hướng
+  useEffect(() => {
+    if (!user || user.role !== "admin") {
+      alert("⚠️ Bạn không có quyền truy cập trang này");
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await API.get("/api/products"); // ✅ cập nhật đúng endpoint
+      setProducts(res.data);
+    } catch (err) {
+      alert("❌ Lỗi tải danh sách sản phẩm");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xoá?")) return;
-    API.delete(`/admin/products/${id}`)
-      .then(() => {
-        alert("✅ Đã xoá");
-        fetchProducts();
-      })
-      .catch(() => alert("❌ Không đủ quyền hoặc lỗi"));
+    try {
+      const token = localStorage.getItem("token");
+      await API.delete(`/api/admin/products/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("✅ Đã xoá sản phẩm");
+      fetchProducts();
+    } catch (err) {
+      alert("❌ Không đủ quyền hoặc lỗi server");
+      console.error(err);
+    }
   };
 
   const handleEdit = (id) => {
@@ -56,10 +76,17 @@ export default function AdminPanel() {
               key={product.id}
               className="border rounded-2xl p-3 sm:p-5 shadow-md hover:shadow-lg transition"
             >
-              <h2 className="text-lg sm:text-xl font-bold mb-2">{product.name}</h2>
-              <p className="text-gray-700 mb-2 text-sm sm:text-base line-clamp-2">{product.description}</p>
+              <h2 className="text-lg sm:text-xl font-bold mb-2">
+                {product.name}
+              </h2>
+              <p className="text-gray-700 mb-2 text-sm sm:text-base line-clamp-2">
+                {product.description}
+              </p>
               <p className="text-green-600 font-semibold mb-3 text-lg">
-                {Math.floor(product.price).toLocaleString('vi-VN').replace(/,/g, '.')} ₫
+                {Math.floor(product.price)
+                  .toLocaleString("vi-VN")
+                  .replace(/,/g, ".")}{" "}
+                ₫
               </p>
 
               {/* 👉 Media hiển thị */}

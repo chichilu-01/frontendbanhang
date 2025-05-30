@@ -15,7 +15,7 @@ export default function ResetPassword() {
     API.post("/api/auth/reset-password", form)
       .then(() => {
         alert("✅ Mật khẩu đã được đặt lại. Vui lòng đăng nhập lại.");
-        navigate("/login");
+        navigate("/api/login");
       })
       .catch(() => alert("❌ Mã xác nhận không hợp lệ"));
   };

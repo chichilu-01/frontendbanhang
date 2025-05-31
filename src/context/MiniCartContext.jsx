@@ -16,3 +16,5 @@ export const MiniCartProvider = ({ children }) => {
 };
 
 export const useMiniCart = () => useContext(MiniCartContext);
+export default MiniCartProvider;
+export { MiniCartContext };

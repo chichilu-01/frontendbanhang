@@ -1,8 +1,13 @@
 body.universe-on {
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%) !important;
+  background-image: url('/public/vutru.jpg');
+  /* ảnh nền vũ trụ */
+  background-size: cover;
+  background-position: center;
   background-attachment: fixed;
-  color: #e0e8ff;
+  background-repeat: no-repeat;
+  color: #f8fafc;
 }
+
 
 body.universe-on::before {
   content: '';

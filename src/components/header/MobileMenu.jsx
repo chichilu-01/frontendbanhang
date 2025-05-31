@@ -1,99 +1,123 @@
 
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
-import { MiniCartContext } from "../../context/MiniCartContext";
+import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/MiniCartContext";
+import { useUniverse } from "../../context/UniverseToggleContext";
 
-export default function MobileMenu({ isMenuOpen, setIsMenuOpen, handleLogout }) {
-  const { user } = useContext(AuthContext);
-  const { cartCount } = useContext(MiniCartContext);
+export default function MobileMenu({ isOpen, setIsOpen }) {
+  const { user, logout } = useAuth();
+  const { cartCount } = useCart();
+  const { enabled, toggle } = useUniverse();
 
-  if (!isMenuOpen) return null;
+  const closeMenu = () => setIsOpen(false);
+
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+  };
 
   return (
-    <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl shadow-2xl border-t border-gray-100">
-      <div className="px-4 py-6 space-y-4">
+    <div className="p-6 space-y-4">
+      {/* Navigation Links */}
+      <div className="space-y-3">
         <Link
           to="/"
-          onClick={() => setIsMenuOpen(false)}
-          className="block text-gray-700 hover:text-blue-600 font-semibold py-2"
+          onClick={closeMenu}
+          className="block px-4 py-3 rounded-xl hover:bg-blue-50 transition-colors text-gray-700 font-medium"
         >
-          Trang chủ
+          🏠 Trang chủ
         </Link>
+        
         <Link
           to="/products"
-          onClick={() => setIsMenuOpen(false)}
-          className="block text-gray-700 hover:text-blue-600 font-semibold py-2"
+          onClick={closeMenu}
+          className="block px-4 py-3 rounded-xl hover:bg-blue-50 transition-colors text-gray-700 font-medium"
         >
-          Sản phẩm
+          🛍️ Sản phẩm
         </Link>
-        <Link
-          to="/cart"
-          onClick={() => setIsMenuOpen(false)}
-          className="block text-gray-700 hover:text-blue-600 font-semibold py-2 flex items-center"
-        >
-          Giỏ hàng
-          {cartCount > 0 && (
-            <span className="ml-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
-              {cartCount}
-            </span>
-          )}
-        </Link>
+
         {user?.role === "admin" && (
           <Link
             to="/admin"
-            onClick={() => setIsMenuOpen(false)}
-            className="block text-amber-600 hover:text-amber-700 font-semibold py-2"
+            onClick={closeMenu}
+            className="block px-4 py-3 rounded-xl hover:bg-purple-50 transition-colors text-gray-700 font-medium"
           >
-            Admin
+            ⚙️ Admin Panel
           </Link>
         )}
-        {!user ? (
-          <div className="space-y-3 pt-4 border-t border-gray-200">
-            <Link
-              to="/login"
-              onClick={() => setIsMenuOpen(false)}
-              className="block text-center bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-semibold"
-            >
-              Đăng nhập
-            </Link>
-            <Link
-              to="/register"
-              onClick={() => setIsMenuOpen(false)}
-              className="block text-center bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-xl font-semibold"
-            >
-              Đăng ký
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-3 pt-4 border-t border-gray-200">
-            <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-xl">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">
-                  {user.name?.charAt(0)?.toUpperCase() || "U"}
-                </span>
-              </div>
-              <div>
-                <div className="font-semibold text-gray-800">{user.name}</div>
-                <div className="text-sm text-gray-500">{user.role}</div>
-              </div>
-            </div>
-            <Link
-              to="/profile"
-              onClick={() => setIsMenuOpen(false)}
-              className="block text-center bg-blue-50 text-blue-600 px-4 py-3 rounded-xl font-semibold"
-            >
-              Hồ sơ
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="block w-full text-center bg-red-500 text-white px-4 py-3 rounded-xl font-semibold"
-            >
-              Đăng xuất
-            </button>
-          </div>
-        )}
       </div>
+
+      <hr className="border-gray-200" />
+
+      {/* Cart */}
+      <Link
+        to="/cart"
+        onClick={closeMenu}
+        className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-blue-50 transition-colors text-gray-700 font-medium"
+      >
+        <span>🛒 Giỏ hàng</span>
+        {cartCount > 0 && (
+          <span className="bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+            {cartCount}
+          </span>
+        )}
+      </Link>
+
+      {/* Universe Toggle */}
+      <button
+        onClick={() => {
+          toggle();
+          closeMenu();
+        }}
+        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors font-medium ${
+          enabled 
+            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+            : 'hover:bg-blue-50 text-gray-700'
+        }`}
+      >
+        <span>{enabled ? "🌌 Chế độ vũ trụ" : "🌟 Chế độ thường"}</span>
+      </button>
+
+      <hr className="border-gray-200" />
+
+      {/* User Section */}
+      {user ? (
+        <div className="space-y-3">
+          <Link
+            to="/profile"
+            onClick={closeMenu}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 transition-colors text-gray-700 font-medium"
+          >
+            <span className="text-lg">👤</span>
+            <span>{user.name || user.email}</span>
+          </Link>
+          
+          <button
+            onClick={handleLogout}
+            className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium hover:from-pink-500 hover:to-red-500 transition-all duration-300"
+          >
+            🚪 Đăng xuất
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <Link
+            to="/login"
+            onClick={closeMenu}
+            className="block px-4 py-3 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-center font-medium text-gray-700"
+          >
+            🔐 Đăng nhập
+          </Link>
+          
+          <Link
+            to="/register"
+            onClick={closeMenu}
+            className="block px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 text-center"
+          >
+            📝 Đăng ký
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

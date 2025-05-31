@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../context/AuthContext";
+import { useCart } from "../context/MiniCartContext";
 
 export default function ProductsSection() {
   const [products, setProducts] = useState([]);

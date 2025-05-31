@@ -7,3 +7,10 @@
 @import "./text-effects.css";
 @import "./components.css";
 @import "./universe.css";
+
+body {
+  background-image: url('/vutru.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}

@@ -66,7 +66,7 @@ body {
   }
 }
 
-/* Custom animations */
+/* Fade in */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -83,52 +83,19 @@ body {
   animation: fade-in 0.6s ease-out;
 }
 
-/* 3D Card Effects */
-@keyframes card-float {
-
-  0%,
-  100% {
-    transform: translateY(0px) rotateX(0deg);
-  }
-
-  50% {
-    transform: translateY(-10px) rotateX(5deg);
-  }
-}
-
-.card-3d {
-  perspective: 1000px;
-  transform-style: preserve-3d;
-  transition: all 0.3s ease;
-}
-
-.card-3d:hover {
-  transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.floating-card {
-  animation: card-float 6s ease-in-out infinite;
-}
-
 /* Neon glow effects */
 @keyframes neon-pulse {
 
   0%,
   100% {
-    box-shadow:
-      0 0 5px currentColor,
+    box-shadow: 0 0 5px currentColor,
       0 0 10px currentColor,
       0 0 20px currentColor,
       0 0 40px currentColor;
   }
 
   50% {
-    box-shadow:
-      0 0 2px currentColor,
+    box-shadow: 0 0 2px currentColor,
       0 0 5px currentColor,
       0 0 10px currentColor,
       0 0 20px currentColor;
@@ -139,513 +106,13 @@ body {
   animation: neon-pulse 2s ease-in-out infinite;
 }
 
-/* Line clamp utilities */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-@media (min-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #2563eb, #7c3aed);
-}
-
-/* Mobile-first responsive design */
-@media (max-width: 640px) {
-  .card-3d:hover {
-    transform: none;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-  }
-
-  .floating-card {
-    animation: none;
-  }
-
-  .neon-glow {
-    animation: none;
-    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
-  }
-
-  /* Mobile typography - Larger sizes for better readability */
-  h1 {
-    font-size: 1.75rem !important;
-  }
-
-  h2 {
-    font-size: 1.5rem !important;
-  }
-
-  h3 {
-    font-size: 1.25rem !important;
-  }
-
-  /* Base text size increase for mobile */
-  body {
-    font-size: 16px;
-  }
-
-  p {
-    font-size: 1rem !important;
-  }
-
-  /* Mobile padding adjustments */
-  .mobile-p-3 {
-    padding: 0.75rem;
-  }
-
-  .mobile-p-4 {
-    padding: 1rem;
-  }
-
-  /* Mobile grid adjustments */
-  .mobile-grid-1 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-
-  .mobile-grid-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  /* Mobile button enhancements - Larger and easier to tap */
-  button,
-  .btn-primary,
-  .btn-secondary,
-  .btn-neon,
-  .btn-hologram {
-    min-height: 48px !important;
-    min-width: 120px !important;
-    font-size: 1rem !important;
-    padding: 12px 20px !important;
-    font-weight: 600 !important;
-  }
-
-  /* Mobile link buttons */
-  a[class*="bg-"],
-  a[class*="button"] {
-    min-height: 48px !important;
-    font-size: 1rem !important;
-    padding: 12px 20px !important;
-    font-weight: 600 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Form inputs on mobile */
-  input,
-  select,
-  textarea {
-    min-height: 48px !important;
-    font-size: 1rem !important;
-    padding: 12px !important;
-  }
-
-  /* Price text larger on mobile */
-  .text-green-600 {
-    font-size: 1.25rem !important;
-    font-weight: 700 !important;
-  }
-
-  /* Navigation items larger */
-  nav a {
-    font-size: 1rem !important;
-    padding: 12px 16px !important;
-  }
-
-  /* Mobile card content spacing */
-  .rounded-2xl {
-    padding: 16px !important;
-  }
-
-  /* Ensure touch targets are large enough */
-  .touch-target {
-    min-height: 48px !important;
-    min-width: 48px !important;
-  }
-
-  /* Mobile optimizations */
-  /* Larger touch targets on mobile */
-  button,
-  .touch-target {
-    min-height: 48px !important;
-    font-size: 1rem !important;
-    padding: 12px 20px !important;
-    font-weight: 600 !important;
-  }
-
-  /* Improved mobile grid */
-  .grid {
-    gap: 1rem !important;
-  }
-
-  /* Better mobile spacing */
-  .p-3 {
-    padding: 1rem !important;
-  }
-
-  .mb-4 {
-    margin-bottom: 1.5rem !important;
-  }
-
-  /* Mobile-first typography */
-  h1 {
-    font-size: 1.5rem !important;
-    line-height: 1.4 !important;
-  }
-
-  h2 {
-    font-size: 1.25rem !important;
-    line-height: 1.4 !important;
-  }
-
-  /* Better mobile cards */
-  .rounded-2xl {
-    border-radius: 1rem !important;
-  }
-}
-
-/* Tablet adjustments */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .tablet-grid-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .tablet-grid-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-/* Auto-fit responsive grids */
-.auto-fit-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-}
-
-@media (min-width: 640px) {
-  .auto-fit-grid {
-    gap: 1.5rem;
-  }
-}
-
-/* Responsive text utilities */
-.text-responsive-xs {
-  font-size: 0.75rem;
-}
-
-.text-responsive-sm {
-  font-size: 0.875rem;
-}
-
-.text-responsive-base {
-  font-size: 1rem;
-}
-
-.text-responsive-lg {
-  font-size: 1.125rem;
-}
-
-.text-responsive-xl {
-  font-size: 1.25rem;
-}
-
-@media (min-width: 640px) {
-  .text-responsive-xs {
-    font-size: 0.875rem;
-  }
-
-  .text-responsive-sm {
-    font-size: 1rem;
-  }
-
-  .text-responsive-base {
-    font-size: 1.125rem;
-  }
-
-  .text-responsive-lg {
-    font-size: 1.25rem;
-  }
-
-  .text-responsive-xl {
-    font-size: 1.5rem;
-  }
-}
-
-/* Touch-friendly buttons */
-.touch-target {
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Responsive containers */
-.container-responsive {
-  width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-@media (min-width: 640px) {
-  .container-responsive {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container-responsive {
-    max-width: 1024px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container-responsive {
-    max-width: 1280px;
-  }
-}
-
-/* Loading spinner */
-@keyframes spin {
+/* Spinner */
+@keyframes spin-oauth {
   to {
     transform: rotate(360deg);
   }
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Hover effects */
-.hover-lift {
-  transition: transform 0.2s ease-in-out;
-}
-
-.hover-lift:hover {
-  transform: translateY(-2px);
-}
-
-/* Glass morphism effect */
-.glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.glass-pro {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    0 8px 32px 0 rgba(31, 38, 135, 0.37),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-/* Particle animation background */
-.particles-bg {
-  position: relative;
-  overflow: hidden;
-}
-
-.particles-bg::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.2) 0%, transparent 50%);
-  animation: particle-float 20s ease-in-out infinite;
-}
-
-@keyframes particle-float {
-
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-    opacity: 1;
-  }
-
-  50% {
-    transform: translateY(-20px) rotate(180deg);
-    opacity: 0.8;
-  }
-}
-
-/* Holographic effect */
-.holographic {
-  background: linear-gradient(45deg,
-      #ff006e, #8338ec, #3a86ff, #06ffa5, #ffbe0b, #fb5607);
-  background-size: 300% 300%;
-  animation: holographic-shift 4s ease-in-out infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-@keyframes holographic-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  25% {
-    background-position: 100% 50%;
-  }
-
-  50% {
-    background-position: 100% 100%;
-  }
-
-  75% {
-    background-position: 0% 100%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Custom button styles */
-.btn-primary {
-  @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl;
-}
-
-.btn-secondary {
-  @apply bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors duration-200;
-}
-
-.btn-neon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  color: white;
-  padding: 12px 30px;
-  border-radius: 50px;
-  font-weight: 600;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
-}
-
-.btn-neon::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.5s;
-}
-
-.btn-neon:hover::before {
-  left: 100%;
-}
-
-.btn-neon:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.6);
-}
-
-.btn-hologram {
-  background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff);
-  background-size: 200% 200%;
-  animation: btn-hologram-shift 3s ease-in-out infinite;
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  position: relative;
-  overflow: hidden;
-}
-
-@keyframes btn-hologram-shift {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-/* Loading spinner pro */
-.spinner-pro {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  border-left: 4px solid #667eea;
-  border-radius: 50%;
-  animation: spin-pro 1s linear infinite;
-}
-
-@keyframes spin-pro {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-
-  50% {
-    transform: rotate(180deg) scale(1.1);
-  }
-
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
-}
-
-body.dark {
-  background-color: #0f172a;
-  color: #f8fafc;
-}
-
-.nav-item {
-  @apply text-gray-700 dark:text-gray-200 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition duration-200 font-medium;
-}
-
-.mobile-nav-item {
-  @apply block px-4 py-3 text-gray-700 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition;
-}
-
-.btn-primary {
-  @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition font-medium shadow-lg hover:shadow-xl transform hover:scale-105;
-}
-
-/* Spinner nhỏ cho OAuth button */
 .spinner-pro {
   width: 1rem;
   height: 1rem;
@@ -655,40 +122,7 @@ body.dark {
   animation: spin-oauth 0.6s linear infinite;
 }
 
-@keyframes spin-oauth {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.reflection {
-  position: relative;
-  overflow: hidden;
-}
-
-.reflection::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transform: rotate(45deg);
-  animation: shine 2.5s infinite;
-}
-
-@keyframes shine {
-  0% {
-    transform: translateX(-100%) rotate(45deg);
-  }
-
-  100% {
-    transform: translateX(100%) rotate(45deg);
-  }
-}
-
-/* Galaxy background animation */
+/* Galaxy background */
 .galaxy-bg {
   background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
   overflow: hidden;
@@ -715,86 +149,7 @@ body.dark {
   }
 }
 
-/* Glassmorphism Ultra */
-.glass-ultra {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(25px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow:
-    inset 0 0 0.5px rgba(255, 255, 255, 0.3),
-    0 4px 30px rgba(0, 0, 0, 0.1);
-}
-
-.dark .glass-ultra {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
-}
-
-/* Cyberpunk button */
-.btn-cyberpunk {
-  color: #00ffe7;
-  border: 2px solid #00ffe7;
-  background: transparent;
-  padding: 12px 30px;
-  border-radius: 12px;
-  font-weight: bold;
-  text-shadow: 0 0 5px #00ffe7;
-  box-shadow: 0 0 10px #00ffe7, inset 0 0 5px #00ffe7;
-  transition: all 0.3s ease;
-}
-
-.btn-cyberpunk:hover {
-  background: #00ffe7;
-  color: #000;
-  text-shadow: none;
-  box-shadow: 0 0 20px #00ffe7, 0 0 40px #00ffe7;
-}
-
-/* Hover 3D Card Enhancement */
-.card-hover-zoom {
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  will-change: transform;
-}
-
-.card-hover-zoom:hover {
-  transform: scale(1.03) rotateX(1deg) rotateY(1deg);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-/* ==================== UNIVERSE EFFECTS ==================== */
-
-/* Starry background */
-.starry-bg {
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-  overflow: hidden;
-  position: relative;
-}
-
-.starry-bg::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 300%;
-  height: 300%;
-  background-image: radial-gradient(white 1px, transparent 1px);
-  background-size: 3px 3px;
-  animation: star-move 100s linear infinite;
-  opacity: 0.3;
-}
-
-@keyframes star-move {
-  from {
-    transform: translate(0, 0);
-  }
-
-  to {
-    transform: translate(-100px, -200px);
-  }
-}
-
-/* Shooting star */
+/* Universe Mode animation */
 .shooting-star {
   position: absolute;
   top: -10%;
@@ -819,7 +174,6 @@ body.dark {
   }
 }
 
-/* Planet orbit */
 .planet-orbit {
   position: relative;
   width: 120px;
@@ -850,7 +204,7 @@ body.dark {
   }
 }
 
-/* Cosmic animated text */
+/* Cosmic text animation */
 .cosmic-text {
   background: linear-gradient(45deg, #8be9fd, #7b2ff7, #f093fb, #ff6bcb);
   background-size: 400% 400%;
@@ -872,10 +226,4 @@ body.dark {
   100% {
     background-position: 0% 50%;
   }
-}
-
-/* Dark mode background fallback */
-body.dark {
-  background-color: #0f172a;
-  color: #f8fafc;
 }

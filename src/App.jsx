@@ -23,6 +23,9 @@ import OAuthRedirectHandler from "./pages/OAuthRedirectHandler";
 import CloudinaryUpload from "./pages/CloudinaryUpload";
 import UniverseSection from "./pages/UniverseSection";
 import UniverseProvider from "./context/UniverseToggleContext";
+import UniverseEffects from "./components/UniverseEffects";
+import PortalEffect from "./components/PortalEffect"; // 👈 import
+
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
@@ -32,6 +35,8 @@ export default function App() {
         <UniverseProvider>
           <Router>
             <Header />
+            <UniverseEffects /> {/* 👈 hiệu ứng galaxy toàn trang */}
+            <PortalEffect /> {/* 👈 hiệu ứng mở cổng */}
             <Toaster position="top-right" reverseOrder={false} />
             <Routes>
               <Route path="/" element={<Home />} />

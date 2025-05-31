@@ -1,0 +1,125 @@
+body.universe-on {
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%) !important;
+  background-attachment: fixed;
+  color: #e0e8ff;
+}
+
+body.universe-on::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: 0.2;
+  z-index: -1;
+  animation: star-float 120s linear infinite;
+}
+
+@keyframes star-float {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-200px, -200px);
+  }
+}
+
+.shooting-star {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(180deg, white, transparent);
+  opacity: 0.8;
+  transform: rotate(45deg);
+  animation: shoot 3s ease-in-out infinite;
+}
+
+@keyframes shoot {
+  0% {
+    transform: translateX(0) translateY(0) rotate(45deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-200px) translateY(300px) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.planet-orbit {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: spin-orbit 8s linear infinite;
+}
+
+.planet {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(to bottom, #8be9fd, #3b82f6);
+  border-radius: 50%;
+  box-shadow: 0 0 10px #3b82f6;
+}
+
+@keyframes spin-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.portal-overlay {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, transparent 70%);
+  animation: portal-fade 2s ease-out;
+}
+
+.portal-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #67e8f9, #7b2ff7, #f472b6);
+  box-shadow: 0 0 60px #8b5cf6, 0 0 120px #8b5cf6;
+  animation: portal-open 1.5s ease-out;
+  transform: scale(0);
+}
+
+@keyframes portal-open {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes portal-fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

@@ -7,12 +7,14 @@ export default function HeroSection() {
 
   return (
     <div
-      className={`relative overflow-hidden ${enabled ? "galaxy-bg" : "bg-gradient-to-r from-blue-600 to-purple-700"} text-white`}
+      className={`relative overflow-hidden min-h-[90vh] flex flex-col justify-center ${
+        enabled ? "galaxy-bg" : "bg-gradient-to-r from-blue-600 to-purple-700"
+      } text-white`}
     >
-      {/* Sao băng và hành tinh khi Universe Mode bật */}
+      {/* Hiệu ứng vũ trụ nếu bật */}
       {enabled && (
         <>
-          <div className="absolute inset-0 z-0 pointer-events-none animate-pulse">
+          <div className="absolute inset-0 z-0 pointer-events-none">
             <div className="shooting-star" />
             <div className="planet-orbit">
               <div className="planet" />
@@ -21,10 +23,11 @@ export default function HeroSection() {
         </>
       )}
 
-      {/* Lớp phủ nhẹ để dễ đọc chữ */}
-      <div className="absolute inset-0 bg-black/40 z-0" />
+      {/* Overlay nền mờ để làm nổi text */}
+      <div className="absolute inset-0 bg-black/40 z-10" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-24 text-center">
+      {/* Nội dung chính */}
+      <div className="relative z-20 max-w-7xl mx-auto px-4 py-24 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 gradient-text animate-fade-in">
           🛍️ Chào mừng đến ChiChiLu-Shop
         </h1>
@@ -32,7 +35,7 @@ export default function HeroSection() {
           Khám phá những sản phẩm tuyệt vời với giá tốt nhất
         </p>
 
-        {/* Toggle Switch */}
+        {/* Nút bật/tắt Universe Mode */}
         <div className="flex items-center justify-center gap-4">
           <span className="text-base font-medium">
             {enabled ? "Universe Mode: ON" : "Universe Mode: OFF"}

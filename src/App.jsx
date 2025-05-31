@@ -33,9 +33,9 @@ export default function App() {
     <ErrorBoundary>
       <AuthProvider>
         <UniverseProvider>
+          <UniverseEffects /> {/* 👈 hiệu ứng galaxy toàn trang */}
           <Router>
             <Header />
-            <UniverseEffects /> {/* 👈 hiệu ứng galaxy toàn trang */}
             <PortalEffect /> {/* 👈 hiệu ứng mở cổng */}
             <Toaster position="top-right" reverseOrder={false} />
             <Routes>

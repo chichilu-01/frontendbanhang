@@ -660,3 +660,222 @@ body.dark {
     transform: rotate(360deg);
   }
 }
+
+.reflection {
+  position: relative;
+  overflow: hidden;
+}
+
+.reflection::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: rotate(45deg);
+  animation: shine 2.5s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+/* Galaxy background animation */
+.galaxy-bg {
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.galaxy-bg::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: repeating-radial-gradient(circle, #fff 1px, transparent 2px);
+  animation: galaxy-move 60s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes galaxy-move {
+  from {
+    transform: translate(-25%, -25%) scale(1);
+  }
+
+  to {
+    transform: translate(25%, 25%) scale(1.2);
+  }
+}
+
+/* Glassmorphism Ultra */
+.glass-ultra {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 0 0.5px rgba(255, 255, 255, 0.3),
+    0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-ultra {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+/* Cyberpunk button */
+.btn-cyberpunk {
+  color: #00ffe7;
+  border: 2px solid #00ffe7;
+  background: transparent;
+  padding: 12px 30px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-shadow: 0 0 5px #00ffe7;
+  box-shadow: 0 0 10px #00ffe7, inset 0 0 5px #00ffe7;
+  transition: all 0.3s ease;
+}
+
+.btn-cyberpunk:hover {
+  background: #00ffe7;
+  color: #000;
+  text-shadow: none;
+  box-shadow: 0 0 20px #00ffe7, 0 0 40px #00ffe7;
+}
+
+/* Hover 3D Card Enhancement */
+.card-hover-zoom {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  will-change: transform;
+}
+
+.card-hover-zoom:hover {
+  transform: scale(1.03) rotateX(1deg) rotateY(1deg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* ==================== UNIVERSE EFFECTS ==================== */
+
+/* Starry background */
+.starry-bg {
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.starry-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300%;
+  height: 300%;
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 3px 3px;
+  animation: star-move 100s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes star-move {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(-100px, -200px);
+  }
+}
+
+/* Shooting star */
+.shooting-star {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(180deg, white, transparent);
+  opacity: 0.8;
+  transform: rotate(45deg);
+  animation: shoot 3s ease-in-out infinite;
+}
+
+@keyframes shoot {
+  0% {
+    transform: translateX(0) translateY(0) rotate(45deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-200px) translateY(300px) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+/* Planet orbit */
+.planet-orbit {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: spin-orbit 8s linear infinite;
+}
+
+.planet {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(to bottom, #8be9fd, #3b82f6);
+  border-radius: 50%;
+  box-shadow: 0 0 10px #3b82f6;
+}
+
+@keyframes spin-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Cosmic animated text */
+.cosmic-text {
+  background: linear-gradient(45deg, #8be9fd, #7b2ff7, #f093fb, #ff6bcb);
+  background-size: 400% 400%;
+  animation: cosmic-gradient 6s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes cosmic-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Dark mode background fallback */
+body.dark {
+  background-color: #0f172a;
+  color: #f8fafc;
+}

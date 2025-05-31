@@ -1,9 +1,16 @@
 // src/context/AuthContext.jsx
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
+// Tạo context
 export const AuthContext = createContext();
 
+// Custom hook để sử dụng context
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
+// Provider component
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 

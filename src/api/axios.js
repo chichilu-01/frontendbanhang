@@ -19,7 +19,7 @@ API.interceptors.response.use(
       localStorage.removeItem("token");
       window.location.href = "/login";
     } else if (err.response?.status === 500) {
-      console.error("Server error:", err);
+      console.error("Server error:", err.response.data);
     } else if (!err.response) {
       console.error("Network error:", err);
     }

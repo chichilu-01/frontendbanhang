@@ -39,12 +39,15 @@ export default function Login() {
         localStorage.removeItem("rememberEmail");
       }
 
-      showToast("✅ Đăng nhập thành công");
+      showToast("Đăng nhập thành công", "success");
       navigate("/");
     } catch (err) {
-      const msg = err?.response?.data?.error || "❌ Sai email hoặc mật khẩu";
+      let msg = "Sai email hoặc mật khẩu";
+      if (err?.response?.data?.error) {
+        msg = err.response.data.error;
+      }
       console.error("Login failed:", msg);
-      showToast(msg, "error");
+      showToast(`❌ ${msg}`, "error");
     } finally {
       setLoading(false);
     }

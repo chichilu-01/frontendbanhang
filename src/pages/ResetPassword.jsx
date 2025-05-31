@@ -1,45 +1,39 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/axios";
+import API from "@/api/axios";
+import { showToast } from "@/utils/toast";
 
 export default function ResetPassword() {
-  const [form, setForm] = useState({ email: "", code: "", newPassword: "" });
+  const [form, setForm] = useState({ email: "", newPassword: "" });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    API.post("/api/auth/reset-password", form)
-      .then(() => {
-        alert("✅ Mật khẩu đã được đặt lại. Vui lòng đăng nhập lại.");
-        navigate("/api/login");
-      })
-      .catch(() => alert("❌ Mã xác nhận không hợp lệ"));
+    try {
+      await API.post("/api/auth/reset-password", form);
+      showToast("🔐 Đặt lại mật khẩu thành công");
+      navigate("/login");
+    } catch {
+      showToast("Không thể đặt lại mật khẩu", "error");
+    }
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">🔐 Đặt lại mật khẩu</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded space-y-4">
+      <h2 className="text-2xl font-bold">🔄 Đặt lại mật khẩu</h2>
+      <form onSubmit={handleSubmit} className="space-y-3">
         <input
           name="email"
           type="email"
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
           required
-        />
-        <input
-          name="code"
-          placeholder="Mã xác nhận"
-          value={form.code}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-          required
+          className="w-full p-2 border rounded"
         />
         <input
           name="newPassword"
@@ -47,13 +41,10 @@ export default function ResetPassword() {
           placeholder="Mật khẩu mới"
           value={form.newPassword}
           onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
           required
+          className="w-full p-2 border rounded"
         />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
+        <button type="submit" className="btn-primary w-full">
           Đặt lại mật khẩu
         </button>
       </form>

@@ -42,8 +42,8 @@ export default function Login() {
       showToast("✅ Đăng nhập thành công");
       navigate("/");
     } catch (err) {
-      console.error("❌ Login failed:", err);
-      const msg = err.response?.data?.error || "❌ Sai email hoặc mật khẩu";
+      const msg = err?.response?.data?.error || "❌ Sai email hoặc mật khẩu";
+      console.error("Login failed:", msg);
       showToast(msg, "error");
     } finally {
       setLoading(false);

@@ -1,87 +1,90 @@
 import { useState } from "react";
-import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import API from "@/api/axios";
+import { showToast } from "@/utils/toast";
 
 export default function Register() {
-  const [form, setForm] = useState({ email: "", password: "", name: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1);
-  const [code, setCode] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleRegister = (e) => {
-    e.preventDefault();
-    API.post("/api/auth/register", form)
-      .then(() => {
-        alert("📩 Mã xác nhận đã gửi đến email. Vui lòng kiểm tra hộp thư.");
-        setStep(2);
-      })
-      .catch(() => alert("❌ Đăng ký thất bại"));
   };
 
-  const handleVerify = (e) => {
-    e.preventDefault();
-    API.post("/api/auth/verify-code", {
-      email: form.email,
-      code,
-    })
-      .then(() => {
-        alert("✅ Tạo tài khoản thành công, mời đăng nhập");
-        navigate("/api/auth/login");
-      })
-      .catch(() => alert("❌ Mã xác nhận không đúng hoặc đã hết hạn"));
+  const handleRegister = async () => {
+    try {
+      await API.post("/api/auth/register", form);
+      showToast("📩 Mã xác nhận đã gửi đến email");
+      setStep(2);
+    } catch {
+      showToast("Email đã được sử dụng", "error");
+    }
+  };
+
+  const handleVerify = async () => {
+    try {
+      await API.post("/api/auth/verify-code", {
+        email: form.email,
+        code: otp,
+      });
+      showToast("✅ Đăng ký thành công!");
+      navigate("/login");
+    } catch {
+      showToast("Mã không đúng hoặc hết hạn", "error");
+    }
   };
 
   return (
-    <div>
-      <h1>📝 Đăng ký</h1>
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow space-y-4">
+      <h2 className="text-2xl font-bold">📝 Đăng ký tài khoản</h2>
 
-      {step === 1 ? (
-        <form onSubmit={handleRegister}>
+      {step === 1 && (
+        <>
           <input
+            type="text"
             name="name"
-            placeholder="Tên"
+            placeholder="Họ tên"
             value={form.name}
             onChange={handleChange}
-            required
+            className="w-full p-2 border rounded"
           />
-          <br />
           <input
+            type="email"
             name="email"
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            required
+            className="w-full p-2 border rounded"
           />
-          <br />
           <input
-            name="password"
             type="password"
+            name="password"
             placeholder="Mật khẩu"
             value={form.password}
             onChange={handleChange}
-            required
+            className="w-full p-2 border rounded"
           />
-          <br />
-          <button type="submit">Gửi mã xác nhận</button>
-        </form>
-      ) : (
-        <form onSubmit={handleVerify}>
-          <p>
-            ✉️ Mã xác nhận đã gửi đến <strong>{form.email}</strong>
-          </p>
+          <button onClick={handleRegister} className="btn-primary w-full">
+            Gửi mã xác nhận
+          </button>
+        </>
+      )}
+
+      {step === 2 && (
+        <>
           <input
             type="text"
             placeholder="Nhập mã xác nhận"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            required
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            className="w-full p-2 border rounded"
           />
-          <br />
-          <button type="submit">Xác nhận</button>
-        </form>
+          <button onClick={handleVerify} className="btn-primary w-full">
+            Xác nhận & Đăng ký
+          </button>
+        </>
       )}
     </div>
   );

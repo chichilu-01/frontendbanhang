@@ -1,126 +1,94 @@
 import { useState } from "react";
-import API from "../api/axios";
+import API from "@/api/axios";
+import { showToast } from "@/utils/toast";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [step, setStep] = useState(1);
   const [code, setCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(1);
 
   const handleSendCode = async () => {
-    if (!email.includes("@")) return alert("❗ Vui lòng nhập email hợp lệ");
-    setLoading(true);
+    if (!email.includes("@")) return showToast("Email không hợp lệ", "error");
+
     try {
       await API.post("/api/auth/forgot-password", { email });
-      alert("📩 Mã xác nhận đã được gửi đến email");
+      showToast("📩 Mã xác nhận đã gửi đến email");
       setStep(2);
-    } catch (err) {
-      console.error("❌ Gửi mã thất bại:", err);
-      alert(
-        err.response?.data?.error || "❌ Không gửi được mã. Vui lòng thử lại.",
-      );
-    } finally {
-      setLoading(false);
+    } catch {
+      showToast("Lỗi gửi mã", "error");
     }
   };
 
   const handleVerifyCode = async () => {
-    if (code.trim().length < 4) return alert("❗ Mã xác nhận không hợp lệ");
-    setLoading(true);
     try {
       await API.post("/api/auth/verify-reset-code", { email, code });
-      alert("✅ Mã đúng. Nhập mật khẩu mới");
+      showToast("✅ Mã hợp lệ, tiếp tục đặt lại mật khẩu");
       setStep(3);
-    } catch (err) {
-      console.error("❌ Sai mã:", err);
-      alert(err.response?.data?.error || "❌ Mã không đúng hoặc đã hết hạn");
-    } finally {
-      setLoading(false);
+    } catch {
+      showToast("Mã không đúng hoặc đã hết hạn", "error");
     }
   };
 
-  const handleResetPassword = async () => {
-    if (newPassword.length < 6)
-      return alert("❗ Mật khẩu phải từ 6 ký tự trở lên");
-    setLoading(true);
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    const newPassword = e.target.newPassword.value;
+
     try {
       await API.post("/api/auth/reset-password", { email, newPassword });
-      alert("🔐 Mật khẩu đã được đổi. Hãy đăng nhập lại.");
+      showToast("🔐 Mật khẩu đã được đặt lại");
       window.location.href = "/login";
-    } catch (err) {
-      console.error("❌ Lỗi đặt lại mật khẩu:", err);
-      alert(err.response?.data?.error || "❌ Không đặt lại được mật khẩu");
-    } finally {
-      setLoading(false);
+    } catch {
+      showToast("Không đặt lại được mật khẩu", "error");
     }
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto space-y-4 bg-white shadow-md rounded-xl mt-10">
-      <h1 className="text-xl font-bold text-center mb-4">🔁 Quên mật khẩu</h1>
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow space-y-4">
+      <h2 className="text-2xl font-bold">🔑 Quên mật khẩu</h2>
 
       {step === 1 && (
         <>
-          <label className="block mb-1 text-sm font-medium">Email</label>
           <input
             type="email"
-            placeholder="Nhập email của bạn"
+            placeholder="Nhập email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border p-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
+            className="w-full p-2 border rounded"
           />
-          <button
-            onClick={handleSendCode}
-            disabled={loading}
-            className="w-full mt-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          >
-            {loading ? "Đang gửi mã..." : "📩 Gửi mã xác nhận"}
+          <button onClick={handleSendCode} className="btn-primary w-full">
+            Gửi mã xác nhận
           </button>
         </>
       )}
 
       {step === 2 && (
         <>
-          <label className="block mb-1 text-sm font-medium">Mã xác nhận</label>
           <input
             type="text"
-            placeholder="Nhập mã gồm 6 ký tự"
+            placeholder="Nhập mã xác nhận"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="border p-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
+            className="w-full p-2 border rounded"
           />
-          <button
-            onClick={handleVerifyCode}
-            disabled={loading}
-            className="w-full mt-3 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
-          >
-            {loading ? "Đang xác minh..." : "✅ Xác minh mã"}
+          <button onClick={handleVerifyCode} className="btn-primary w-full">
+            Xác minh mã
           </button>
         </>
       )}
 
       {step === 3 && (
-        <>
-          <label className="block mb-1 text-sm font-medium">Mật khẩu mới</label>
+        <form onSubmit={handleResetPassword} className="space-y-3">
           <input
             type="password"
-            placeholder="Mật khẩu mới (tối thiểu 6 ký tự)"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="border p-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+            name="newPassword"
+            placeholder="Mật khẩu mới"
             required
+            className="w-full p-2 border rounded"
           />
-          <button
-            onClick={handleResetPassword}
-            disabled={loading}
-            className="w-full mt-3 bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition"
-          >
-            {loading ? "Đang đổi mật khẩu..." : "🔐 Đặt lại mật khẩu"}
+          <button type="submit" className="btn-primary w-full">
+            Đặt lại mật khẩu
           </button>
-        </>
+        </form>
       )}
     </div>
   );

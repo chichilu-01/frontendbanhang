@@ -9,23 +9,22 @@ API.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  return config; // ✅ Luôn phải return config
+  return config;
 });
 
-// Interceptor xử lý response lỗi
 API.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
       localStorage.removeItem("token");
       window.location.href = "/login";
-    } else if (error.response?.status === 500) {
-      console.error("Server error:", error);
-    } else if (!error.response) {
-      console.error("Network error:", error);
+    } else if (err.response?.status === 500) {
+      console.error("Server error:", err);
+    } else if (!err.response) {
+      console.error("Network error:", err);
     }
-    return Promise.reject(error);
-  }
+    return Promise.reject(err);
+  },
 );
 
 export default API;

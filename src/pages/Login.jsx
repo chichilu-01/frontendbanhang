@@ -1,9 +1,9 @@
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
-import API from "../api/axios";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { showToast } from "../utils/toast";
-import OAuthLoginButtons from "../components/OAuthLoginButtons";
+import API from "@/api/axios";
+import { AuthContext } from "@/context/AuthContext";
+import { showToast } from "@/utils/toast";
+import OAuthLoginButtons from "@/components/OAuthLoginButtons";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -13,26 +13,41 @@ export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberEmail");
+    if (savedEmail) {
+      setForm((prev) => ({ ...prev, email: savedEmail }));
+      setRemember(true);
+    }
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    API.post("/api/auth/login", form)
-      .then((res) => {
-        login(res.data.token);
-        if (remember) {
-          localStorage.setItem("rememberEmail", form.email);
-        } else {
-          localStorage.removeItem("rememberEmail");
-        }
-        showToast("✅ Đăng nhập thành công");
-        navigate("/");
-      })
-      .catch(() => showToast("❌ Sai email hoặc mật khẩu"))
-      .finally(() => setLoading(false));
+    try {
+      const res = await API.post("/api/auth/login", form);
+      login(res.data.token);
+
+      if (remember) {
+        localStorage.setItem("rememberEmail", form.email);
+      } else {
+        localStorage.removeItem("rememberEmail");
+      }
+
+      showToast("✅ Đăng nhập thành công");
+      navigate("/");
+    } catch (err) {
+      console.error("❌ Login failed:", err);
+      const msg = err.response?.data?.error || "❌ Sai email hoặc mật khẩu";
+      showToast(msg, "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

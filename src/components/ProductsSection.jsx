@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/MiniCartContext";
 
+// ✅ Sử dụng biến môi trường
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function ProductsSection() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch("/api/products?limit=6")
+    fetch(`${API_URL}/api/products?limit=6`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

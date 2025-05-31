@@ -1,7 +1,0 @@
-.logo-animation {
-  transition: transform 0.3s ease;
-}
-
-.logo-animation:hover {
-  transform: scale(1.1);
-}

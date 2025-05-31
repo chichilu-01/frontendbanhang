@@ -26,41 +26,51 @@ export default function ProductsSection() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-      <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-        Sản phẩm nổi bật
+      <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+        🚀 Sản phẩm nổi bật
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all overflow-hidden"
+            className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden group"
           >
-            <div className="aspect-w-16 aspect-h-9 bg-gray-100 flex items-center justify-center">
-              <span className="text-5xl">📦</span>
+            <div className="bg-gray-100 aspect-w-1 aspect-h-1 overflow-hidden">
+              {product.image ? (
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-contain p-4 transform group-hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <span className="text-6xl flex items-center justify-center h-full">
+                  📦
+                </span>
+              )}
             </div>
-            <div className="p-4">
-              <h3 className="font-bold text-lg mb-2 line-clamp-2">
+            <div className="p-4 flex flex-col gap-2">
+              <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
                 {product.name}
               </h3>
-              <p className="text-gray-600 line-clamp-2 mb-3">
+              <p className="text-sm text-gray-500 line-clamp-2">
                 {product.description}
               </p>
-              <div className="text-green-600 font-bold text-xl mb-4">
+              <div className="text-green-600 font-bold text-lg">
                 {Math.floor(product.price)
                   .toLocaleString("vi-VN")
                   .replace(/,/g, ".")}{" "}
                 ₫
               </div>
-              <div className="flex gap-2">
+              <div className="flex justify-between mt-2">
                 <Link
                   to={`/products/${product.id}`}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm hover:bg-blue-700 text-center"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg shadow"
                 >
                   👁️ Xem
                 </Link>
                 <button
                   onClick={() => addToCart(product.id, product.name)}
-                  className="bg-green-600 text-white px-4 py-2 rounded-xl text-sm hover:bg-green-700"
+                  className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg shadow"
                 >
                   🛒 Thêm
                 </button>
@@ -72,3 +82,4 @@ export default function ProductsSection() {
     </div>
   );
 }
+

@@ -23,6 +23,7 @@ export default {
     },
   },
   plugins: [
-    require("tailwindcss-animate"), // ⬅️ Plugin animation nâng cao
+    require("tailwindcss-animate"),
+    require("@tailwindcss/aspect-ratio"),
   ],
 };

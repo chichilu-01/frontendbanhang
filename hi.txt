@@ -1,0 +1,17 @@
+frontendbanhang/
+├── public/
+│   └── index.html
+├── src/
+│   ├── assets/             # Ảnh, logo, icon
+│   ├── components/         # Các thành phần dùng lại (Navbar, ProductCard...)
+│   ├── pages/              # Các trang chính (Home, ProductDetail, Cart, Login...)
+│   ├── features/           # Quản lý logic (auth, product, cart, order)
+│   ├── services/           # API gọi đến backend (axios)
+│   ├── context/            # AuthContext, CartContext...
+│   ├── App.jsx             # Gắn route và layout
+│   ├── main.jsx            # Điểm khởi đầu
+│   └── index.css           # Style toàn cục (Tailwind hoặc CSS thường)
+├── .env                    # URL API backend
+├── .gitignore
+├── vite.config.js
+└── package.json

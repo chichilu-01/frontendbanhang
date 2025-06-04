@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "@pages/Home";
 import ProductDetail from "@pages/ProductDetail";
 import Login from "@pages/Login";
+import Register from "@pages/Register";
 import Cart from "@pages/Cart";
 import AdminPage from "@pages/AdminPage";
 import Navbar from "@components/Navbar";
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/cart"
           element={

@@ -3,6 +3,10 @@ import Home from "@pages/Home";
 import ProductDetail from "@pages/ProductDetail";
 import Login from "@pages/Login";
 import Register from "@pages/Register";
+import VerifyCode from "@pages/VerifyCode";
+import ForgotPassword from "@pages/ForgotPassword";
+import VerifyResetCode from "@pages/VerifyResetCode";
+import ResetPassword from "@pages/ResetPassword";
 import Cart from "@pages/Cart";
 import AdminPage from "@pages/AdminPage";
 import Navbar from "@components/Navbar";
@@ -18,6 +22,10 @@ export default function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-code" element={<VerifyCode />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-reset" element={<VerifyResetCode />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/cart"
           element={

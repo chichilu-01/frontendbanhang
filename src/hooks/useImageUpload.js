@@ -13,11 +13,12 @@ export default function useImageUpload() {
       for (let file of files) {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "your_upload_preset"); // 🔁 sửa lại
+        formData.append("upload_preset", "unsigned_upload");
         const res = await axios.post(
-          "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
+          "https://api.cloudinary.com/v1_1/di3kcy96q/image/upload",
           formData,
         );
+
         uploaded.push(res.data.secure_url);
       }
     } catch (err) {

@@ -24,7 +24,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/verify-code" element={<VerifyCode />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-reset" element={<VerifyResetCode />} />
+        <Route path="/verify-reset-code" element={<VerifyResetCode />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/cart"

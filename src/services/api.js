@@ -1,12 +1,12 @@
 import axios from "axios";
 
-/*const API = axios.create({
+const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "/api",
   withCredentials: true,
-});*/
-const API = axios.create({
-  baseURL: "https://backendbanhang-production.up.railway.app/api",
 });
+if (!import.meta.env.VITE_API_URL) {
+  console.warn("⚠️ VITE_API_URL is not set, using fallback /api");
+}
 
 console.log("API URL:", import.meta.env.VITE_API_URL);
 
@@ -16,7 +16,8 @@ export const loginUser = (data) => API.post("/auth/login", data);
 export const registerUser = (data) => API.post("/auth/register", data);
 export const verifyEmailCode = (data) => API.post("/auth/verify-code", data);
 export const sendForgotPasswordCode = (data) =>
-  API.post("/auth/forgot-password", data);
+  API.post("/auth/forgot-password", data); // ✅ đúng route backend
+export const resetPassword = (data) => API.post("/auth/reset-password", data);
 export const verifyResetCode = (data) =>
   API.post("/auth/verify-reset-code", data);
 export const updateProduct = (id, data) => API.put(`/products/${id}`, data);

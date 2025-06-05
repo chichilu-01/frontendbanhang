@@ -1,43 +1,43 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { sendForgotPasswordCode } from "@services/api";
 
-export default function ResetPasswordForm() {
-  const { state } = useLocation();
-  const navigate = useNavigate();
-  const [newPassword, setNewPassword] = useState("");
-  const email = state?.email;
+export default function ForgotPasswordForm() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return toast.error("Không có email");
+    if (!email) return toast.error("Vui lòng nhập email!");
 
+    setLoading(true);
     try {
-      await axios.post(`/api/auth/reset-password`, { email, newPassword });
-      toast.success("🔐 Đặt lại thành công!");
-      navigate("/login");
+      await sendForgotPasswordCode({ email });
+      toast.success("📩 Mã xác nhận đã được gửi đến email!");
     } catch (err) {
-      toast.error(err?.response?.data?.error || "Lỗi khi đặt lại");
+      toast.error(err.response?.data?.error || "Lỗi gửi email xác nhận!");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-semibold text-center">Mật khẩu mới</h2>
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold text-center">Quên mật khẩu</h2>
       <input
-        type="password"
-        placeholder="Mật khẩu mới"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
+        type="email"
+        placeholder="Nhập email đã đăng ký"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         className="w-full border px-3 py-2 rounded"
         required
       />
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded"
+        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        disabled={loading}
       >
-        Đặt lại
+        {loading ? "Đang gửi..." : "Gửi mã xác nhận"}
       </button>
     </form>
   );

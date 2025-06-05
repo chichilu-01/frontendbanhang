@@ -11,7 +11,7 @@ import AdminPage from "@pages/AdminPage";
 import Navbar from "@components/Navbar";
 import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";
-
+import ResetPassword from "@pages/ResetPassword";
 export default function App() {
   return (
     <Router>
@@ -24,6 +24,7 @@ export default function App() {
         <Route path="/verify-code" element={<VerifyCode />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-reset-code" element={<VerifyResetCode />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/cart"
           element={

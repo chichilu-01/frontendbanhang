@@ -18,7 +18,7 @@ export default function RegisterForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(`/api/auth/register`, form);
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, form);
       toast.success("📩 Mã xác nhận đã gửi đến email!");
       navigate("/verify-code", { state: { email: form.email } });
     } catch (err) {

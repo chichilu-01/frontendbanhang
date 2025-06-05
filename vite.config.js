@@ -15,4 +15,13 @@ export default defineConfig({
       "@hooks": path.resolve(__dirname, "src/hooks"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://backendbanhang-production.up.railway.app",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
 });

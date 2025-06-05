@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { sendForgotPasswordCode } from "@services/api"; // ✅ đúng
 
-export default function ForgotPasswordForm() {
+export default function ResetPasswordForm() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 

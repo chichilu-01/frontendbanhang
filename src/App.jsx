@@ -4,7 +4,6 @@ import ProductDetail from "@pages/ProductDetail";
 import Login from "@pages/Login";
 import Register from "@pages/Register";
 import VerifyCode from "@pages/VerifyCode";
-import ForgotPassword from "@pages/ForgotPassword";
 import VerifyResetCode from "@pages/VerifyResetCode";
 import ResetPassword from "@pages/ResetPassword";
 import Cart from "@pages/Cart";

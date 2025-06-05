@@ -5,7 +5,7 @@ import Login from "@pages/Login";
 import Register from "@pages/Register";
 import VerifyCode from "@pages/VerifyCode";
 import VerifyResetCode from "@pages/VerifyResetCode";
-import ResetPassword from "@pages/ResetPassword";
+import ForgotPassword from "@pages/ForgotPassword";
 import Cart from "@pages/Cart";
 import AdminPage from "@pages/AdminPage";
 import Navbar from "@components/Navbar";
@@ -24,7 +24,6 @@ export default function App() {
         <Route path="/verify-code" element={<VerifyCode />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-reset-code" element={<VerifyResetCode />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/cart"
           element={

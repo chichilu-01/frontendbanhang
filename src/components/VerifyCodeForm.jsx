@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { verifyEmailCode } from "@services/api";
 import toast from "react-hot-toast";
 
 export default function VerifyCodeForm() {
@@ -13,15 +13,21 @@ export default function VerifyCodeForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return toast.error("Không có email xác thực!");
+
+    if (!email) {
+      toast.error("Không có email xác thực!");
+      return;
+    }
 
     setLoading(true);
     try {
-      await axios.post(`/api/auth/verify-code`, { email, code });
+      await verifyEmailCode({ email, code });
       toast.success("✅ Đăng ký thành công!");
       navigate("/login");
     } catch (err) {
-      toast.error(err?.response?.data?.error || "Mã không đúng");
+      toast.error(
+        err?.response?.data?.error || "❌ Mã không đúng hoặc đã hết hạn",
+      );
     } finally {
       setLoading(false);
     }
@@ -35,7 +41,7 @@ export default function VerifyCodeForm() {
       </p>
 
       <input
-        type="number"
+        type="text"
         placeholder="Mã xác thực (6 chữ số)"
         value={code}
         onChange={(e) => setCode(e.target.value)}

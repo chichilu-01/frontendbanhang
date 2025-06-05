@@ -1,9 +1,13 @@
 import axios from "axios";
 
-const API = axios.create({
+/*const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "/api",
   withCredentials: true,
+});*/
+const API = axios.create({
+  baseURL: "https://backendbanhang-production.up.railway.app/api",
 });
+
 console.log("API URL:", import.meta.env.VITE_API_URL);
 
 export const getProducts = () => API.get("/products");

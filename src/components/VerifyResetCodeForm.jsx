@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { verifyResetCode } from "@services/api"; // ✅ Gọi từ services
 
 export default function VerifyResetCodeForm() {
   const { state } = useLocation();
@@ -14,10 +14,11 @@ export default function VerifyResetCodeForm() {
     if (!email) return toast.error("Thiếu email xác nhận!");
 
     try {
-      await axios.post(`/api/auth/verify-reset-code`, { email, code });
+      await verifyResetCode({ email, code }); // ✅ Gọi hàm service
       toast.success("✅ Mã hợp lệ!");
       navigate("/reset-password", { state: { email } });
     } catch (err) {
+      console.error("Lỗi verify code:", err);
       toast.error(err?.response?.data?.error || "Mã sai hoặc hết hạn");
     }
   };

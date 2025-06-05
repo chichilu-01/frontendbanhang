@@ -12,7 +12,9 @@ export default function ForgotPasswordForm() {
 
     setLoading(true);
     try {
-      await sendForgotPasswordCode({ email });
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/forgot-password`, {
+        email,
+      });
       toast.success("📩 Mã xác nhận đã được gửi đến email!");
     } catch (err) {
       toast.error(err.response?.data?.error || "Lỗi gửi email xác nhận!");

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { sendForgotPasswordCode } from "@services/api";
+import { sendForgotPasswordCode } from "@services/api"; // ✅ đúng
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -12,11 +12,10 @@ export default function ForgotPasswordForm() {
 
     setLoading(true);
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/auth/forgot-password`, {
-        email,
-      });
+      await sendForgotPasswordCode({ email }); // ✅ dùng API chuẩn
       toast.success("📩 Mã xác nhận đã được gửi đến email!");
     } catch (err) {
+      console.error("Lỗi gửi email:", err); // 👈 debug nếu cần
       toast.error(err.response?.data?.error || "Lỗi gửi email xác nhận!");
     } finally {
       setLoading(false);

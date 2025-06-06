@@ -1,8 +1,18 @@
 import React, { useState } from "react";
 
 export default function ProductInfo({ product, addToCart }) {
-  const sizes = Array.isArray(product?.sizes) ? product.sizes : [];
-  const colors = Array.isArray(product?.colors) ? product.colors : [];
+  // ✅ Đảm bảo luôn là mảng trước khi dùng map
+  const sizes = Array.isArray(product?.sizes)
+    ? product.sizes
+    : typeof product?.sizes === "string"
+      ? product.sizes.split(",").map((s) => s.trim())
+      : [];
+
+  const colors = Array.isArray(product?.colors)
+    ? product.colors
+    : typeof product?.colors === "string"
+      ? product.colors.split(",").map((c) => c.trim())
+      : [];
 
   const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
   const [selectedColor, setSelectedColor] = useState(colors[0] || "");
@@ -32,7 +42,7 @@ export default function ProductInfo({ product, addToCart }) {
           </span>
         ))}
         <span className="text-gray-500 text-sm ml-2">
-          {product?.rating?.toFixed(1) || "0.0"} / 5
+          {product?.rating?.toFixed?.(1) || "0.0"} / 5
         </span>
       </div>
 

@@ -15,12 +15,25 @@ export default function ProductForm({ product, onClose, onSave }) {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
+    // ✅ Bảo vệ: xử lý images là array
+    let safeImages = [];
+    try {
+      if (Array.isArray(product?.images)) {
+        safeImages = product.images;
+      } else if (typeof product?.images === "string") {
+        const parsed = JSON.parse(product.images);
+        safeImages = Array.isArray(parsed) ? parsed : [];
+      }
+    } catch (err) {
+      console.warn("❌ Không thể parse images:", err);
+    }
+
     setForm({
       name: product?.name || "",
       price: product?.price || "",
       description: product?.description || "",
-      images: product?.images || [],
-      mainImage: product?.image || "",
+      images: safeImages,
+      mainImage: product?.image || safeImages[0] || "",
     });
   }, [product]);
 
@@ -92,6 +105,7 @@ export default function ProductForm({ product, onClose, onSave }) {
           required
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium">Giá</label>
         <input
@@ -104,6 +118,7 @@ export default function ProductForm({ product, onClose, onSave }) {
           min="0"
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium">Mô tả</label>
         <textarea
@@ -130,30 +145,33 @@ export default function ProductForm({ product, onClose, onSave }) {
         )}
 
         <div className="grid grid-cols-3 gap-2 mt-3">
-          {form.images.map((img) => (
-            <div className="relative" key={img}>
-              <img
-                src={img}
-                alt="Ảnh"
-                onClick={() => setForm((prev) => ({ ...prev, mainImage: img }))}
-                className={`h-24 w-full object-cover border rounded cursor-pointer ${
-                  form.mainImage === img ? "ring-4 ring-blue-500" : ""
-                }`}
-              />
-              {user?.is_admin && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteImage(img);
-                  }}
-                  className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          ))}
+          {Array.isArray(form.images) &&
+            form.images.map((img) => (
+              <div className="relative" key={img}>
+                <img
+                  src={img}
+                  alt="Ảnh"
+                  onClick={() =>
+                    setForm((prev) => ({ ...prev, mainImage: img }))
+                  }
+                  className={`h-24 w-full object-cover border rounded cursor-pointer ${
+                    form.mainImage === img ? "ring-4 ring-blue-500" : ""
+                  }`}
+                />
+                {user?.is_admin && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteImage(img);
+                    }}
+                    className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
         </div>
 
         {uploading && (

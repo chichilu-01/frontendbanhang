@@ -19,22 +19,14 @@ export default function ProductDetail() {
         const res = await getProductById(id);
         const data = res.data;
 
-        // ✅ Bảo vệ: nếu images là chuỗi JSON thì parse
-        let safeImages = [];
-        try {
-          safeImages = Array.isArray(data.images)
-            ? data.images
-            : JSON.parse(data.images || "[]");
-        } catch {
-          safeImages = [];
-        }
-
-        setProduct({ ...data, images: safeImages });
-        setMainImage(data.image || safeImages[0] || "");
+        setProduct(data);
+        setMainImage(data.image || data.images[0] || "");
       } catch (error) {
-        console.error("Lỗi khi tải chi tiết sản phẩm:", error);
+        console.error("❌ Lỗi khi tải chi tiết sản phẩm:", error);
+        setProduct(null);
       }
     };
+
     fetchProduct();
   }, [id]);
 
@@ -51,7 +43,9 @@ export default function ProductDetail() {
         name={product.name}
       />
       <ProductInfo product={product} addToCart={addToCart} />
-      <ProductReviews productId={product.id} />
+      <div className="md:col-span-2">
+        <ProductReviews productId={product.id} />
+      </div>
     </div>
   );
 }

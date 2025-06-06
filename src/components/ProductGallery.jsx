@@ -8,6 +8,8 @@ export default function ProductGallery({
   onDeleteImage, // optional
   editable = false, // nếu true thì cho phép xoá ảnh
 }) {
+  const safeImages = Array.isArray(images) ? images : [];
+
   return (
     <div className="group relative">
       <img
@@ -17,9 +19,9 @@ export default function ProductGallery({
         className="w-full h-[400px] object-cover rounded border cursor-zoom-in transition-transform duration-200 group-hover:scale-105"
       />
 
-      {Array.isArray(images) && images.length > 1 && (
+      {safeImages.length > 1 && (
         <div className="flex gap-2 mt-4 flex-wrap">
-          {images.map((img, index) => {
+          {safeImages.map((img, index) => {
             const url = typeof img === "string" ? img : img.url;
             return (
               <div key={url || index} className="relative">

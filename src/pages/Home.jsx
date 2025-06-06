@@ -9,11 +9,21 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const res = await getProducts();
-        setProducts(res.data);
+        const data = res.data;
+
+        // ✅ Đảm bảo dữ liệu là mảng
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          console.warn("⚠️ API trả về không phải mảng:", data);
+          setProducts([]); // fallback để tránh crash
+        }
       } catch (error) {
-        console.error("Lỗi khi tải sản phẩm:", error);
+        console.error("❌ Lỗi khi tải sản phẩm:", error);
+        setProducts([]); // fallback để tránh crash
       }
     };
+
     fetchData();
   }, []);
 
@@ -34,7 +44,7 @@ export default function Home() {
             />
             <h2 className="font-semibold text-lg truncate">{product.name}</h2>
             <p className="text-blue-600 font-bold">
-              {product.price.toLocaleString()}₫
+              {product.price?.toLocaleString?.() ?? "Liên hệ"}₫
             </p>
           </Link>
         ))}
@@ -42,6 +52,3 @@ export default function Home() {
     </div>
   );
 }
-
-/*Gọi getProducts() khi load trang.
-Hiển thị danh sách sản phẩm: ảnh, tên, giá, link đến chi tiết sản phẩm.*/

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { verifyResetCode } from "@services/api"; // ✅ dùng API chuẩn
+import { verifyResetCode } from "@services/api";
 
 export default function VerifyResetCodeForm() {
   const [code, setCode] = useState("");
@@ -12,12 +12,17 @@ export default function VerifyResetCodeForm() {
     e.preventDefault();
     if (!code) return toast.error("Vui lòng nhập mã xác nhận!");
 
+    const email = localStorage.getItem("resetEmail");
+    if (!email)
+      return toast.error("Không tìm thấy email. Vui lòng quay lại bước đầu.");
+
     setLoading(true);
     try {
-      await verifyResetCode({ code });
+      await verifyResetCode({ code, email }); // ✅ gửi cả email + code
+      localStorage.setItem("verifiedCode", code); // ✅ lưu lại mã dùng cho bước reset
       toast.success("✅ Mã xác nhận hợp lệ!");
       setTimeout(() => {
-        navigate("/reset-password"); // ✅ điều hướng sang đặt lại mật khẩu
+        navigate("/reset-password");
       }, 1000);
     } catch (err) {
       toast.error(err.response?.data?.error || "Mã xác nhận không đúng!");

@@ -1,34 +1,37 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { verifyResetCode } from "@services/api"; // ✅ Gọi từ services
+import { useNavigate } from "react-router-dom";
+import { verifyResetCode } from "@services/api"; // ✅ dùng API chuẩn
 
 export default function VerifyResetCodeForm() {
-  const { state } = useLocation();
-  const navigate = useNavigate();
   const [code, setCode] = useState("");
-  const email = state?.email;
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return toast.error("Thiếu email xác nhận!");
+    if (!code) return toast.error("Vui lòng nhập mã xác nhận!");
 
+    setLoading(true);
     try {
-      await verifyResetCode({ email, code }); // ✅ Gọi hàm service
-      toast.success("✅ Mã hợp lệ!");
-      navigate("/reset-password", { state: { email } });
+      await verifyResetCode({ code });
+      toast.success("✅ Mã xác nhận hợp lệ!");
+      setTimeout(() => {
+        navigate("/reset-password"); // ✅ điều hướng sang đặt lại mật khẩu
+      }, 1000);
     } catch (err) {
-      console.error("Lỗi verify code:", err);
-      toast.error(err?.response?.data?.error || "Mã sai hoặc hết hạn");
+      toast.error(err.response?.data?.error || "Mã xác nhận không đúng!");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-semibold text-center">Xác thực mã đặt lại</h2>
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold text-center">Xác nhận mã</h2>
       <input
-        type="number"
-        placeholder="Mã xác nhận"
+        type="text"
+        placeholder="Nhập mã đã gửi tới email"
         value={code}
         onChange={(e) => setCode(e.target.value)}
         className="w-full border px-3 py-2 rounded"
@@ -36,9 +39,10 @@ export default function VerifyResetCodeForm() {
       />
       <button
         type="submit"
-        className="w-full bg-green-600 text-white py-2 rounded"
+        className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+        disabled={loading}
       >
-        Xác nhận mã
+        {loading ? "Đang kiểm tra..." : "Xác nhận"}
       </button>
     </form>
   );

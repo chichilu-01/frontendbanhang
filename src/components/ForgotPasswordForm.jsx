@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { sendForgotPasswordCode } from "@services/api"; // ✅ đúng
+import { useNavigate } from "react-router-dom"; // ✅ dùng để điều hướng
+import { sendForgotPasswordCode } from "@services/api"; // ✅ dùng API chuẩn
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // ✅ tạo navigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,10 +14,13 @@ export default function ForgotPasswordForm() {
 
     setLoading(true);
     try {
-      await sendForgotPasswordCode({ email }); // ✅ dùng API chuẩn
+      await sendForgotPasswordCode({ email });
       toast.success("📩 Mã xác nhận đã được gửi đến email!");
+      setTimeout(() => {
+        navigate("/verify-reset-code"); // ✅ chuyển trang sau khi gửi thành công
+      }, 1000);
     } catch (err) {
-      console.error("Lỗi gửi email:", err); // 👈 debug nếu cần
+      console.error("Lỗi gửi email:", err);
       toast.error(err.response?.data?.error || "Lỗi gửi email xác nhận!");
     } finally {
       setLoading(false);

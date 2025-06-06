@@ -1,9 +1,13 @@
+// src/components/Navbar.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@context/AuthContext";
+import { useCart } from "@context/CartContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { cartItems } = useCart();
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
@@ -14,8 +18,13 @@ export default function Navbar() {
         <Link to="/" className="text-gray-700 hover:text-blue-600">
           Trang chủ
         </Link>
-        <Link to="/cart" className="text-gray-700 hover:text-blue-600">
+        <Link to="/cart" className="relative text-gray-700 hover:text-blue-600">
           Giỏ hàng
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+              {totalItems}
+            </span>
+          )}
         </Link>
         {user ? (
           <>

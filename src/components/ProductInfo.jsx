@@ -1,9 +1,11 @@
-//Hiển thị tên, giá, mô tả, size, màu, nút giỏ
 import React, { useState } from "react";
 
 export default function ProductInfo({ product, addToCart }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || "");
-  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || "");
+  const sizes = Array.isArray(product.sizes) ? product.sizes : [];
+  const colors = Array.isArray(product.colors) ? product.colors : [];
+
+  const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
+  const [selectedColor, setSelectedColor] = useState(colors[0] || "");
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
@@ -26,18 +28,18 @@ export default function ProductInfo({ product, addToCart }) {
       </div>
 
       <p className="text-xl text-blue-600 font-semibold mb-2">
-        {product.price.toLocaleString()}₫
+        {product.price?.toLocaleString() || 0}₫
       </p>
       <p className="text-sm text-gray-600 mb-4">
         {product.stock > 0 ? `Còn ${product.stock} sản phẩm` : "Hết hàng"}
       </p>
 
       {/* Chọn size */}
-      {product.sizes?.length > 0 && (
+      {sizes.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn size</label>
           <div className="flex gap-2">
-            {product.sizes.map((size) => (
+            {sizes.map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
@@ -53,11 +55,11 @@ export default function ProductInfo({ product, addToCart }) {
       )}
 
       {/* Chọn màu */}
-      {product.colors?.length > 0 && (
+      {colors.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn màu</label>
           <div className="flex gap-2">
-            {product.colors.map((color) => (
+            {colors.map((color) => (
               <button
                 key={color}
                 onClick={() => setSelectedColor(color)}

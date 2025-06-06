@@ -1,6 +1,3 @@
-//Hiển thị ảnh chính, thumbnails, fullscreen
-import React from "react";
-
 export default function ProductGallery({
   images = [],
   mainImage,
@@ -18,18 +15,21 @@ export default function ProductGallery({
         className="w-full h-[400px] object-cover rounded border cursor-zoom-in transition-transform duration-200 group-hover:scale-105"
       />
 
-      {images?.length > 1 && (
+      {Array.isArray(images) && images.length > 1 && (
         <div className="flex gap-2 mt-4 flex-wrap">
-          {images.map((img) => (
-            <img
-              key={img}
-              src={img}
-              onClick={() => setMainImage(img)}
-              className={`h-20 w-20 object-cover border rounded cursor-pointer transition-all duration-200 ${
-                mainImage === img ? "ring-4 ring-blue-500 scale-105" : ""
-              }`}
-            />
-          ))}
+          {images.map((img, index) => {
+            const url = typeof img === "string" ? img : img.url;
+            return (
+              <img
+                key={url || index}
+                src={url}
+                onClick={() => setMainImage(url)}
+                className={`h-20 w-20 object-cover border rounded cursor-pointer transition-all duration-200 ${
+                  mainImage === url ? "ring-4 ring-blue-500 scale-105" : ""
+                }`}
+              />
+            );
+          })}
         </div>
       )}
 

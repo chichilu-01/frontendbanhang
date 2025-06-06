@@ -1,3 +1,4 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "@pages/Home";
 import ProductDetail from "@pages/ProductDetail";
@@ -6,12 +7,14 @@ import Register from "@pages/Register";
 import VerifyCode from "@pages/VerifyCode";
 import VerifyResetCode from "@pages/VerifyResetCode";
 import ForgotPassword from "@pages/ForgotPassword";
-import Cart from "@pages/Cart";
+import ResetPassword from "@pages/ResetPassword";
+import CartPage from "@pages/CartPage";
 import AdminPage from "@pages/AdminPage";
+
 import Navbar from "@components/Navbar";
 import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";
-import ResetPassword from "@pages/ResetPassword";
+
 export default function App() {
   return (
     <Router>
@@ -29,7 +32,7 @@ export default function App() {
           path="/cart"
           element={
             <ProtectedRoute>
-              <Cart />
+              <CartPage />
             </ProtectedRoute>
           }
         />

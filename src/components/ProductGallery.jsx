@@ -5,6 +5,8 @@ export default function ProductGallery({
   showLightbox,
   setShowLightbox,
   name,
+  onDeleteImage, // optional
+  editable = false, // nếu true thì cho phép xoá ảnh
 }) {
   return (
     <div className="group relative">
@@ -20,14 +22,27 @@ export default function ProductGallery({
           {images.map((img, index) => {
             const url = typeof img === "string" ? img : img.url;
             return (
-              <img
-                key={url || index}
-                src={url}
-                onClick={() => setMainImage(url)}
-                className={`h-20 w-20 object-cover border rounded cursor-pointer transition-all duration-200 ${
-                  mainImage === url ? "ring-4 ring-blue-500 scale-105" : ""
-                }`}
-              />
+              <div key={url || index} className="relative">
+                <img
+                  src={url}
+                  alt={`thumb-${index}`}
+                  onClick={() => setMainImage(url)}
+                  className={`h-20 w-20 object-cover border rounded cursor-pointer transition-all duration-200 ${
+                    mainImage === url ? "ring-4 ring-blue-500 scale-105" : ""
+                  }`}
+                />
+                {editable && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onDeleteImage) onDeleteImage(img);
+                    }}
+                    className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1 rounded-full"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>

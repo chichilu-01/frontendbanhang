@@ -15,6 +15,8 @@ export default function AdminPage() {
     setAddingNew,
     handleSave,
     handleDelete,
+    loading,
+    refetch,
   } = useProducts();
 
   return (
@@ -31,7 +33,7 @@ export default function AdminPage() {
         />
         <button
           onClick={() => {
-            setEditingProduct({ name: '', price: '', description: '' });
+            setEditingProduct({ name: "", price: "", description: "" });
             setAddingNew(true);
           }}
           className="px-4 py-2 bg-green-600 text-white rounded"
@@ -40,14 +42,18 @@ export default function AdminPage() {
         </button>
       </div>
 
-      <ProductTable
-        products={filteredProducts}
-        onEdit={(p) => {
-          setEditingProduct(p);
-          setAddingNew(false);
-        }}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <p className="text-gray-500">Đang tải danh sách sản phẩm...</p>
+      ) : (
+        <ProductTable
+          products={filteredProducts}
+          onEdit={(p) => {
+            setEditingProduct(p);
+            setAddingNew(false);
+          }}
+          onDelete={handleDelete}
+        />
+      )}
 
       {editingProduct && (
         <EditProductModal

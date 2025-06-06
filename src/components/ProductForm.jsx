@@ -1,8 +1,6 @@
-// === File: /src/components/ProductForm.jsx ===
-//Chứa logic form & upload ảnh
 import React, { useState, useEffect } from "react";
-import useImageUpload from "../hooks/useImageUpload";
-import { useAuth } from "@context/AuthContext"; // ✅ để kiểm tra role admin
+import axios from "axios";
+import { useAuth } from "@context/AuthContext";
 
 export default function ProductForm({ product, onClose, onSave }) {
   const [form, setForm] = useState({
@@ -13,8 +11,8 @@ export default function ProductForm({ product, onClose, onSave }) {
     mainImage: "",
   });
 
-  const { user } = useAuth();
-  const { uploading, uploadMultipleImages } = useImageUpload();
+  const { user, token } = useAuth();
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     setForm({
@@ -34,12 +32,34 @@ export default function ProductForm({ product, onClose, onSave }) {
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
-    const uploadedUrls = await uploadMultipleImages(files);
+
+    setUploading(true);
+    const uploadedUrls = [];
+
+    for (let file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("product_id", product?.id);
+
+      try {
+        const res = await axios.post("/api/media/upload-file", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        uploadedUrls.push(res.data.url);
+      } catch (err) {
+        console.error("❌ Upload lỗi:", err);
+      }
+    }
+
     setForm((prev) => ({
       ...prev,
       images: [...prev.images, ...uploadedUrls],
       mainImage: prev.mainImage || uploadedUrls[0],
     }));
+    setUploading(false);
   };
 
   const handleDeleteImage = (img) => {
@@ -56,7 +76,7 @@ export default function ProductForm({ product, onClose, onSave }) {
     if (!form.name || form.price <= 0) return alert("Thông tin không hợp lệ");
     onSave({
       ...form,
-      image: form.mainImage, // giữ tương thích backend
+      image: form.mainImage, // để backend lưu ảnh đại diện
     });
   };
 
@@ -99,8 +119,7 @@ export default function ProductForm({ product, onClose, onSave }) {
       <div>
         <label className="block text-sm font-medium">Ảnh sản phẩm</label>
 
-        {/* Chỉ admin mới được upload ảnh */}
-        {user?.role === "admin" && (
+        {user?.is_admin && (
           <input
             type="file"
             accept="image/*"
@@ -110,7 +129,6 @@ export default function ProductForm({ product, onClose, onSave }) {
           />
         )}
 
-        {/* Hiển thị ảnh */}
         <div className="grid grid-cols-3 gap-2 mt-3">
           {form.images.map((img) => (
             <div className="relative" key={img}>
@@ -122,7 +140,7 @@ export default function ProductForm({ product, onClose, onSave }) {
                   form.mainImage === img ? "ring-4 ring-blue-500" : ""
                 }`}
               />
-              {user?.role === "admin" && (
+              {user?.is_admin && (
                 <button
                   type="button"
                   onClick={(e) => {

@@ -1,19 +1,14 @@
-/*Hiển thị danh sách đánh giá (tên, sao, nội dung, ngày)
-✍️ Form gửi đánh giá nếu user đã đăng nhập
-✅ Gọi API: GET /products/:id/reviews và POST /products/:id/reviews*/
-
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@context/AuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 export default function ProductReviews({ productId }) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
-  // Fetch reviews
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -34,14 +29,13 @@ export default function ProductReviews({ productId }) {
         { rating, comment },
         {
           headers: {
-            Authorization: `Bearer ${user?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
       toast.success("Gửi đánh giá thành công!");
       setComment("");
       setRating(5);
-      // Làm mới review
       const res = await axios.get(`/api/products/${productId}/reviews`);
       setReviews(res.data);
     } catch (err) {
@@ -53,7 +47,6 @@ export default function ProductReviews({ productId }) {
     <div className="mt-10">
       <h3 className="text-xl font-semibold mb-4">Đánh giá sản phẩm</h3>
 
-      {/* Danh sách review */}
       {reviews.length === 0 && (
         <p className="text-gray-500 mb-4">Chưa có đánh giá nào.</p>
       )}
@@ -72,7 +65,6 @@ export default function ProductReviews({ productId }) {
         </div>
       ))}
 
-      {/* Form gửi review nếu đã đăng nhập */}
       {user && (
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>

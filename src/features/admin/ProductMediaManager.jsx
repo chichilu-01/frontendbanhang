@@ -9,13 +9,14 @@ export default function ProductMediaManager() {
   const { id } = useParams(); // 🆔 product_id
   const { token, user } = useAuth();
   const [mediaList, setMediaList] = useState([]);
-  const [newUrl, setNewUrl] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const API = import.meta.env.VITE_API_BASE_URL;
+
   const fetchMedia = async () => {
     try {
-      const res = await axios.get(`/api/media/product/${id}`);
+      const res = await axios.get(`${API}/media/product/${id}`);
       setMediaList(res.data);
     } catch (err) {
       toast.error("Không thể tải media");
@@ -26,25 +27,6 @@ export default function ProductMediaManager() {
     fetchMedia();
   }, [id]);
 
-  const uploadByUrl = async () => {
-    if (!newUrl) return;
-    setLoading(true);
-    try {
-      await axios.post(
-        "/api/media/upload",
-        { product_id: id, url: newUrl, is_main: false },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      toast.success("✅ Upload ảnh từ URL thành công");
-      setNewUrl("");
-      fetchMedia();
-    } catch (err) {
-      toast.error("❌ Upload thất bại");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const uploadFile = async () => {
     if (!file) return;
     const formData = new FormData();
@@ -53,17 +35,17 @@ export default function ProductMediaManager() {
 
     setLoading(true);
     try {
-      await axios.post("/api/media/upload-file", formData, {
+      await axios.post(`${API}/media/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-      toast.success("✅ Upload file thành công");
+      toast.success("✅ Upload thành công");
       setFile(null);
       fetchMedia();
     } catch (err) {
-      toast.error("❌ Upload file lỗi");
+      toast.error("❌ Upload lỗi");
     } finally {
       setLoading(false);
     }
@@ -72,7 +54,7 @@ export default function ProductMediaManager() {
   const deleteMedia = async (mediaId) => {
     if (!confirm("Bạn có chắc muốn xoá ảnh này?")) return;
     try {
-      await axios.delete(`/api/media/${mediaId}`, {
+      await axios.delete(`${API}/media/${mediaId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("✅ Đã xoá ảnh");
@@ -85,7 +67,7 @@ export default function ProductMediaManager() {
   const setMain = async (mediaId) => {
     try {
       await axios.patch(
-        `/api/media/${mediaId}/set-main`,
+        `${API}/media/${mediaId}/set-main`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -104,23 +86,6 @@ export default function ProductMediaManager() {
   return (
     <div className="p-6 space-y-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold">🖼️ Quản lý ảnh sản phẩm #{id}</h1>
-
-      <div className="flex gap-4">
-        <input
-          type="text"
-          placeholder="Dán URL ảnh..."
-          value={newUrl}
-          onChange={(e) => setNewUrl(e.target.value)}
-          className="border px-3 py-2 rounded w-full"
-        />
-        <button
-          onClick={uploadByUrl}
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Tải từ URL
-        </button>
-      </div>
 
       <div className="flex gap-4 items-center">
         <input type="file" onChange={(e) => setFile(e.target.files[0])} />

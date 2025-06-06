@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   getProducts,
   updateProduct,
@@ -12,16 +12,22 @@ export default function useProducts() {
   const [search, setSearch] = useState("");
   const [editingProduct, setEditingProduct] = useState(null);
   const [addingNew, setAddingNew] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await getProducts();
+      setProducts(res.data);
+    } catch (err) {
+      toast.error("Lỗi tải danh sách sản phẩm");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await getProducts();
-        setProducts(res.data);
-      } catch (err) {
-        toast.error("Lỗi tải danh sách sản phẩm");
-      }
-    })();
+    fetchProducts();
   }, []);
 
   const handleSave = async (product) => {
@@ -55,8 +61,12 @@ export default function useProducts() {
     }
   };
 
-  const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()),
+  const filteredProducts = useMemo(
+    () =>
+      products.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [products, search],
   );
 
   return {
@@ -70,6 +80,7 @@ export default function useProducts() {
     setAddingNew,
     handleSave,
     handleDelete,
+    loading,
+    refetch: fetchProducts,
   };
 }
-/*chứa toàn bộ logic state và API sản phẩm.*/

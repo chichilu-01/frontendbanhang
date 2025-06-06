@@ -1,4 +1,3 @@
-//Trang chính: gọi API, truyền props
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProductById } from "@services/api";
@@ -19,8 +18,19 @@ export default function ProductDetail() {
       try {
         const res = await getProductById(id);
         const data = res.data;
-        setProduct(data);
-        setMainImage(data.image || data.images?.[0] || "");
+
+        // ✅ Bảo vệ: nếu images là chuỗi JSON thì parse
+        let safeImages = [];
+        try {
+          safeImages = Array.isArray(data.images)
+            ? data.images
+            : JSON.parse(data.images || "[]");
+        } catch {
+          safeImages = [];
+        }
+
+        setProduct({ ...data, images: safeImages });
+        setMainImage(data.image || safeImages[0] || "");
       } catch (error) {
         console.error("Lỗi khi tải chi tiết sản phẩm:", error);
       }

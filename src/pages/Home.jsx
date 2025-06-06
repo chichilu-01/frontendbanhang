@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getProducts } from "@services/api";
-import { Link } from "react-router-dom";
+import ProductCard from "@components/ProductCard";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -9,44 +9,20 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const res = await getProducts();
-        const data = res.data;
-
-        // ✅ Đảm bảo dữ liệu là mảng
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else {
-          console.warn("⚠️ API trả về không phải mảng:", data);
-          setProducts([]); // fallback để tránh crash
-        }
+        setProducts(res.data);
       } catch (error) {
-        console.error("❌ Lỗi khi tải sản phẩm:", error);
-        setProducts([]); // fallback để tránh crash
+        console.error("Lỗi khi tải sản phẩm:", error);
       }
     };
-
     fetchData();
   }, []);
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Sản phẩm mới nhất</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <h1 className="text-3xl font-bold mb-6">🆕 Sản phẩm mới nhất</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
-          <Link
-            key={product.id}
-            to={`/product/${product.id}`}
-            className="border rounded p-4 hover:shadow-md transition"
-          >
-            <img
-              src={product.image || "https://via.placeholder.com/150"}
-              alt={product.name}
-              className="w-full h-40 object-cover mb-2"
-            />
-            <h2 className="font-semibold text-lg truncate">{product.name}</h2>
-            <p className="text-blue-600 font-bold">
-              {product.price?.toLocaleString?.() ?? "Liên hệ"}₫
-            </p>
-          </Link>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>

@@ -43,16 +43,27 @@ export default function ProductReviews({ productId }) {
       toast.success("Gửi đánh giá thành công!");
       setComment("");
       setRating(5);
-      fetchReviews(); // reload đánh giá sau khi gửi
+      fetchReviews();
     } catch (err) {
       toast.error("Không thể gửi đánh giá.");
       console.error("❌ Lỗi gửi đánh giá:", err);
     }
   };
 
+  const averageRating =
+    reviews.length > 0
+      ? (
+          reviews.reduce((acc, cur) => acc + cur.rating, 0) / reviews.length
+        ).toFixed(1)
+      : null;
+
   return (
     <div className="mt-10">
-      <h3 className="text-xl font-semibold mb-4">Đánh giá sản phẩm</h3>
+      <h3 className="text-xl font-semibold mb-4">
+        {averageRating
+          ? `Đánh giá sản phẩm (${averageRating} ∕ 5)`
+          : "Đánh giá sản phẩm"}
+      </h3>
 
       {reviews.length === 0 && (
         <p className="text-gray-500 mb-4">Chưa có đánh giá nào.</p>
@@ -66,13 +77,13 @@ export default function ProductReviews({ productId }) {
                 <span key={idx}>{idx < r.rating ? "★" : "☆"}</span>
               ))}
               <span className="text-gray-500 text-xs ml-2">
-                {r.userName || "Ẩn danh"}
+                {r.userName ?? "Ẩn danh"}
               </span>
             </div>
             <p className="text-gray-700">{r.comment}</p>
             <p className="text-xs text-gray-400">
-              {r.createdAt
-                ? new Date(r.createdAt).toLocaleDateString()
+              {r.created_at
+                ? new Date(r.created_at).toLocaleDateString()
                 : "Không rõ ngày"}
             </p>
           </div>

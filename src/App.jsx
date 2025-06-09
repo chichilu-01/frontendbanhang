@@ -14,6 +14,7 @@ import ProductMediaManager from "@features/admin/ProductMediaManager";
 import Navbar from "@components/Navbar";
 import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";
+import AdminAddProductPage from "@pages/AdminAddProductPage"; // ✅ THÊM DÒNG NÀY
 
 export default function App() {
   return (
@@ -37,19 +38,27 @@ export default function App() {
           }
         />
         <Route
-          path="/cart"
-          element={
-            <ProtectedRoute>
-              <CartPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/admin"
           element={
             <AdminRoute>
               <AdminPage />
             </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/add-product" // ✅ THÊM ROUTE MỚI
+          element={
+            <AdminRoute>
+              <AdminAddProductPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
           }
         />
       </Routes>

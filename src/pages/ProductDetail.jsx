@@ -5,6 +5,7 @@ import { useCart } from "@context/CartContext";
 import ProductGallery from "@components/ProductGallery";
 import ProductInfo from "@components/ProductInfo";
 import ProductReviews from "@components/ProductReviews";
+import AdminMediaGallery from "@components/AdminMediaGallery";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -43,9 +44,22 @@ export default function ProductDetail() {
         name={product.name}
       />
       <ProductInfo product={product} addToCart={addToCart} />
+
       <div className="md:col-span-2">
         <ProductReviews productId={product.id} />
       </div>
+
+      {product && (
+        <div className="md:col-span-2">
+          <AdminMediaGallery
+            productId={product.id}
+            images={product.images}
+            onRefresh={() => {
+              getProductById(product.id).then((res) => setProduct(res.data));
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

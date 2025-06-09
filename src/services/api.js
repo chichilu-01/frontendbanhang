@@ -28,13 +28,24 @@ export const sendForgotPasswordCode = (data) =>
 export const verifyResetCode = (data) =>
   API.post("/auth/verify-reset-code", data);
 export const resetPassword = (data) => API.post("/auth/reset-password", data);
+export const logoutUser = (token) =>
+  API.post("/auth/logout", null, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+export const getProfile = (token) =>
+  API.get("/auth/profile", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 // =======================
 // 📦 Product APIs
 // =======================
 export const getProducts = () => API.get("/products");
 
-// ✅ getProductById: đảm bảo luôn trả về images là mảng
 export const getProductById = async (id) => {
   const res = await API.get(`/products/${id}`);
   const data = res.data;
@@ -66,9 +77,27 @@ export const updateProduct = (id, data) => API.put(`/products/${id}`, data);
 export const deleteProduct = (id) => API.delete(`/products/${id}`);
 
 // =======================
-// ⭐ Đánh giá sản phẩm
+// 🖼️ Product Media (chỉ Admin)
 // =======================
 
+export const uploadProductImage = (productId, formData, token) =>
+  API.post(`/products/${productId}/media`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+export const deleteProductImage = (mediaId, token) =>
+  API.delete(`/products/media/${mediaId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+// =======================
+// ⭐ Đánh giá sản phẩm
+// =======================
 export const submitReview = (productId, data, token) =>
   API.post(`/products/${productId}/reviews`, data, {
     headers: {

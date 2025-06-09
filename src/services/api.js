@@ -64,3 +64,19 @@ export const getProductById = async (id) => {
 export const createProduct = (data) => API.post("/products", data);
 export const updateProduct = (id, data) => API.put(`/products/${id}`, data);
 export const deleteProduct = (id) => API.delete(`/products/${id}`);
+
+// =======================
+// ⭐ Đánh giá sản phẩm
+// =======================
+
+export const submitReview = (productId, data, token) =>
+  API.post(`/products/${productId}/reviews`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const getReviews = (productId) =>
+  API.get(`/products/${productId}/reviews`);
+
+export { API };

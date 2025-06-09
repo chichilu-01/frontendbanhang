@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@context/AuthContext";
-import axios from "axios";
+import { API } from "@services/api";
 import toast from "react-hot-toast";
 
 export default function ProductReviews({ productId }) {
@@ -11,7 +11,7 @@ export default function ProductReviews({ productId }) {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get(`/api/products/${productId}/reviews`);
+      const res = await API.get(`/products/${productId}/reviews`);
       const data = Array.isArray(res.data) ? res.data : [];
       setReviews(data);
     } catch (err) {
@@ -31,8 +31,8 @@ export default function ProductReviews({ productId }) {
     }
 
     try {
-      await axios.post(
-        `/api/products/${productId}/reviews`,
+      await API.post(
+        `/products/${productId}/reviews`,
         { rating, comment },
         {
           headers: {

@@ -1,4 +1,4 @@
-import { API } from "./api";
+import { API } from "@services/api";
 
 export const getReviews = (productId) =>
   API.get(`/products/${productId}/reviews`);

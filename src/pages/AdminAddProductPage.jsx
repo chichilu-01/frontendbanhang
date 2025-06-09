@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { API } from "@services/api";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "@context/AuthContext";
 
 export default function AdminAddProductPage() {
   const navigate = useNavigate();
+  const { user, token } = useAuth();
+
   const [form, setForm] = useState({
     name: "",
     price: "",
@@ -15,6 +18,10 @@ export default function AdminAddProductPage() {
     imageUrl: "",
   });
 
+  if (!user || user.role !== "admin") {
+    return <div className="p-6 text-red-500">Bạn không có quyền truy cập.</div>;
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -23,14 +30,22 @@ export default function AdminAddProductPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post("/products", {
-        ...form,
-        image: form.imageUrl, // gửi ảnh về dưới trường "image"
-        price: parseFloat(form.price),
-        sizes: form.sizes.split(",").map((s) => s.trim()),
-        colors: form.colors.split(",").map((c) => c.trim()),
-        stock: parseInt(form.stock),
-      });
+      await API.post(
+        "/products",
+        {
+          ...form,
+          image: form.imageUrl, // gửi ảnh về dưới trường "image"
+          price: parseFloat(form.price),
+          sizes: form.sizes.split(",").map((s) => s.trim()),
+          colors: form.colors.split(",").map((c) => c.trim()),
+          stock: parseInt(form.stock),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       toast.success("Đã thêm sản phẩm");
       navigate("/admin");
     } catch (err) {

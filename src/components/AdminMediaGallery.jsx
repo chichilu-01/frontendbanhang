@@ -74,7 +74,7 @@ export default function AdminMediaGallery({
             <img
               src={img.url}
               alt="product"
-              className="rounded shadow w-full h-32 object-cover"
+              className="rounded shadow w-full max-w-[120px] h-auto aspect-square object-contain"
             />
             <button
               onClick={() => handleDelete(img.id)}

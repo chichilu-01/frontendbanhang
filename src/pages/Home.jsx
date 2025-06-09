@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getProducts } from "@services/productService";
+import { getProducts } from "@services/api";
 import ProductCard from "@components/ProductCard";
 
 export default function Home() {

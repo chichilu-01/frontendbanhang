@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { forgotPassword as sendForgotPasswordCode } from "@services/authService";
+import { sendForgotPasswordCode } from "@services/api";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");

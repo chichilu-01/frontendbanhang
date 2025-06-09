@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { resetPassword } from "@services/authService";
+import { resetPassword } from "@services/api";
 
 export default function ResetPasswordForm() {
   const [newPassword, setNewPassword] = useState("");

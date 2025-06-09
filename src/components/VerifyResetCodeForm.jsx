@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { verifyResetCode } from "@services/authService";
+import { verifyResetCode } from "@services/api";
 
 export default function VerifyResetCodeForm() {
   const [code, setCode] = useState("");

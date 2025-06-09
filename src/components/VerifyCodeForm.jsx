@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { verifyEmailCode } from "@services/authService";
+import { verifyEmailCode } from "@services/api";
 import toast from "react-hot-toast";
 
 export default function VerifyCodeForm() {

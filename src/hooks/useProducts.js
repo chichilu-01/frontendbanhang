@@ -4,7 +4,7 @@ import {
   updateProduct,
   deleteProduct,
   createProduct,
-} from "@services/api";
+} from "@services/productService";
 import toast from "react-hot-toast";
 
 export default function useProducts() {

@@ -1,17 +1,37 @@
-import axios from "axios";
+import { API } from "./api";
 
-const API = import.meta.env.VITE_API_URL + "/auth";
-
+// 🔐 Đăng nhập
 export const login = (email, password) =>
-  axios.post(`${API}/login`, { email, password });
+  API.post("/auth/login", { email, password });
 
-export const register = (data) => axios.post(`${API}/register`, data);
+// 🔐 Đăng ký
+export const register = (data) => API.post("/auth/register", data);
 
+// 🔐 Quên mật khẩu
 export const forgotPassword = (email) =>
-  axios.post(`${API}/forgot-password`, { email });
+  API.post("/auth/forgot-password", { email });
 
+// 🔐 Xác minh mã đặt lại mật khẩu
 export const verifyResetCode = (code) =>
-  axios.post(`${API}/verify-reset-code`, { code });
+  API.post("/auth/verify-reset-code", { code });
 
-export const resetPassword = (data) =>
-  axios.post(`${API}/reset-password`, data);
+// 🔐 Đặt lại mật khẩu mới
+export const resetPassword = (data) => API.post("/auth/reset-password", data);
+
+export const verifyEmailCode = (data) => API.post("/auth/verify-code", data);
+
+// 🔐 Đăng xuất
+export const logout = (token) =>
+  API.post("/auth/logout", null, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+// 👤 Lấy thông tin người dùng
+export const getProfile = (token) =>
+  API.get("/auth/profile", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });

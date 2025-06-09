@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProductById } from "@services/api";
+import { getProductById } from "@services/productService";
 import { useCart } from "@context/CartContext";
 import ProductGallery from "@components/ProductGallery";
 import ProductInfo from "@components/ProductInfo";

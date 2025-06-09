@@ -1,7 +1,7 @@
 // src/components/auth/LoginForm.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "@services/api";
+import { login as loginUser } from "@services/authService";
 import { useAuth } from "@context/AuthContext";
 import PasswordInput from "./PasswordInput";
 import toast from "react-hot-toast";

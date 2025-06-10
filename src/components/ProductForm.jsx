@@ -7,33 +7,29 @@ export default function ProductForm({ product, onClose, onSave }) {
     name: "",
     price: "",
     description: "",
-    images: [],
-    mainImage: "",
+    gallery: [],
+    image_url: "",
   });
 
   const { user, token } = useAuth();
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    // ✅ Bảo vệ: xử lý images là array
-    let safeImages = [];
+    let gallery = [];
     try {
       if (Array.isArray(product?.images)) {
-        safeImages = product.images;
-      } else if (typeof product?.images === "string") {
-        const parsed = JSON.parse(product.images);
-        safeImages = Array.isArray(parsed) ? parsed : [];
+        gallery = product.images;
       }
     } catch (err) {
-      console.warn("❌ Không thể parse images:", err);
+      console.warn("❌ Lỗi parse ảnh:", err);
     }
 
     setForm({
       name: product?.name || "",
       price: product?.price || "",
       description: product?.description || "",
-      images: safeImages,
-      mainImage: product?.image || safeImages[0] || "",
+      gallery,
+      image_url: product?.image_url || gallery[0] || "",
     });
   }, [product]);
 
@@ -69,18 +65,18 @@ export default function ProductForm({ product, onClose, onSave }) {
 
     setForm((prev) => ({
       ...prev,
-      images: [...prev.images, ...uploadedUrls],
-      mainImage: prev.mainImage || uploadedUrls[0],
+      gallery: [...prev.gallery, ...uploadedUrls],
+      image_url: prev.image_url || uploadedUrls[0],
     }));
     setUploading(false);
   };
 
   const handleDeleteImage = (img) => {
     setForm((prev) => {
-      const newImages = prev.images.filter((i) => i !== img);
+      const newGallery = prev.gallery.filter((i) => i !== img);
       const newMain =
-        prev.mainImage === img ? newImages[0] || "" : prev.mainImage;
-      return { ...prev, images: newImages, mainImage: newMain };
+        prev.image_url === img ? newGallery[0] || "" : prev.image_url;
+      return { ...prev, gallery: newGallery, image_url: newMain };
     });
   };
 
@@ -94,8 +90,8 @@ export default function ProductForm({ product, onClose, onSave }) {
       name: form.name,
       price: parseFloat(form.price),
       description: form.description,
-      images: form.images,
-      image_url: form.mainImage, // 🔁 Dùng đúng key cho backend
+      image_url: form.image_url,
+      gallery: form.gallery,
     });
   };
 
@@ -151,17 +147,17 @@ export default function ProductForm({ product, onClose, onSave }) {
         )}
 
         <div className="grid grid-cols-3 gap-2 mt-3">
-          {Array.isArray(form.images) &&
-            form.images.map((img) => (
+          {Array.isArray(form.gallery) &&
+            form.gallery.map((img) => (
               <div className="relative" key={img}>
                 <img
                   src={img}
                   alt="Ảnh"
                   onClick={() =>
-                    setForm((prev) => ({ ...prev, mainImage: img }))
+                    setForm((prev) => ({ ...prev, image_url: img }))
                   }
                   className={`h-24 w-full object-cover border rounded cursor-pointer ${
-                    form.mainImage === img ? "ring-4 ring-blue-500" : ""
+                    form.image_url === img ? "ring-4 ring-blue-500" : ""
                   }`}
                 />
                 {user?.is_admin && (

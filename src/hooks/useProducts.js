@@ -4,6 +4,7 @@ import {
   updateProduct,
   deleteProduct,
   createProduct,
+  createMedia, // ✅ Thêm hàm gọi API /media
 } from "@services/api";
 import { useAuth } from "@context/AuthContext";
 import toast from "react-hot-toast";
@@ -42,25 +43,38 @@ export default function useProducts() {
     console.log("💾 Đang lưu sản phẩm:", product);
 
     const payload = {
-      ...product,
+      name: product.name,
       price: parseFloat(product.price),
+      description: product.description,
       stock: parseInt(product.stock || 0),
+      image_url: product.image_url || product.imageUrl || "",
       sizes:
         typeof product.sizes === "string"
           ? product.sizes.split(",").map((s) => s.trim())
-          : product.sizes,
+          : product.sizes || [],
       colors:
         typeof product.colors === "string"
           ? product.colors.split(",").map((c) => c.trim())
-          : product.colors,
-      image: product.image || product.imageUrl || "",
+          : product.colors || [],
     };
 
     try {
       if (addingNew) {
         const res = await createProduct(payload, token);
-        if (!res?.data?.id) throw new Error("API không trả về sản phẩm hợp lệ");
-        setProducts((prev) => [...prev, res.data]);
+        const newProduct = res.data;
+        if (!newProduct?.id)
+          throw new Error("API không trả về sản phẩm hợp lệ");
+
+        // ✅ Gửi gallery nếu có trường gallery là mảng ảnh
+        if (product.gallery && Array.isArray(product.gallery)) {
+          await Promise.all(
+            product.gallery.map((url) =>
+              createMedia({ product_id: newProduct.id, url }, token),
+            ),
+          );
+        }
+
+        setProducts((prev) => [...prev, newProduct]);
         toast.success("Đã thêm sản phẩm mới");
         setAddingNew(false);
       } else {

@@ -41,8 +41,10 @@ export default function AdminPage() {
               name: "",
               price: "",
               description: "",
-              images: [],
-              image: "",
+              image_url: "",
+              sizes: [],
+              colors: [],
+              stock: 0,
             });
             setAddingNew(true);
           }}

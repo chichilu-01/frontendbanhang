@@ -115,4 +115,12 @@ export const getReviews = (productId) =>
   API.get(`/products/${productId}/reviews`);
 
 // Export instance for custom use
+// Add media record manually (used in useProducts)
+export const createMedia = (data, token) =>
+  API.post("/media", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
 export { API };

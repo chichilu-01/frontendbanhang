@@ -6,7 +6,7 @@ import { useAuth } from "@context/AuthContext";
 
 export default function AdminAddProductPage() {
   const navigate = useNavigate();
-  const { user, token } = useAuth();
+  const { token } = useAuth();
 
   const [form, setForm] = useState({
     name: "",
@@ -16,6 +16,7 @@ export default function AdminAddProductPage() {
     colors: "",
     stock: "",
     imageUrl: "",
+    gallery: "", // ✅ ảnh phụ
   });
 
   const handleChange = (e) => {
@@ -31,19 +32,37 @@ export default function AdminAddProductPage() {
         price: parseFloat(form.price),
         description: form.description,
         image_url: form.imageUrl,
-        images: [],
         sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()) : [],
         colors: form.colors ? form.colors.split(",").map((c) => c.trim()) : [],
         stock: parseInt(form.stock || "0"),
       };
 
-      await API.post("/products", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      // 🛒 Tạo sản phẩm chính trước
+      const res = await API.post("/products", payload, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      toast.success("Đã thêm sản phẩm");
+      const productId = res.data.id;
+
+      // 🖼️ Gửi ảnh gallery nếu có
+      const galleryUrls = form.gallery
+        .split(",")
+        .map((url) => url.trim())
+        .filter((url) => url !== "");
+
+      if (galleryUrls.length > 0) {
+        await Promise.all(
+          galleryUrls.map((url) =>
+            API.post(
+              "/media",
+              { product_id: productId, url },
+              { headers: { Authorization: `Bearer ${token}` } },
+            ),
+          ),
+        );
+      }
+
+      toast.success("Đã thêm sản phẩm & ảnh");
       navigate("/admin");
     } catch (err) {
       console.error("❌ Lỗi thêm sản phẩm:", err);
@@ -83,7 +102,7 @@ export default function AdminAddProductPage() {
         <input
           type="text"
           name="sizes"
-          placeholder="Sizes (cách nhau bằng dấu phẩy, ví dụ: S,M,L)"
+          placeholder="Sizes (S,M,L)"
           value={form.sizes}
           onChange={handleChange}
           className="w-full border px-3 py-2 rounded"
@@ -91,7 +110,7 @@ export default function AdminAddProductPage() {
         <input
           type="text"
           name="colors"
-          placeholder="Màu sắc (cách nhau bằng dấu phẩy, ví dụ: đỏ,xanh)"
+          placeholder="Màu sắc (đỏ,xanh)"
           value={form.colors}
           onChange={handleChange}
           className="w-full border px-3 py-2 rounded"
@@ -107,8 +126,16 @@ export default function AdminAddProductPage() {
         <input
           type="url"
           name="imageUrl"
-          placeholder="Link ảnh từ Cloudinary hoặc URL bên ngoài"
+          placeholder="Link ảnh đại diện"
           value={form.imageUrl}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+        />
+        <input
+          type="text"
+          name="gallery"
+          placeholder="Các ảnh phụ (URL, ngăn cách bởi dấu phẩy)"
+          value={form.gallery}
           onChange={handleChange}
           className="w-full border px-3 py-2 rounded"
         />

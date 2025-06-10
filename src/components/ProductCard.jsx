@@ -21,7 +21,7 @@ export default function ProductCard({ product }) {
             src={
               product.image_url ||
               product.image ||
-              "https://via.placeholder.com/300"
+              "https://cdn-icons-png.flaticon.com/512/1828/1828665.png	"
             }
             alt={product.name}
             className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"

@@ -18,10 +18,6 @@ export default function AdminAddProductPage() {
     imageUrl: "",
   });
 
-  if (!user || user.role !== "admin") {
-    return <div className="p-6 text-red-500">Bạn không có quyền truy cập.</div>;
-  }
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -34,7 +30,7 @@ export default function AdminAddProductPage() {
         "/products",
         {
           ...form,
-          image: form.imageUrl, // gửi ảnh về dưới trường "image"
+          image: form.imageUrl,
           price: parseFloat(form.price),
           sizes: form.sizes.split(",").map((s) => s.trim()),
           colors: form.colors.split(",").map((c) => c.trim()),

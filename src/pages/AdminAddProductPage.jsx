@@ -30,7 +30,7 @@ export default function AdminAddProductPage() {
         name: form.name,
         price: parseFloat(form.price),
         description: form.description,
-        image: form.imageUrl,
+        image_url: form.imageUrl,
         images: [],
         sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()) : [],
         colors: form.colors ? form.colors.split(",").map((c) => c.trim()) : [],

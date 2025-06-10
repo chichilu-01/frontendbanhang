@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@context/AuthContext";
 import { useCart } from "@context/CartContext";
@@ -6,7 +6,10 @@ import { useCart } from "@context/CartContext";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    [cartItems],
+  );
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const menuRef = useRef();
@@ -25,13 +28,33 @@ export default function Navbar() {
 
   const closeMenu = () => setIsMobileOpen(false);
 
+  const menuItems = [
+    { to: "/", label: "🏠 Trang chủ" },
+    { to: "/cart", label: "🛒 Giỏ hàng" },
+    user?.is_admin && { to: "/admin", label: "⚙️ Quản trị" },
+  ].filter(Boolean);
+
+  const MenuLink = ({ to, label }) => (
+    <Link
+      to={to}
+      onClick={closeMenu}
+      className="text-gray-700 hover:text-blue-600"
+    >
+      {label}
+      {to === "/cart" && totalItems > 0 && (
+        <span className="ml-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+          {totalItems}
+        </span>
+      )}
+    </Link>
+  );
+
   return (
     <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center relative z-50">
       <Link to="/" className="text-xl font-bold text-blue-600">
         🛒 ShopX
       </Link>
 
-      {/* Hamburger */}
       <button
         onClick={() => setIsMobileOpen(true)}
         className="text-2xl text-gray-700 sm:hidden"
@@ -39,24 +62,11 @@ export default function Navbar() {
         ☰
       </button>
 
-      {/* Menu desktop */}
+      {/* Desktop menu */}
       <div className="hidden sm:flex items-center space-x-4">
-        <Link to="/" className="text-gray-700 hover:text-blue-600">
-          Trang chủ
-        </Link>
-        <Link to="/cart" className="relative text-gray-700 hover:text-blue-600">
-          Giỏ hàng
-          {totalItems > 0 && (
-            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-              {totalItems}
-            </span>
-          )}
-        </Link>
-        {user?.is_admin && (
-          <Link to="/admin" className="text-gray-700 hover:text-blue-600">
-            Trang quản trị
-          </Link>
-        )}
+        {menuItems.map(({ to, label }) => (
+          <MenuLink key={to} to={to} label={label} />
+        ))}
         {user ? (
           <>
             <span className="text-gray-700">👤 {user.name}</span>
@@ -71,11 +81,12 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* FULLSCREEN OVERLAY MENU */}
+      {/* Overlay */}
       {isMobileOpen && (
         <div className="fixed inset-0 bg-black/50 z-40 sm:hidden" />
       )}
 
+      {/* Mobile menu */}
       <div
         ref={menuRef}
         className={`fixed top-0 left-0 w-full h-full bg-white z-50 sm:hidden transform transition-transform duration-300 ease-in-out ${
@@ -107,29 +118,9 @@ export default function Navbar() {
         )}
 
         <nav className="flex flex-col px-6 py-6 space-y-4 text-lg">
-          <Link
-            to="/"
-            onClick={closeMenu}
-            className="text-gray-700 hover:text-blue-600"
-          >
-            🏠 Trang chủ
-          </Link>
-          <Link
-            to="/cart"
-            onClick={closeMenu}
-            className="text-gray-700 hover:text-blue-600"
-          >
-            🛒 Giỏ hàng
-          </Link>
-          {user?.is_admin && (
-            <Link
-              to="/admin"
-              onClick={closeMenu}
-              className="text-gray-700 hover:text-blue-600"
-            >
-              ⚙️ Quản trị
-            </Link>
-          )}
+          {menuItems.map(({ to, label }) => (
+            <MenuLink key={to} to={to} label={label} />
+          ))}
         </nav>
 
         <div className="px-6 mt-auto pb-10 border-t">

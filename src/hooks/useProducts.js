@@ -33,6 +33,13 @@ export default function useProducts() {
   }, []);
 
   const handleSave = async (product) => {
+    if (!product || (!addingNew && !product.id)) {
+      toast.error("Thiếu thông tin sản phẩm (id không hợp lệ)");
+      return;
+    }
+
+    console.log("💾 Đang lưu sản phẩm:", product);
+
     try {
       if (addingNew) {
         const res = await createProduct(product, token);
@@ -49,6 +56,7 @@ export default function useProducts() {
       setEditingProduct(null);
     } catch (error) {
       toast.error("Lỗi khi lưu sản phẩm");
+      console.error("❌ Lỗi lưu:", error);
     }
   };
 

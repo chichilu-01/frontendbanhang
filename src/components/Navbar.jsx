@@ -30,7 +30,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center z-50">
       {/* Logo */}
       <Link to="/" className="text-xl font-bold text-blue-600">
-        🛍️ ShopX
+        🛍️ CHICHILU SHOP
       </Link>
 
       {/* Menu */}

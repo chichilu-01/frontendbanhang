@@ -16,6 +16,7 @@ export default function AdminAddProductPage() {
     colors: "",
     stock: "",
     imageUrl: "",
+    unit: "",
   });
 
   const handleChange = (e) => {
@@ -35,6 +36,7 @@ export default function AdminAddProductPage() {
           sizes: form.sizes.split(",").map((s) => s.trim()),
           colors: form.colors.split(",").map((c) => c.trim()),
           stock: parseInt(form.stock),
+          unit: form.unit?.trim() || "cái",
         },
         {
           headers: {

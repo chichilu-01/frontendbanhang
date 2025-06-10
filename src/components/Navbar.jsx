@@ -7,12 +7,13 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
   console.log("👤 NAVBAR USER:", user);
+  console.log("🧪 is_admin:", typeof user?.is_admin, user?.is_admin);
 
   const totalItems = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
     [cartItems],
   );
-
+  const isAdmin = true; // 👈 ép cứng để kiểm tra
   const menuItems = [
     { to: "/", label: "🏠 Trang chủ" },
     {
@@ -22,6 +23,8 @@ export default function Navbar() {
     },
     user?.is_admin && { to: "/admin", label: "⚙️ Quản trị" },
   ].filter(Boolean);
+
+  
 
   return (
     <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center z-50">

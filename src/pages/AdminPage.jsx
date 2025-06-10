@@ -22,15 +22,17 @@ export default function AdminPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">📦 Quản lý sản phẩm</h1>
+      <h1 className="text-3xl font-bold mb-6 text-blue-700 flex items-center gap-2">
+        🧰 Quản lý kho hàng
+      </h1>
 
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <input
           type="text"
           placeholder="🔍 Tìm sản phẩm..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border px-4 py-2 rounded w-full sm:w-1/3"
+          className="border border-gray-300 shadow-sm px-4 py-2 rounded-lg w-full sm:w-1/3 focus:ring focus:ring-blue-200"
         />
 
         <button
@@ -44,14 +46,16 @@ export default function AdminPage() {
             });
             setAddingNew(true);
           }}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-md flex items-center gap-2"
         >
-          ➕ Thêm sản phẩm
+          ➕ Thêm mới
         </button>
       </div>
 
       {loading ? (
-        <p className="text-gray-500">⏳ Đang tải danh sách sản phẩm...</p>
+        <p className="text-gray-500 italic text-sm flex items-center gap-1">
+          ⏳ Đang tải danh sách sản phẩm...
+        </p>
       ) : (
         <ProductTable
           products={filteredProducts}
@@ -76,4 +80,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
 console.log("✅ AdminPage mounted");

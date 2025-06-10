@@ -1,3 +1,8 @@
 import { useAuth } from "@context/AuthContext";
 
-const { token } = useAuth();
+const useToken = () => {
+  const { token } = useAuth();
+  return token;
+};
+
+export default useToken;

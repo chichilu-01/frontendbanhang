@@ -86,10 +86,16 @@ export default function ProductForm({ product, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || form.price <= 0) return alert("Thông tin không hợp lệ");
+    if (!form.name || parseFloat(form.price) <= 0) {
+      return alert("Tên hoặc giá không hợp lệ");
+    }
+
     onSave({
-      ...form,
-      image: form.mainImage, // để backend lưu ảnh đại diện
+      name: form.name,
+      price: parseFloat(form.price),
+      description: form.description,
+      images: form.images,
+      image_url: form.mainImage, // 🔁 Dùng đúng key cho backend
     });
   };
 

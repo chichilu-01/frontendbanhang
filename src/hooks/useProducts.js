@@ -23,6 +23,7 @@ export default function useProducts() {
       setProducts(res.data);
     } catch (err) {
       toast.error("Lỗi tải danh sách sản phẩm");
+      console.error("❌ Lỗi tải sản phẩm:", err);
     } finally {
       setLoading(false);
     }
@@ -58,6 +59,7 @@ export default function useProducts() {
     try {
       if (addingNew) {
         const res = await createProduct(payload, token);
+        if (!res?.data?.id) throw new Error("API không trả về sản phẩm hợp lệ");
         setProducts((prev) => [...prev, res.data]);
         toast.success("Đã thêm sản phẩm mới");
         setAddingNew(false);
@@ -83,6 +85,7 @@ export default function useProducts() {
       toast.success("Đã xoá sản phẩm");
     } catch (err) {
       toast.error("Lỗi xoá sản phẩm");
+      console.error("❌ Lỗi xoá:", err);
     }
   };
 

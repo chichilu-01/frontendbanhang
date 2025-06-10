@@ -6,6 +6,7 @@ import { useCart } from "@context/CartContext";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
+  console.log("👤 NAVBAR USER:", user);
 
   const totalItems = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.quantity, 0),

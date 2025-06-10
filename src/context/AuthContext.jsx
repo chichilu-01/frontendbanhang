@@ -19,7 +19,8 @@ export const AuthProvider = ({ children }) => {
             is_admin:
               parsedUser.is_admin === true ||
               parsedUser.is_admin === "true" ||
-              parsedUser.is_admin === 1,
+              parsedUser.is_admin === 1 ||
+              parsedUser.role === "admin",
           };
           setUser(safeUser);
         } catch (err) {
@@ -34,9 +35,10 @@ export const AuthProvider = ({ children }) => {
     const safeUser = {
       ...userData,
       is_admin:
-        userData.is_admin === true ||
-        userData.is_admin === "true" ||
-        userData.is_admin === 1,
+        parsedUser.is_admin === true ||
+        parsedUser.is_admin === "true" ||
+        parsedUser.is_admin === 1 ||
+        parsedUser.role === "admin",
     };
 
     setToken(token);

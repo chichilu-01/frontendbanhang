@@ -40,14 +40,29 @@ export default function useProducts() {
 
     console.log("💾 Đang lưu sản phẩm:", product);
 
+    const payload = {
+      ...product,
+      price: parseFloat(product.price),
+      stock: parseInt(product.stock || 0),
+      sizes:
+        typeof product.sizes === "string"
+          ? product.sizes.split(",").map((s) => s.trim())
+          : product.sizes,
+      colors:
+        typeof product.colors === "string"
+          ? product.colors.split(",").map((c) => c.trim())
+          : product.colors,
+      image: product.image || product.imageUrl || "",
+    };
+
     try {
       if (addingNew) {
-        const res = await createProduct(product, token);
+        const res = await createProduct(payload, token);
         setProducts((prev) => [...prev, res.data]);
         toast.success("Đã thêm sản phẩm mới");
         setAddingNew(false);
       } else {
-        const res = await updateProduct(product.id, product, token);
+        const res = await updateProduct(product.id, payload, token);
         setProducts((prev) =>
           prev.map((p) => (p.id === res.data.id ? res.data : p)),
         );

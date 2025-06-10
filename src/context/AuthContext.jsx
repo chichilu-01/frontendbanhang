@@ -35,16 +35,17 @@ export const AuthProvider = ({ children }) => {
     const safeUser = {
       ...userData,
       is_admin:
-        parsedUser.is_admin === true ||
-        parsedUser.is_admin === "true" ||
-        parsedUser.is_admin === 1 ||
-        parsedUser.role === "admin",
+        userData.is_admin === true ||
+        userData.is_admin === "true" ||
+        userData.is_admin === 1 ||
+        userData.role === "admin",
     };
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(safeUser));
 
     setToken(token);
     setUser(safeUser);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(safeUser));
   };
 
   const logout = () => {
@@ -53,6 +54,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
   };
+
   console.log("🔐 Gửi với token:", token);
 
   return (

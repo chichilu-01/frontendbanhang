@@ -53,7 +53,6 @@ export default function useProducts() {
           ? product.colors.split(",").map((c) => c.trim())
           : product.colors,
       image: product.image || product.imageUrl || "",
-      unit: product.unit?.trim() || "cái",
     };
 
     try {

@@ -4,7 +4,7 @@ import {
   updateProduct,
   deleteProduct,
   createProduct,
-  createMedia, // ✅ Thêm hàm gọi API /media
+  createMedia,
 } from "@services/api";
 import { useAuth } from "@context/AuthContext";
 import toast from "react-hot-toast";
@@ -65,7 +65,7 @@ export default function useProducts() {
         if (!newProduct?.id)
           throw new Error("API không trả về sản phẩm hợp lệ");
 
-        // ✅ Gửi gallery nếu có trường gallery là mảng ảnh
+        // Gửi ảnh gallery nếu có
         if (product.gallery && Array.isArray(product.gallery)) {
           await Promise.all(
             product.gallery.map((url) =>
@@ -106,7 +106,7 @@ export default function useProducts() {
   const filteredProducts = useMemo(
     () =>
       products.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase()),
+        (p.name || "").toLowerCase().includes(search.toLowerCase()),
       ),
     [products, search],
   );

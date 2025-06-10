@@ -12,18 +12,25 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        parsedUser.is_admin =
-          parsedUser.is_admin === true ||
-          parsedUser.is_admin === "true" ||
-          parsedUser.is_admin === 1;
-        setUser(parsedUser);
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          const safeUser = {
+            ...parsedUser,
+            is_admin:
+              parsedUser.is_admin === true ||
+              parsedUser.is_admin === "true" ||
+              parsedUser.is_admin === 1,
+          };
+          setUser(safeUser);
+        } catch (err) {
+          console.error("❌ Failed to parse stored user:", err);
+          setUser(null);
+        }
       }
     }
   }, [token]);
 
   const login = (token, userData) => {
-    // ✅ Ép kiểu tại đây luôn cho chắc
     const safeUser = {
       ...userData,
       is_admin:

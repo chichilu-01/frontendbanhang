@@ -5,6 +5,7 @@ import {
   deleteProduct,
   createProduct,
 } from "@services/api";
+import { useAuth } from "@context/AuthContext";
 import toast from "react-hot-toast";
 
 export default function useProducts() {
@@ -13,6 +14,7 @@ export default function useProducts() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [addingNew, setAddingNew] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { token } = useAuth();
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -33,12 +35,12 @@ export default function useProducts() {
   const handleSave = async (product) => {
     try {
       if (addingNew) {
-        const res = await createProduct(product);
+        const res = await createProduct(product, token);
         setProducts((prev) => [...prev, res.data]);
         toast.success("Đã thêm sản phẩm mới");
         setAddingNew(false);
       } else {
-        const res = await updateProduct(product.id, product);
+        const res = await updateProduct(product.id, product, token);
         setProducts((prev) =>
           prev.map((p) => (p.id === res.data.id ? res.data : p)),
         );

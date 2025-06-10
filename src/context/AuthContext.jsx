@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
   };
+  console.log("🔐 Gửi với token:", token);
 
   return (
     <AuthContext.Provider

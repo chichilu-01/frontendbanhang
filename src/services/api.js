@@ -1,4 +1,3 @@
-// 📁 src/services/api.js
 import axios from "axios";
 
 const API = axios.create({
@@ -62,8 +61,16 @@ export const getProductById = async (id) => {
   };
 };
 
-export const createProduct = (data) => API.post("/products", data);
-export const updateProduct = (id, data) => API.put(`/products/${id}`, data);
+export const createProduct = (data, token) =>
+  API.post("/products", data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const updateProduct = (id, data, token) =>
+  API.put(`/products/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
 export const deleteProduct = (id) => API.delete(`/products/${id}`);
 
 // ======================

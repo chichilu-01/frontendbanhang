@@ -26,22 +26,23 @@ export default function AdminAddProductPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post(
-        "/products",
-        {
-          ...form,
-          image: form.imageUrl,
-          price: parseFloat(form.price),
-          sizes: form.sizes.split(",").map((s) => s.trim()),
-          colors: form.colors.split(",").map((c) => c.trim()),
-          stock: parseInt(form.stock),
+      const payload = {
+        name: form.name,
+        price: parseFloat(form.price),
+        description: form.description,
+        image: form.imageUrl,
+        images: [],
+        sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()) : [],
+        colors: form.colors ? form.colors.split(",").map((c) => c.trim()) : [],
+        stock: parseInt(form.stock || "0"),
+      };
+
+      await API.post("/products", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      });
+
       toast.success("Đã thêm sản phẩm");
       navigate("/admin");
     } catch (err) {

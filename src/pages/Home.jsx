@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getProducts } from "@services/api";
 import ProductCard from "@components/ProductCard";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -27,15 +27,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Banner Slider */}
-      <section className="mb-10">
+      {/* Hero Banner */}
+      <section className="mb-12 relative">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           navigation
           pagination={{ clickable: true }}
           autoplay={{ delay: 4000 }}
           loop
-          className="h-60 md:h-80 lg:h-96"
+          className="h-64 md:h-96"
         >
           {[
             "https://res.cloudinary.com/demo/image/upload/v1700000000/banner1.jpg",
@@ -43,19 +43,26 @@ export default function Home() {
             "https://res.cloudinary.com/demo/image/upload/v1700000000/banner3.jpg",
           ].map((img, i) => (
             <SwiperSlide key={i}>
-              <img
-                src={img}
-                alt={`Banner ${i + 1}`}
-                className="w-full h-full object-cover rounded-xl shadow-md"
-              />
+              <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg">
+                <img
+                  src={img}
+                  alt={`Banner ${i + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+                  <h2 className="text-white text-2xl md:text-4xl font-bold drop-shadow-lg">
+                    Welcome to MyShop
+                  </h2>
+                </div>
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
       </section>
 
       {/* Danh mục nổi bật */}
-      <section className="max-w-6xl mx-auto px-4 mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+      <section className="max-w-6xl mx-auto px-4 mb-12">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
           🌟 Danh mục nổi bật
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
@@ -69,7 +76,7 @@ export default function Home() {
           ].map((cat, i) => (
             <div
               key={i}
-              className="bg-white border rounded-xl py-4 text-center text-gray-700 font-medium shadow hover:shadow-lg cursor-pointer transition-all hover:-translate-y-1"
+              className="bg-white border rounded-xl py-4 text-center text-gray-700 font-medium shadow hover:shadow-xl cursor-pointer transition-transform duration-300 hover:-translate-y-2"
             >
               {cat}
             </div>
@@ -78,7 +85,7 @@ export default function Home() {
       </section>
 
       {/* Sản phẩm mới */}
-      <section className="max-w-6xl mx-auto px-4 mb-10">
+      <section className="max-w-6xl mx-auto px-4 mb-12">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">
             🆕 Sản phẩm mới nhất
@@ -102,6 +109,7 @@ export default function Home() {
             navigation
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
+            loop={products.length > 1}
             breakpoints={{
               320: { slidesPerView: 1, spaceBetween: 10 },
               640: { slidesPerView: 2, spaceBetween: 15 },
@@ -111,7 +119,9 @@ export default function Home() {
           >
             {products.map((product) => (
               <SwiperSlide key={product.id}>
-                <ProductCard product={product} />
+                <div className="transition-transform duration-300 hover:scale-105">
+                  <ProductCard product={product} />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>

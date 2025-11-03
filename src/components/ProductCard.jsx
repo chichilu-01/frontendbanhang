@@ -8,36 +8,38 @@ export default function ProductCard({ product }) {
     new Date(product.created_at) >
     new Date(Date.now() - 1000 * 60 * 60 * 24 * 7); // sản phẩm trong 7 ngày
 
-  const discountPercent = product.discount || 30; // bạn có thể đổi sang field thực
-  const originalPrice = Math.floor(product.price / (1 - discountPercent / 100));
+  const discountPercent = product.discount || 0;
+  const originalPrice = discountPercent
+    ? Math.floor(product.price / (1 - discountPercent / 100))
+    : product.price;
 
   const hasHoverImage =
     Array.isArray(product.images) && product.images.length > 1;
 
   return (
-    <div className="rounded-xl border bg-white shadow hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col group relative">
-      <Link to={`/product/${product.id}`} className="block relative">
-        {/* Ảnh sản phẩm */}
-        <div className="relative w-full h-48 overflow-hidden">
+    <div className="group relative bg-white rounded-xl shadow hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 overflow-hidden">
+      {/* Ảnh sản phẩm */}
+      <div className="relative w-full h-60 overflow-hidden">
+        <img
+          src={
+            product.image_url ||
+            product.image ||
+            "https://via.placeholder.com/300x300?text=No+Image"
+          }
+          alt={product.name}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            hasHoverImage ? "group-hover:opacity-0" : ""
+          }`}
+        />
+        {hasHoverImage && (
           <img
-            src={
-              product.image_url ||
-              product.image ||
-              "https://via.placeholder.com/300x300?text=No+Image"
-            }
-            alt={product.name}
-            className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+            src={product.images[1]}
+            alt={`${product.name} hover`}
+            className="absolute top-0 left-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           />
-          {hasHoverImage && (
-            <img
-              src={product.images[1]}
-              alt="Ảnh phụ"
-              className="w-full h-full object-cover absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            />
-          )}
-        </div>
+        )}
 
-        {/* Badge */}
+        {/* Badges */}
         {isNew && (
           <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
             🆕 Mới
@@ -48,49 +50,48 @@ export default function ProductCard({ product }) {
             🔥 -{discountPercent}%
           </span>
         )}
-      </Link>
+        {product.stock <= 0 && (
+          <span className="absolute bottom-2 left-2 bg-red-100 text-red-600 text-xs font-semibold px-2 py-0.5 rounded shadow">
+            ❌ Hết hàng
+          </span>
+        )}
 
-      {/* Nội dung */}
-      <div className="p-3 flex-1 flex flex-col justify-between">
-        <div>
-          <h2 className="text-base font-semibold text-gray-800 truncate mb-1">
-            {product.name}
-          </h2>
-
-          {/* Sao đánh giá */}
-          <div className="flex items-center gap-1 text-yellow-400 text-sm mb-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <span key={i}>{i < stars ? "⭐" : "☆"}</span>
-            ))}
-            <span className="text-gray-500 text-xs ml-2">
-              {product.rating?.toFixed?.(1) || "0.0"}/5
-            </span>
-          </div>
-
-          {/* Giá */}
-          <div className="mb-2">
-            <p className="text-red-600 font-bold text-lg">
-              💰 {product.price?.toLocaleString("vi-VN")}₫
-            </p>
-            <p className="text-gray-500 text-sm line-through">
-              {originalPrice.toLocaleString("vi-VN")}₫
-            </p>
-          </div>
-
-          {/* Hết hàng */}
-          {product.stock <= 0 && (
-            <span className="inline-block text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
-              ❌ Hết hàng
-            </span>
-          )}
-        </div>
-
+        {/* Button overlay */}
         <Link
           to={`/product/${product.id}`}
-          className="mt-4 inline-block text-center bg-blue-600 text-white text-sm px-4 py-1.5 rounded hover:bg-blue-700 transition"
+          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-30 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-sm rounded"
         >
           🔍 Xem chi tiết
         </Link>
+      </div>
+
+      {/* Nội dung */}
+      <div className="p-3 flex flex-col justify-between h-36">
+        <h3 className="text-gray-800 font-semibold truncate mb-1">
+          {product.name}
+        </h3>
+
+        {/* Rating */}
+        <div className="flex items-center gap-1 text-yellow-400 text-sm mb-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i}>{i < stars ? "⭐" : "☆"}</span>
+          ))}
+          <span className="text-gray-500 text-xs ml-2">
+            {product.rating?.toFixed(1) || "0.0"}/5
+          </span>
+        </div>
+
+        {/* Giá */}
+        <div className="flex items-baseline gap-2">
+          <span className="text-red-600 font-bold text-lg">
+            {product.price?.toLocaleString("vi-VN")}₫
+          </span>
+          {discountPercent > 0 && (
+            <span className="text-gray-400 line-through text-sm">
+              {originalPrice.toLocaleString("vi-VN")}₫
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

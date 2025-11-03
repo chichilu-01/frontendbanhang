@@ -6,8 +6,9 @@ export default function ProductCard({ product }) {
 
   const isNew =
     new Date(product.created_at) >
-    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7); // trong 7 ngày
-  const discountPercent = 30; // giả lập
+    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7); // sản phẩm trong 7 ngày
+
+  const discountPercent = product.discount || 30; // bạn có thể đổi sang field thực
   const originalPrice = Math.floor(product.price / (1 - discountPercent / 100));
 
   const hasHoverImage =
@@ -16,12 +17,13 @@ export default function ProductCard({ product }) {
   return (
     <div className="rounded-xl border bg-white shadow hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col group relative">
       <Link to={`/product/${product.id}`} className="block relative">
-        <div className="relative w-full h-40 overflow-hidden">
+        {/* Ảnh sản phẩm */}
+        <div className="relative w-full h-48 overflow-hidden">
           <img
             src={
               product.image_url ||
               product.image ||
-              "https://cdn-icons-png.flaticon.com/512/1828/1828665.png	"
+              "https://via.placeholder.com/300x300?text=No+Image"
             }
             alt={product.name}
             className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
@@ -35,25 +37,27 @@ export default function ProductCard({ product }) {
           )}
         </div>
 
-        {/* Badge mới */}
+        {/* Badge */}
         {isNew && (
           <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
             🆕 Mới
           </span>
         )}
-
-        {/* Badge giảm giá */}
-        <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
-          🔥 -{discountPercent}%
-        </span>
+        {discountPercent > 0 && (
+          <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
+            🔥 -{discountPercent}%
+          </span>
+        )}
       </Link>
 
+      {/* Nội dung */}
       <div className="p-3 flex-1 flex flex-col justify-between">
         <div>
           <h2 className="text-base font-semibold text-gray-800 truncate mb-1">
             {product.name}
           </h2>
 
+          {/* Sao đánh giá */}
           <div className="flex items-center gap-1 text-yellow-400 text-sm mb-1">
             {Array.from({ length: 5 }).map((_, i) => (
               <span key={i}>{i < stars ? "⭐" : "☆"}</span>
@@ -63,6 +67,7 @@ export default function ProductCard({ product }) {
             </span>
           </div>
 
+          {/* Giá */}
           <div className="mb-2">
             <p className="text-red-600 font-bold text-lg">
               💰 {product.price?.toLocaleString("vi-VN")}₫
@@ -72,6 +77,7 @@ export default function ProductCard({ product }) {
             </p>
           </div>
 
+          {/* Hết hàng */}
           {product.stock <= 0 && (
             <span className="inline-block text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
               ❌ Hết hàng

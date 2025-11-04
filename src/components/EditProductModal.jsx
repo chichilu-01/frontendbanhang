@@ -2,7 +2,7 @@
 // Chỉ lo hiển thị modal
 
 import React from "react";
-import ProductForm from "./ProductForm";
+import ProductForm from "@components/ProductForm";
 
 export default function EditProductModal({ product, onClose, onSave }) {
   return (

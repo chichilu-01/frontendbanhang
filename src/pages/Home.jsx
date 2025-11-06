@@ -39,7 +39,7 @@ export default function Home() {
         >
           {[
             "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412469/banner3_xcfrtl.png",
-            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412469/banner1_xcfrtl.png",
+            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412467/banner1_f5vake.jpg",
             "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412467/banner2_upweqp.jpg",
           ].map((img, i) => (
             <SwiperSlide key={i}>

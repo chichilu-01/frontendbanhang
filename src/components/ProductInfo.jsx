@@ -21,15 +21,22 @@ export default function ProductInfo({ product, addToCart }) {
     if (!selectedSize || !selectedColor) {
       return alert("Vui lòng chọn size và màu!");
     }
-    addToCart({
+
+    // ✅ Đảm bảo luôn có id (fix lỗi không xóa / không cập nhật giỏ)
+    const safeProduct = {
       ...product,
+      id: product.id || product.product_id || crypto.randomUUID(),
       selectedSize,
       selectedColor,
-    });
+    };
+
+    console.log("🛒 Adding to cart:", safeProduct);
+    addToCart(safeProduct);
   };
 
   return (
     <div>
+      {/* Tên sản phẩm */}
       <h1 className="text-3xl font-bold mb-2">
         {product?.name || "Không tên"}
       </h1>
@@ -46,9 +53,12 @@ export default function ProductInfo({ product, addToCart }) {
         </span>
       </div>
 
+      {/* Giá sản phẩm */}
       <p className="text-xl text-blue-600 font-semibold mb-2">
-        {product?.price?.toLocaleString?.() || 0}₫
+        {product?.price?.toLocaleString?.("vi-VN") || 0}₫
       </p>
+
+      {/* Tồn kho */}
       <p className="text-sm text-gray-600 mb-4">
         {product?.stock > 0 ? `Còn ${product.stock} sản phẩm` : "Hết hàng"}
       </p>
@@ -57,13 +67,15 @@ export default function ProductInfo({ product, addToCart }) {
       {sizes.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn size</label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {sizes.map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
-                className={`px-3 py-1 rounded border ${
-                  selectedSize === size ? "bg-blue-600 text-white" : "bg-white"
+                className={`px-3 py-1 rounded border transition-all ${
+                  selectedSize === size
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white hover:bg-gray-100"
                 }`}
               >
                 {size}
@@ -77,15 +89,15 @@ export default function ProductInfo({ product, addToCart }) {
       {colors.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn màu</label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {colors.map((color) => (
               <button
                 key={color}
                 onClick={() => setSelectedColor(color)}
-                className={`px-3 py-1 rounded border ${
+                className={`px-3 py-1 rounded border transition-all ${
                   selectedColor === color
-                    ? "bg-blue-600 text-white"
-                    : "bg-white"
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white hover:bg-gray-100"
                 }`}
               >
                 {color}
@@ -95,16 +107,18 @@ export default function ProductInfo({ product, addToCart }) {
         </div>
       )}
 
+      {/* Mô tả sản phẩm */}
       <p className="text-gray-700 mb-6">
         {product?.description || "Không có mô tả."}
       </p>
 
+      {/* Nút thêm vào giỏ */}
       <button
         onClick={handleAddToCart}
         disabled={product?.stock <= 0}
         className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
       >
-        {product?.stock <= 0 ? "Hết hàng" : "Thêm vào giỏ hàng"}
+        {product?.stock <= 0 ? "Hết hàng" : "🛒 Thêm vào giỏ hàng"}
       </button>
     </div>
   );

@@ -38,9 +38,9 @@ export default function Home() {
           className="h-64 md:h-96"
         >
           {[
-            "https://https://res.cloudinary.com/di3kcy96q/image/upload/v1762412469/banner3_xcfrtl.png",
-            "https://res.cloudinary.com/demo/image/upload/v1700000000/banner2.jpg",
-            "https://res.cloudinary.com/demo/image/upload/v1700000000/banner3.jpg",
+            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412469/banner3_xcfrtl.png",
+            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412469/banner1_xcfrtl.png",
+            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412467/banner2_upweqp.jpg",
           ].map((img, i) => (
             <SwiperSlide key={i}>
               <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg">

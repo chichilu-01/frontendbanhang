@@ -1,15 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+// ✅ Hàm format tiền kiểu Việt Nam
+const formatVND = (value) => {
+  const num = Number(value) || 0;
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+  })
+    .format(num)
+    .replace("₫", "₫"); // đảm bảo ký hiệu ở cuối
+};
+
 export default function ProductCard({ product }) {
   const stars = Math.round(product.rating || 0);
 
-  // Xác định ảnh chính và ảnh hover
+  // ✅ Ảnh chính và ảnh hover
   const mainImage =
     product.media?.[0]?.url ||
     product.image_url ||
     product.image ||
     "https://via.placeholder.com/400x400?text=No+Image";
+
   const hoverImage =
     product.media?.[1]?.url ||
     product.images?.[1] ||
@@ -18,10 +31,12 @@ export default function ProductCard({ product }) {
 
   const hasHoverImage = hoverImage && hoverImage !== mainImage;
 
+  // ✅ Sản phẩm mới (7 ngày)
   const isNew =
     new Date(product.created_at) >
-    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7); // mới trong 7 ngày
+    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7);
 
+  // ✅ Giảm giá
   const discountPercent = product.discount || 0;
   const originalPrice = discountPercent
     ? Math.floor(product.price / (1 - discountPercent / 100))
@@ -83,14 +98,14 @@ export default function ProductCard({ product }) {
           </span>
         </div>
 
-        {/* Giá */}
+        {/* ✅ Giá hiển thị đúng chuẩn VND */}
         <div className="flex items-baseline gap-2">
           <span className="text-red-600 font-bold text-lg">
-            {product.price?.toLocaleString("vi-VN")}₫
+            {formatVND(product.price)}
           </span>
           {discountPercent > 0 && (
             <span className="text-gray-400 line-through text-sm">
-              {originalPrice.toLocaleString("vi-VN")}₫
+              {formatVND(originalPrice)}
             </span>
           )}
         </div>

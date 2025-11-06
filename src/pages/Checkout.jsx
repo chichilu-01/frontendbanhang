@@ -5,6 +5,18 @@ import { CreditCard, Truck, MapPin, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
+// ✅ Hàm format tiền kiểu Việt Nam
+const formatVND = (value) => {
+  const num = Number(value) || 0;
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+  })
+    .format(num)
+    .replace("₫", "₫");
+};
+
 export default function Checkout() {
   const { cartItems, getCartTotal } = useCart();
   const total = getCartTotal();
@@ -72,6 +84,7 @@ export default function Checkout() {
     }
   };
 
+  // ✅ Sau khi đặt hàng
   if (orderPlaced) {
     return (
       <div className="max-w-lg mx-auto text-center py-20">
@@ -203,7 +216,7 @@ export default function Checkout() {
         </button>
       </form>
 
-      {/* Cột phải: tóm tắt */}
+      {/* ✅ Cột phải: tóm tắt đơn hàng */}
       <div className="bg-white p-6 rounded-2xl shadow-md border h-fit">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
           Tóm tắt đơn hàng
@@ -220,7 +233,7 @@ export default function Checkout() {
                 ({item.selectedSize}/{item.selectedColor})
               </span>
             </span>
-            <span>{(item.price * item.quantity).toLocaleString("vi-VN")}₫</span>
+            <span>{formatVND(item.price * item.quantity)}</span>
           </div>
         ))}
 
@@ -228,9 +241,7 @@ export default function Checkout() {
 
         <div className="flex justify-between text-lg font-semibold text-gray-800 mb-4">
           <span>Tổng cộng</span>
-          <span className="text-blue-600 text-2xl">
-            {total.toLocaleString("vi-VN")}₫
-          </span>
+          <span className="text-blue-600 text-2xl">{formatVND(total)}</span>
         </div>
 
         <p className="text-sm text-gray-500 text-center">

@@ -1,6 +1,17 @@
-// src/components/CartItem.jsx
 import React from "react";
-import { Minus, Plus, Trash2 } from "lucide-react"; // icon hiện đại (lucide-react)
+import { Minus, Plus, Trash2 } from "lucide-react";
+
+// ✅ Hàm format tiền kiểu Việt Nam (chuẩn đẹp)
+const formatVND = (value) => {
+  const num = Number(value) || 0;
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+  })
+    .format(num)
+    .replace("₫", "₫"); // đảm bảo ký hiệu ở cuối
+};
 
 export default function CartItem({ item, onRemove, onQuantityChange }) {
   const safeId = item.id || item.product_id || item._id || "unknown";
@@ -44,8 +55,9 @@ export default function CartItem({ item, onRemove, onQuantityChange }) {
             </p>
           </div>
 
+          {/* ✅ Hiển thị giá chuẩn VND */}
           <p className="text-blue-600 font-semibold mt-2">
-            {(item.price || 0).toLocaleString("vi-VN")}₫ × {item.quantity}
+            {formatVND(item.price)} × {item.quantity}
           </p>
         </div>
       </div>

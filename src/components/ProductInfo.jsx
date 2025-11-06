@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 
+// ✅ Hàm format giá kiểu Việt Nam
+const formatVND = (value) => {
+  const num = Number(value) || 0;
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+  })
+    .format(num)
+    .replace("₫", "₫");
+};
+
 export default function ProductInfo({ product, addToCart }) {
-  // ✅ Đảm bảo luôn là mảng trước khi dùng map
   const sizes = Array.isArray(product?.sizes)
     ? product.sizes
     : typeof product?.sizes === "string"
@@ -22,7 +33,6 @@ export default function ProductInfo({ product, addToCart }) {
       return alert("Vui lòng chọn size và màu!");
     }
 
-    // ✅ Đảm bảo luôn có id (fix lỗi không xóa / không cập nhật giỏ)
     const safeProduct = {
       ...product,
       id: product.id || product.product_id || crypto.randomUUID(),
@@ -34,10 +44,16 @@ export default function ProductInfo({ product, addToCart }) {
     addToCart(safeProduct);
   };
 
+  // ✅ Tính toán giảm giá nếu có
+  const discountPercent = product.discount || 0;
+  const originalPrice = discountPercent
+    ? Math.floor(product.price / (1 - discountPercent / 100))
+    : product.price;
+
   return (
     <div>
       {/* Tên sản phẩm */}
-      <h1 className="text-3xl font-bold mb-2">
+      <h1 className="text-3xl font-bold mb-3 text-gray-900">
         {product?.name || "Không tên"}
       </h1>
 
@@ -53,14 +69,28 @@ export default function ProductInfo({ product, addToCart }) {
         </span>
       </div>
 
-      {/* Giá sản phẩm */}
-      <p className="text-xl text-blue-600 font-semibold mb-2">
-        {product?.price?.toLocaleString?.("vi-VN") || 0}₫
-      </p>
+      {/* ✅ Hiển thị giá chuẩn Việt Nam */}
+      <div className="mb-3">
+        <div className="flex items-baseline gap-2">
+          <span className="text-2xl text-red-600 font-bold">
+            {formatVND(product?.price)}
+          </span>
+          {discountPercent > 0 && (
+            <>
+              <span className="text-gray-400 line-through text-sm">
+                {formatVND(originalPrice)}
+              </span>
+              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                -{discountPercent}%
+              </span>
+            </>
+          )}
+        </div>
+      </div>
 
       {/* Tồn kho */}
       <p className="text-sm text-gray-600 mb-4">
-        {product?.stock > 0 ? `Còn ${product.stock} sản phẩm` : "Hết hàng"}
+        {product?.stock > 0 ? `Còn ${product.stock} sản phẩm` : "❌ Hết hàng"}
       </p>
 
       {/* Chọn size */}
@@ -107,8 +137,8 @@ export default function ProductInfo({ product, addToCart }) {
         </div>
       )}
 
-      {/* Mô tả sản phẩm */}
-      <p className="text-gray-700 mb-6">
+      {/* Mô tả */}
+      <p className="text-gray-700 mb-6 leading-relaxed">
         {product?.description || "Không có mô tả."}
       </p>
 
@@ -116,7 +146,7 @@ export default function ProductInfo({ product, addToCart }) {
       <button
         onClick={handleAddToCart}
         disabled={product?.stock <= 0}
-        className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
       >
         {product?.stock <= 0 ? "Hết hàng" : "🛒 Thêm vào giỏ hàng"}
       </button>

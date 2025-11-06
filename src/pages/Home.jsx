@@ -25,9 +25,15 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const bannerImages = [
+    "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412469/banner3_xcfrtl.png",
+    "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412467/banner1_f5vake.jpg",
+    "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412467/banner2_upweqp.jpg",
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Banner */}
+      {/* 🎨 Hero Banner */}
       <section className="mb-12 relative">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
@@ -35,23 +41,26 @@ export default function Home() {
           pagination={{ clickable: true }}
           autoplay={{ delay: 4000 }}
           loop
-          className="h-64 md:h-96"
+          className="h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-lg"
         >
-          {[
-            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412469/banner3_xcfrtl.png",
-            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412467/banner1_f5vake.jpg",
-            "https://res.cloudinary.com/di3kcy96q/image/upload/v1762412467/banner2_upweqp.jpg",
-          ].map((img, i) => (
+          {bannerImages.map((img, i) => (
             <SwiperSlide key={i}>
-              <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg">
+              <div className="relative w-full h-full">
+                {/* ✅ Ảnh hiển thị full khung */}
                 <img
                   src={img}
                   alt={`Banner ${i + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="block w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src =
+                      "https://via.placeholder.com/1200x600?text=Banner+Not+Found";
+                  }}
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-                  <h2 className="text-white text-2xl md:text-4xl font-bold drop-shadow-lg">
-                    Welcome to MyShop
+                {/* Overlay chữ */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
+                  <h2 className="text-white text-3xl md:text-5xl font-extrabold drop-shadow-lg tracking-wide">
+                    ✨ Welcome to MyShop ✨
                   </h2>
                 </div>
               </div>
@@ -60,7 +69,7 @@ export default function Home() {
         </Swiper>
       </section>
 
-      {/* Danh mục nổi bật */}
+      {/* 🌟 Danh mục nổi bật */}
       <section className="max-w-6xl mx-auto px-4 mb-12">
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">
           🌟 Danh mục nổi bật
@@ -84,7 +93,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sản phẩm mới */}
+      {/* 🆕 Sản phẩm mới */}
       <section className="max-w-6xl mx-auto px-4 mb-12">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">
@@ -128,7 +137,7 @@ export default function Home() {
         )}
       </section>
 
-      {/* Footer */}
+      {/* 🧩 Footer */}
       <footer className="mt-16 py-8 bg-gray-900 text-gray-300 text-center">
         <p>© {new Date().getFullYear()} MyShop. All rights reserved.</p>
         <p className="text-sm mt-2">Built with ❤️ by Minh Phuong</p>

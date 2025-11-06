@@ -1,10 +1,14 @@
 import axios from "axios";
 
-const API = axios.create({
+// ======================
+// 🌐 API Base Configuration
+// ======================
+export const API = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
     "https://backendbanhang-production.up.railway.app/api",
   withCredentials: true,
+  timeout: 15000,
 });
 
 if (!import.meta.env.VITE_API_URL) {
@@ -13,10 +17,13 @@ if (!import.meta.env.VITE_API_URL) {
   );
 }
 
-console.log("🌐 API URL:", import.meta.env.VITE_API_URL || "fallback used");
+console.log(
+  "🌍 Using API URL:",
+  import.meta.env.VITE_API_URL || "fallback used",
+);
 
 // ======================
-// 🔐 Auth APIs
+// 🔐 AUTH APIs
 // ======================
 export const loginUser = (data) => API.post("/auth/login", data);
 export const registerUser = (data) => API.post("/auth/register", data);
@@ -36,29 +43,47 @@ export const getProfile = (token) =>
   });
 
 // ======================
-// 📦 Product APIs
+// 📦 PRODUCT APIs
 // ======================
-export const getProducts = () => API.get("/products");
+export const getProducts = async () => {
+  const res = await API.get("/products");
+
+  // 🖼️ Gắn thêm ảnh (media) vào từng sản phẩm
+  const products = await Promise.all(
+    res.data.map(async (product) => {
+      try {
+        const mediaRes = await API.get(`/media/product/${product.id}`);
+        return { ...product, media: mediaRes.data || [] };
+      } catch (error) {
+        console.warn(`⚠️ Không thể tải ảnh cho sản phẩm ID ${product.id}`);
+        return { ...product, media: [] };
+      }
+    }),
+  );
+
+  return { ...res, data: products };
+};
 
 export const getProductById = async (id) => {
   const res = await API.get(`/products/${id}`);
   const productData = res.data;
 
-  let images = [];
   try {
     const mediaRes = await API.get(`/media/product/${id}`);
-    images = mediaRes.data;
+    return {
+      ...res,
+      data: {
+        ...productData,
+        media: mediaRes.data || [],
+      },
+    };
   } catch (err) {
     console.warn("⚠️ Không thể load media:", err);
+    return {
+      ...res,
+      data: { ...productData, media: [] },
+    };
   }
-
-  return {
-    ...res,
-    data: {
-      ...productData,
-      images,
-    },
-  };
 };
 
 export const createProduct = (data, token) =>
@@ -74,27 +99,14 @@ export const updateProduct = (id, data, token) =>
 export const deleteProduct = (id) => API.delete(`/products/${id}`);
 
 // ======================
-// 🖼️ Product Media APIs
+// 🖼️ MEDIA APIs
 // ======================
-
-// Upload image (Cloudinary-backed)
-export const uploadProductImage = (productId, formData, token) =>
-  API.post(`/products/${productId}/media`, formData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
+export const createMedia = (data, token) =>
+  API.post("/media", data, {
+    headers: { Authorization: `Bearer ${token}` },
   });
 
-// Delete image by media ID
-export const deleteProductImage = (mediaId, token) =>
-  API.delete(`/products/media/${mediaId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-// Upload raw file to Cloudinary (used in ProductForm)
+// Upload file trực tiếp lên Cloudinary
 export const uploadFileToCloudinary = (formData, token) =>
   API.post("/media/upload-file", formData, {
     headers: {
@@ -103,24 +115,36 @@ export const uploadFileToCloudinary = (formData, token) =>
     },
   });
 
+// Upload ảnh liên kết sản phẩm
+export const uploadProductImage = (productId, formData, token) =>
+  API.post(`/products/${productId}/media`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+// Xoá ảnh theo ID
+export const deleteProductImage = (mediaId, token) =>
+  API.delete(`/products/media/${mediaId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
 // ======================
-// ⭐ Product Reviews
+// ⭐ REVIEWS APIs
 // ======================
+export const getReviews = (productId) =>
+  API.get(`/products/${productId}/reviews`);
 export const submitReview = (productId, data, token) =>
   API.post(`/products/${productId}/reviews`, data, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-export const getReviews = (productId) =>
-  API.get(`/products/${productId}/reviews`);
+// ======================
+// 🛒 ORDER / CHECKOUT (Chuẩn bị cho bước gửi email)
+// ======================
+export const createOrder = (data) => API.post("/orders", data);
+export const sendOrderEmail = (data) => API.post("/orders/send-email", data);
 
-// Export instance for custom use
-// Add media record manually (used in useProducts)
-export const createMedia = (data, token) =>
-  API.post("/media", data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-export { API };
+// ✅ Export instance (cho phép gọi API tùy chỉnh khác)
+export default API;

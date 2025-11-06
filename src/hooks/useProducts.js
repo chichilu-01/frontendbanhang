@@ -5,6 +5,7 @@ import {
   deleteProduct,
   createProduct,
   createMedia,
+  API, // ⚠️ cần export API từ @services/api
 } from "@services/api";
 import { useAuth } from "@context/AuthContext";
 import toast from "react-hot-toast";
@@ -17,11 +18,26 @@ export default function useProducts() {
   const [loading, setLoading] = useState(false);
   const { token } = useAuth();
 
+  // 🟢 Hàm tải sản phẩm + media thật từ Cloudinary
   const fetchProducts = async () => {
     setLoading(true);
     try {
       const res = await getProducts();
-      setProducts(res.data);
+      const data = res.data;
+
+      // 🖼️ Gắn thêm ảnh từ bảng media
+      const withMedia = await Promise.all(
+        data.map(async (p) => {
+          try {
+            const mediaRes = await API.get(`/media/product/${p.id}`);
+            return { ...p, media: mediaRes.data || [] };
+          } catch {
+            return { ...p, media: [] };
+          }
+        }),
+      );
+
+      setProducts(withMedia);
     } catch (err) {
       toast.error("Lỗi tải danh sách sản phẩm");
       console.error("❌ Lỗi tải sản phẩm:", err);
@@ -34,13 +50,12 @@ export default function useProducts() {
     fetchProducts();
   }, []);
 
+  // 🧩 Lưu hoặc thêm sản phẩm
   const handleSave = async (product) => {
     if (!product || (!addingNew && !product.id)) {
       toast.error("Thiếu thông tin sản phẩm (id không hợp lệ)");
       return;
     }
-
-    console.log("💾 Đang lưu sản phẩm:", product);
 
     const payload = {
       name: product.name,
@@ -65,7 +80,7 @@ export default function useProducts() {
         if (!newProduct?.id)
           throw new Error("API không trả về sản phẩm hợp lệ");
 
-        // Gửi ảnh gallery nếu có
+        // Nếu có ảnh, tải lên bảng media
         if (product.gallery && Array.isArray(product.gallery)) {
           await Promise.all(
             product.gallery.map((url) =>
@@ -75,14 +90,14 @@ export default function useProducts() {
         }
 
         setProducts((prev) => [...prev, newProduct]);
-        toast.success("Đã thêm sản phẩm mới");
+        toast.success("✅ Đã thêm sản phẩm mới");
         setAddingNew(false);
       } else {
         const res = await updateProduct(product.id, payload, token);
         setProducts((prev) =>
           prev.map((p) => (p.id === res.data.id ? res.data : p)),
         );
-        toast.success("Đã cập nhật sản phẩm");
+        toast.success("💾 Đã cập nhật sản phẩm");
       }
       setEditingProduct(null);
     } catch (error) {
@@ -91,18 +106,20 @@ export default function useProducts() {
     }
   };
 
+  // 🗑️ Xoá sản phẩm
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xoá sản phẩm này?")) return;
     try {
       await deleteProduct(id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
-      toast.success("Đã xoá sản phẩm");
+      toast.success("🗑️ Đã xoá sản phẩm");
     } catch (err) {
       toast.error("Lỗi xoá sản phẩm");
       console.error("❌ Lỗi xoá:", err);
     }
   };
 
+  // 🔍 Bộ lọc tìm kiếm
   const filteredProducts = useMemo(
     () =>
       products.filter((p) =>

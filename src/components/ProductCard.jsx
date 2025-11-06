@@ -4,28 +4,35 @@ import { Link } from "react-router-dom";
 export default function ProductCard({ product }) {
   const stars = Math.round(product.rating || 0);
 
+  // Xác định ảnh chính và ảnh hover
+  const mainImage =
+    product.media?.[0]?.url ||
+    product.image_url ||
+    product.image ||
+    "https://via.placeholder.com/400x400?text=No+Image";
+  const hoverImage =
+    product.media?.[1]?.url ||
+    product.images?.[1] ||
+    product.image_url ||
+    mainImage;
+
+  const hasHoverImage = hoverImage && hoverImage !== mainImage;
+
   const isNew =
     new Date(product.created_at) >
-    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7); // sản phẩm trong 7 ngày
+    new Date(Date.now() - 1000 * 60 * 60 * 24 * 7); // mới trong 7 ngày
 
   const discountPercent = product.discount || 0;
   const originalPrice = discountPercent
     ? Math.floor(product.price / (1 - discountPercent / 100))
     : product.price;
 
-  const hasHoverImage =
-    Array.isArray(product.images) && product.images.length > 1;
-
   return (
     <div className="group relative bg-white rounded-xl shadow hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 overflow-hidden">
       {/* Ảnh sản phẩm */}
-      <div className="relative w-full h-60 overflow-hidden">
+      <div className="relative w-full h-64 overflow-hidden">
         <img
-          src={
-            product.image_url ||
-            product.image ||
-            "https://via.placeholder.com/300x300?text=No+Image"
-          }
+          src={mainImage}
           alt={product.name}
           className={`w-full h-full object-cover transition-opacity duration-500 ${
             hasHoverImage ? "group-hover:opacity-0" : ""
@@ -33,7 +40,7 @@ export default function ProductCard({ product }) {
         />
         {hasHoverImage && (
           <img
-            src={product.images[1]}
+            src={hoverImage}
             alt={`${product.name} hover`}
             className="absolute top-0 left-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           />
@@ -50,23 +57,18 @@ export default function ProductCard({ product }) {
             🔥 -{discountPercent}%
           </span>
         )}
-        {product.stock <= 0 && (
-          <span className="absolute bottom-2 left-2 bg-red-100 text-red-600 text-xs font-semibold px-2 py-0.5 rounded shadow">
-            ❌ Hết hàng
-          </span>
-        )}
 
-        {/* Button overlay */}
+        {/* Overlay nút xem chi tiết */}
         <Link
           to={`/product/${product.id}`}
-          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-30 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-sm rounded"
+          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-30 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-semibold text-sm rounded"
         >
           🔍 Xem chi tiết
         </Link>
       </div>
 
       {/* Nội dung */}
-      <div className="p-3 flex flex-col justify-between h-36">
+      <div className="p-4 flex flex-col justify-between h-36">
         <h3 className="text-gray-800 font-semibold truncate mb-1">
           {product.name}
         </h3>

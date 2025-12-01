@@ -28,12 +28,26 @@ import MobileLayout from "@layouts/MobileLayout";
 export default function App() {
   return (
     <Router>
-      <Navbar />
-
       <Routes>
-        {/* --- 📱 MOBILE BOTTOM TAB LAYOUT --- */}
-        <Route element={<MobileLayout />}>
-          {/* HOME + PRODUCT DETAIL */}
+
+        {/* ================= AUTH PAGES (Không dùng layout, không navbar) ================= */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verify-code" element={<VerifyCode />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-reset-code" element={<VerifyResetCode />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        {/* ================= USER + ADMIN PAGES (có navbar + mobile layout) ================= */}
+        <Route
+          element={
+            <>
+              <Navbar />     {/* navbar chỉ desktop */}
+              <MobileLayout /> {/* bottom tab chỉ mobile */}
+            </>
+          }
+        >
+          {/* HOME */}
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetail />} />
@@ -58,7 +72,7 @@ export default function App() {
             }
           />
 
-          {/* ⭐ ADMIN ROUTES CHẠY TRONG MOBILE LAYOUT (CÓ BOTTOM TAB) */}
+          {/* ADMIN */}
           <Route
             path="/admin"
             element={
@@ -86,14 +100,6 @@ export default function App() {
             }
           />
         </Route>
-
-        {/* --- 🔐 AUTH PAGES (không có bottom tab) --- */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-code" element={<VerifyCode />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-reset-code" element={<VerifyResetCode />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

@@ -1,5 +1,7 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// USER PAGES
 import Home from "@pages/Home";
 import ProductDetail from "@pages/ProductDetail";
 import Login from "@pages/Login";
@@ -9,12 +11,17 @@ import VerifyResetCode from "@pages/VerifyResetCode";
 import ForgotPassword from "@pages/ForgotPassword";
 import ResetPassword from "@pages/ResetPassword";
 import CartPage from "@pages/CartPage";
+import AccountPage from "@pages/AccountPage"; // ⭐ THÊM TRANG TÀI KHOẢN
+
+// ADMIN PAGES
 import AdminPage from "@pages/AdminPage";
+import AdminAddProductPage from "@pages/AdminAddProductPage";
 import ProductMediaManager from "@features/admin/ProductMediaManager";
+
+// COMPONENTS
 import Navbar from "@components/Navbar";
 import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";
-import AdminAddProductPage from "@pages/AdminAddProductPage";
 import MobileLayout from "@layouts/MobileLayout";
 
 export default function App() {
@@ -23,17 +30,27 @@ export default function App() {
       <Navbar />
 
       <Routes>
-
         {/* --- 📱 MOBILE BOTTOM TAB LAYOUT --- */}
         <Route element={<MobileLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetail />} />
 
+          {/* CART (user phải login) */}
           <Route
             path="/cart"
             element={
               <ProtectedRoute>
                 <CartPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ACCOUNT PAGE (user phải login) */}
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <AccountPage />
               </ProtectedRoute>
             }
           />
@@ -74,7 +91,6 @@ export default function App() {
             </AdminRoute>
           }
         />
-
       </Routes>
     </Router>
   );

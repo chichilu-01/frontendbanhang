@@ -10,6 +10,8 @@ export default function ProductForm({ product, onClose, onSave }) {
     stock: 0, // ⭐ THÊM TỒN KHO
     gallery: [],
     image_url: "",
+    colors: "", // ⭐ thêm
+    sizes: "",
   });
 
   const { user, token } = useAuth();
@@ -28,6 +30,8 @@ export default function ProductForm({ product, onClose, onSave }) {
       stock: product?.stock || 0, // ⭐ LOAD TỒN KHO
       gallery,
       image_url: product?.image_url || gallery[0] || "",
+      colors: Array.isArray(product?.colors) ? product.colors.join(", ") : "",
+      sizes: Array.isArray(product?.sizes) ? product.sizes.join(", ") : "",
     });
   }, [product]);
 
@@ -101,6 +105,13 @@ export default function ProductForm({ product, onClose, onSave }) {
       stock: parseInt(form.stock), // ⭐ TRẢ STOCK VỀ HOOK
       image_url: form.image_url,
       gallery: form.gallery,
+      colors: form.colors
+        ? form.colors.split(",").map((c) => c.trim())
+        : [],
+
+      sizes: form.sizes
+        ? form.sizes.split(",").map((s) => s.trim())
+        : [],
     });
   };
 
@@ -156,6 +167,30 @@ export default function ProductForm({ product, onClose, onSave }) {
           className="w-full border px-3 py-2 rounded"
         />
       </div>
+      {/* Colors */}
+      <div>
+        <label className="block text-sm font-semibold">Màu sắc (phân cách bằng dấu phẩy)</label>
+        <input
+          name="colors"
+          value={form.colors}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          placeholder="Ví dụ: đen, trắng, xám"
+        />
+      </div>
+
+      {/* Sizes */}
+      <div>
+        <label className="block text-sm font-semibold">Size (phân cách bằng dấu phẩy)</label>
+        <input
+          name="sizes"
+          value={form.sizes}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          placeholder="Ví dụ: L, XL, XXL"
+        />
+      </div>
+
 
       {/* Ảnh */}
       <div>

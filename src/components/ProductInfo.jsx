@@ -8,11 +8,11 @@ const formatVND = (value) => {
 
 // ===================== BẢN ĐỒ MÀU =====================
 const COLOR_MAP = {
-  "đen": { r: 30, g: 30, b: 30 },
-  "trắng": { r: 240, g: 240, b: 240 },
-  "xanh": { r: 70, g: 130, b: 200 },
-  "đỏ": { r: 200, g: 50, b: 50 },
-  "vàng": { r: 220, g: 200, b: 40 },
+  đen: { r: 30, g: 30, b: 30 },
+  trắng: { r: 240, g: 240, b: 240 },
+  xanh: { r: 70, g: 130, b: 200 },
+  đỏ: { r: 200, g: 50, b: 50 },
+  vàng: { r: 220, g: 200, b: 40 },
 };
 
 // ===================== TÍNH MÀU CHỦ ĐẠO CỦA ẢNH =====================
@@ -32,7 +32,10 @@ const getDominantColor = (imgUrl) => {
 
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
-      let r = 0, g = 0, b = 0, count = 0;
+      let r = 0,
+        g = 0,
+        b = 0,
+        count = 0;
       for (let i = 0; i < data.length; i += 4 * 50) {
         r += data[i];
         g += data[i + 1];
@@ -49,23 +52,43 @@ const getDominantColor = (imgUrl) => {
 const colorDistance = (c1, c2) => {
   return Math.sqrt(
     Math.pow(c1.r - c2.r, 2) +
-    Math.pow(c1.g - c2.g, 2) +
-    Math.pow(c1.b - c2.b, 2)
+      Math.pow(c1.g - c2.g, 2) +
+      Math.pow(c1.b - c2.b, 2),
   );
 };
 
-export default function ProductInfo({ product, addToCart, mainImage, setMainImage }) {
-
+export default function ProductInfo({
+  product,
+  addToCart,
+  mainImage,
+  setMainImage,
+}) {
   // ===================== CHUẨN HOÁ LIST =====================
   const normalize = (list) => {
     if (!list) return [];
 
     try {
-      if (typeof list === "string") {
-        if (list.trim().startsWith("[")) return JSON.parse(list);
-        return list.split(",").map((s) => s.trim());
+      let clean = list;
+
+      // Nếu là JSON array → parse
+      if (typeof clean === "string" && clean.trim().startsWith("[")) {
+        clean = JSON.parse(clean);
       }
-      if (Array.isArray(list)) return list;
+
+      // Nếu là string → tách theo dấu phẩy
+      if (typeof clean === "string") {
+        return clean
+          .replace(/"/g, "") // ⭐ XÓA TOÀN BỘ DẤU "
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+
+      // Nếu đã là array → loại bỏ dấu "
+      if (Array.isArray(clean)) {
+        return clean.map((s) => s.replace(/"/g, "").trim());
+      }
+
       return [];
     } catch {
       return [];

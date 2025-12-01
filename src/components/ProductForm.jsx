@@ -30,8 +30,17 @@ export default function ProductForm({ product, onClose, onSave }) {
       stock: product?.stock || 0, // ⭐ LOAD TỒN KHO
       gallery,
       image_url: product?.image_url || gallery[0] || "",
-      colors: Array.isArray(product?.colors) ? product.colors.join(", ") : "",
-      sizes: Array.isArray(product?.sizes) ? product.sizes.join(", ") : "",
+      colors: product?.colors
+        ? Array.isArray(product.colors)
+          ? product.colors.join(", ")
+          : product.colors.replace(/[\[\]"]/g, "")
+        : "",
+
+      sizes: product?.sizes
+        ? Array.isArray(product.sizes)
+          ? product.sizes.join(", ")
+          : product.sizes.replace(/[\[\]"]/g, "")
+        : "",
     });
   }, [product]);
 
@@ -105,13 +114,9 @@ export default function ProductForm({ product, onClose, onSave }) {
       stock: parseInt(form.stock), // ⭐ TRẢ STOCK VỀ HOOK
       image_url: form.image_url,
       gallery: form.gallery,
-      colors: form.colors
-        ? form.colors.split(",").map((c) => c.trim())
-        : [],
+      colors: form.colors ? form.colors.split(",").map((c) => c.trim()) : [],
 
-      sizes: form.sizes
-        ? form.sizes.split(",").map((s) => s.trim())
-        : [],
+      sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()) : [],
     });
   };
 
@@ -169,7 +174,9 @@ export default function ProductForm({ product, onClose, onSave }) {
       </div>
       {/* Colors */}
       <div>
-        <label className="block text-sm font-semibold">Màu sắc (phân cách bằng dấu phẩy)</label>
+        <label className="block text-sm font-semibold">
+          Màu sắc (phân cách bằng dấu phẩy)
+        </label>
         <input
           name="colors"
           value={form.colors}
@@ -181,7 +188,9 @@ export default function ProductForm({ product, onClose, onSave }) {
 
       {/* Sizes */}
       <div>
-        <label className="block text-sm font-semibold">Size (phân cách bằng dấu phẩy)</label>
+        <label className="block text-sm font-semibold">
+          Size (phân cách bằng dấu phẩy)
+        </label>
         <input
           name="sizes"
           value={form.sizes}
@@ -190,7 +199,6 @@ export default function ProductForm({ product, onClose, onSave }) {
           placeholder="Ví dụ: L, XL, XXL"
         />
       </div>
-
 
       {/* Ảnh */}
       <div>

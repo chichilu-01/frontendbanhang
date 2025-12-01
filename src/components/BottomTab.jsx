@@ -1,8 +1,7 @@
 import { NavLink } from "react-router-dom";
-import { Home, ShoppingCart, User, Shield } from "lucide-react";
+import { Home, ShoppingCart, User, Shield, Grid3x3 } from "lucide-react"; // ✅ CHỈ ĐỂ 1 DÒNG IMPORT ICON
 import { useAuth } from "@context/AuthContext";
 import { useCart } from "@context/CartContext";
-import { Home, ShoppingCart, Grid3x3, User } from "lucide-react";
 
 export default function BottomTab() {
   const { user } = useAuth();
@@ -22,11 +21,8 @@ export default function BottomTab() {
     "
     >
       <Tab to="/" icon={<Home size={24} />} label="Home" />
-      <Tab
-        to="/products" // ⭐ TAB SẢN PHẨM
-        icon={<Grid3x3 size={22} />}
-        label="Sản phẩm"
-      />
+
+      <Tab to="/products" icon={<Grid3x3 size={22} />} label="Sản phẩm" />
 
       <Tab
         to="/cart"

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useAuth } from "@context/AuthContext";
+
+// 👍 Dùng đúng API instance
+import { uploadFileToCloudinary, deleteProductImage } from "@services/api";
 
 export default function ProductForm({ product, onClose, onSave }) {
   const [form, setForm] = useState({
@@ -16,12 +18,8 @@ export default function ProductForm({ product, onClose, onSave }) {
 
   useEffect(() => {
     let gallery = [];
-    try {
-      if (Array.isArray(product?.images)) {
-        gallery = product.images;
-      }
-    } catch (err) {
-      console.warn("❌ Lỗi parse ảnh:", err);
+    if (Array.isArray(product?.images)) {
+      gallery = product.images;
     }
 
     setForm({
@@ -38,6 +36,7 @@ export default function ProductForm({ product, onClose, onSave }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ⭐ SỬA LẠI HÀM UPLOAD ẢNH
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -51,12 +50,7 @@ export default function ProductForm({ product, onClose, onSave }) {
       formData.append("product_id", product?.id);
 
       try {
-        const res = await axios.post("/api/media/upload-file", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const res = await uploadFileToCloudinary(formData, token);
         uploadedUrls.push(res.data.url);
       } catch (err) {
         console.error("❌ Upload lỗi:", err);
@@ -68,20 +62,33 @@ export default function ProductForm({ product, onClose, onSave }) {
       gallery: [...prev.gallery, ...uploadedUrls],
       image_url: prev.image_url || uploadedUrls[0],
     }));
+
     setUploading(false);
+    e.target.value = "";
   };
 
-  const handleDeleteImage = (img) => {
+  const handleDeleteImage = async (img) => {
+    try {
+      const mediaObj = product?.images?.find((m) => m.url === img);
+      if (mediaObj) {
+        await deleteProductImage(mediaObj.id, token);
+      }
+    } catch (err) {
+      console.error("Xóa ảnh lỗi", err);
+    }
+
     setForm((prev) => {
-      const newGallery = prev.gallery.filter((i) => i !== img);
+      const gallery = prev.gallery.filter((i) => i !== img);
       const newMain =
-        prev.image_url === img ? newGallery[0] || "" : prev.image_url;
-      return { ...prev, gallery: newGallery, image_url: newMain };
+        prev.image_url === img ? gallery[0] || "" : prev.image_url;
+
+      return { ...prev, gallery, image_url: newMain };
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!form.name || parseFloat(form.price) <= 0) {
       return alert("Tên hoặc giá không hợp lệ");
     }
@@ -97,6 +104,7 @@ export default function ProductForm({ product, onClose, onSave }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Tên */}
       <div>
         <label className="block text-sm font-medium">Tên sản phẩm</label>
         <input
@@ -108,6 +116,7 @@ export default function ProductForm({ product, onClose, onSave }) {
         />
       </div>
 
+      {/* Giá */}
       <div>
         <label className="block text-sm font-medium">Giá</label>
         <input
@@ -121,6 +130,7 @@ export default function ProductForm({ product, onClose, onSave }) {
         />
       </div>
 
+      {/* Mô tả */}
       <div>
         <label className="block text-sm font-medium">Mô tả</label>
         <textarea
@@ -132,7 +142,7 @@ export default function ProductForm({ product, onClose, onSave }) {
         ></textarea>
       </div>
 
-      {/* ẢNH SẢN PHẨM */}
+      {/* Ảnh */}
       <div>
         <label className="block text-sm font-medium">Ảnh sản phẩm</label>
 
@@ -147,33 +157,24 @@ export default function ProductForm({ product, onClose, onSave }) {
         )}
 
         <div className="grid grid-cols-3 gap-2 mt-3">
-          {Array.isArray(form.gallery) &&
-            form.gallery.map((img) => (
-              <div className="relative" key={img}>
-                <img
-                  src={img}
-                  alt="Ảnh"
-                  onClick={() =>
-                    setForm((prev) => ({ ...prev, image_url: img }))
-                  }
-                  className={`h-24 w-full object-cover border rounded cursor-pointer ${
-                    form.image_url === img ? "ring-4 ring-blue-500" : ""
-                  }`}
-                />
-                {user?.is_admin && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteImage(img);
-                    }}
-                    className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            ))}
+          {form.gallery.map((img) => (
+            <div className="relative" key={img}>
+              <img
+                src={img}
+                className={`h-24 w-full object-cover border rounded cursor-pointer ${
+                  form.image_url === img ? "ring-4 ring-blue-500" : ""
+                }`}
+                onClick={() => setForm((prev) => ({ ...prev, image_url: img }))}
+              />
+              <button
+                type="button"
+                onClick={() => handleDeleteImage(img)}
+                className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
         </div>
 
         {uploading && (
@@ -189,6 +190,7 @@ export default function ProductForm({ product, onClose, onSave }) {
         >
           Huỷ
         </button>
+
         <button
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white rounded"

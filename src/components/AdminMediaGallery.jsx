@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { API } from "@services/api";
+import { uploadFileToCloudinary, deleteProductImage } from "@services/api";
 import { useAuth } from "@context/AuthContext";
 
 export default function AdminMediaGallery({
@@ -11,7 +11,8 @@ export default function AdminMediaGallery({
   const { token, user } = useAuth();
   const [uploading, setUploading] = useState(false);
 
-  if (!user || user.role !== "admin") return null;
+  // ✅ Check đúng quyền admin (is_admin chứ không phải role)
+  if (!user || !user.is_admin) return null;
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -23,19 +24,19 @@ export default function AdminMediaGallery({
 
     try {
       setUploading(true);
-      const res = await API.post(`/media/upload-file`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      // ✅ Dùng hàm API đã cấu hình
+      await uploadFileToCloudinary(formData, token);
+
       toast.success("✅ Đã tải lên ảnh mới");
-      onRefresh();
+      onRefresh && onRefresh();
     } catch (err) {
+      console.error("Upload lỗi:", err);
       toast.error("❌ Lỗi upload ảnh");
-      console.error(err);
     } finally {
       setUploading(false);
+      // reset input để chọn lại file giống tên vẫn được
+      e.target.value = "";
     }
   };
 
@@ -43,16 +44,14 @@ export default function AdminMediaGallery({
     if (!confirm("Bạn có chắc muốn xoá ảnh này?")) return;
 
     try {
-      await API.delete(`/media/${mediaId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // ✅ Dùng đúng route xóa media theo product
+      await deleteProductImage(mediaId, token);
+
       toast.success("🗑️ Đã xoá ảnh");
-      onRefresh();
+      onRefresh && onRefresh();
     } catch (err) {
+      console.error("Xoá ảnh lỗi:", err);
       toast.error("❌ Lỗi xoá ảnh");
-      console.error(err);
     }
   };
 

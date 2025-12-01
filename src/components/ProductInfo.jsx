@@ -6,29 +6,108 @@ const formatVND = (value) => {
   return num.toLocaleString("vi-VN") + "₫";
 };
 
-export default function ProductInfo({ product, addToCart, mainImage}) {
-  // ---- CHUẨN HOÁ LIST ----
+// ===================== BẢN ĐỒ MÀU =====================
+const COLOR_MAP = {
+  "đen": { r: 30, g: 30, b: 30 },
+  "trắng": { r: 240, g: 240, b: 240 },
+  "xanh": { r: 70, g: 130, b: 200 },
+  "đỏ": { r: 200, g: 50, b: 50 },
+  "vàng": { r: 220, g: 200, b: 40 },
+};
+
+// ===================== TÍNH MÀU CHỦ ĐẠO CỦA ẢNH =====================
+const getDominantColor = (imgUrl) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = imgUrl;
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+      let r = 0, g = 0, b = 0, count = 0;
+      for (let i = 0; i < data.length; i += 4 * 50) {
+        r += data[i];
+        g += data[i + 1];
+        b += data[i + 2];
+        count++;
+      }
+
+      resolve({ r: r / count, g: g / count, b: b / count });
+    };
+  });
+};
+
+// ===================== TÍNH ĐỘ GIỐNG NHAU GIỮA 2 MÀU =====================
+const colorDistance = (c1, c2) => {
+  return Math.sqrt(
+    Math.pow(c1.r - c2.r, 2) +
+    Math.pow(c1.g - c2.g, 2) +
+    Math.pow(c1.b - c2.b, 2)
+  );
+};
+
+export default function ProductInfo({ product, addToCart, mainImage, setMainImage }) {
+
+  // ===================== CHUẨN HOÁ LIST =====================
   const normalize = (list) => {
     if (!list) return [];
-    if (Array.isArray(list)) return list.map((v) => v?.toString());
-    if (typeof list === "string") return list.split(",").map((s) => s.trim());
-    return [];
+
+    try {
+      if (typeof list === "string") {
+        if (list.trim().startsWith("[")) return JSON.parse(list);
+        return list.split(",").map((s) => s.trim());
+      }
+      if (Array.isArray(list)) return list;
+      return [];
+    } catch {
+      return [];
+    }
   };
 
   const sizes = normalize(product?.sizes);
   const colors = normalize(product?.colors);
 
-  // ---- STATE ----
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
-  // ⭐ Reset lại chọn size/màu khi đổi sản phẩm!
+  // RESET size & màu khi đổi sản phẩm
   useEffect(() => {
     setSelectedSize(sizes[0] || "");
     setSelectedColor(colors[0] || "");
   }, [product?.id]);
 
-  // ---- ADD CART ----
+  // ===================== TÌM ẢNH THEO MÀU =====================
+  const findImageByColor = async (color) => {
+    if (!product.media || product.media.length === 0) return null;
+
+    const target = COLOR_MAP[color.toLowerCase()];
+    if (!target) return null;
+
+    let bestImg = null;
+    let bestScore = Infinity;
+
+    for (const img of product.media) {
+      const dominant = await getDominantColor(img.url);
+      const score = colorDistance(target, dominant);
+
+      if (score < bestScore) {
+        bestScore = score;
+        bestImg = img.url;
+      }
+    }
+
+    return bestImg;
+  };
+
+  // ===================== THÊM VÀO CART =====================
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor)
       return alert("Vui lòng chọn size và màu!");
@@ -44,7 +123,7 @@ export default function ProductInfo({ product, addToCart, mainImage}) {
     addToCart(safe);
   };
 
-  // ---- DISCOUNT ----
+  // ===================== DISCOUNT =====================
   const discountPercent = product?.discount || 0;
   const originalPrice = discountPercent
     ? Math.floor(product.price / (1 - discountPercent / 100))
@@ -90,7 +169,7 @@ export default function ProductInfo({ product, addToCart, mainImage}) {
         {product?.stock > 0 ? `Còn ${product.stock} sản phẩm` : "❌ Hết hàng"}
       </p>
 
-      {/* SIZE */}
+      {/* ===================== SIZE ===================== */}
       {sizes.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn size</label>
@@ -112,7 +191,7 @@ export default function ProductInfo({ product, addToCart, mainImage}) {
         </div>
       )}
 
-      {/* MÀU */}
+      {/* ===================== MÀU ===================== */}
       {colors.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn màu</label>
@@ -120,7 +199,12 @@ export default function ProductInfo({ product, addToCart, mainImage}) {
             {colors.map((color) => (
               <button
                 key={color}
-                onClick={() => setSelectedColor(color)}
+                onClick={async () => {
+                  setSelectedColor(color);
+
+                  const autoImg = await findImageByColor(color);
+                  if (autoImg) setMainImage(autoImg);
+                }}
                 className={`px-3 py-1 rounded border text-sm transition-all ${
                   selectedColor === color
                     ? "bg-blue-600 text-white border-blue-600"

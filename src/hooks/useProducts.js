@@ -40,7 +40,7 @@ export default function useProducts() {
           } catch {
             return { ...p, media: [] };
           }
-        })
+        }),
       );
 
       setProducts(withMedia);
@@ -65,6 +65,19 @@ export default function useProducts() {
         description: product.description || "",
         stock: parseInt(product.stock || 0),
         image_url: product.image_url || "",
+        sizes: Array.isArray(product.sizes)
+          ? product.sizes
+          : (product.sizes || "")
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
+
+        colors: Array.isArray(product.colors)
+          ? product.colors
+          : (product.colors || "")
+              .split(",")
+              .map((c) => c.trim())
+              .filter(Boolean),
       };
 
       // /////////////////////////////////////////////////////
@@ -89,9 +102,9 @@ export default function useProducts() {
                   url,
                   is_main: url === product.image_url ? 1 : 0,
                 },
-                token
-              )
-            )
+                token,
+              ),
+            ),
           );
         }
 
@@ -114,7 +127,7 @@ export default function useProducts() {
 
       // update state nhanh mà không cần gọi API
       setProducts((prev) =>
-        prev.map((p) => (p.id === res.data.id ? res.data : p))
+        prev.map((p) => (p.id === res.data.id ? res.data : p)),
       );
 
       toast.success("💾 Đã cập nhật sản phẩm");
@@ -142,9 +155,9 @@ export default function useProducts() {
   const filteredProducts = useMemo(
     () =>
       products.filter((p) =>
-        (p.name || "").toLowerCase().includes(search.toLowerCase())
+        (p.name || "").toLowerCase().includes(search.toLowerCase()),
       ),
-    [products, search]
+    [products, search],
   );
 
   return {

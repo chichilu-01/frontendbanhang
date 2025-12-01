@@ -2,6 +2,11 @@ import React from "react";
 
 export default function ProductTable({ products, onEdit, onDelete }) {
   const safeProducts = Array.isArray(products) ? products : [];
+  const formatVND = (value) => {
+    const num = Number(value) || 0;
+    return num.toLocaleString("vi-VN") + "₫";
+  };
+
 
   return (
     <div className="overflow-x-auto">
@@ -42,7 +47,7 @@ export default function ProductTable({ products, onEdit, onDelete }) {
                 </td>
 
                 <td className="p-2 border text-right">
-                  {p.price?.toLocaleString()}₫
+                  {formatVND(p.price)}
                 </td>
 
                 {/* ⭐ HIỂN THỊ TỒN KHO */}

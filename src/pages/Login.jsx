@@ -4,16 +4,16 @@ import LoginForm from "@components/LoginForm";
 export default function Login() {
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
+      className="min-h-screen w-full flex items-center justify-center relative bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: `url("/bg-login.jpg")`,
+        backgroundImage: "url('/bg-login.jpg')",
       }}
     >
-      {/* lớp phủ mờ nền để form nổi bật */}
-      <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
+      {/* LỚP MỜ TOÀN MÀN HÌNH */}
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
 
-      {/* form đăng nhập */}
-      <div className="relative z-10">
+      {/* FORM ĐĂNG NHẬP */}
+      <div className="relative z-10 w-full max-w-md px-6">
         <LoginForm />
       </div>
     </div>

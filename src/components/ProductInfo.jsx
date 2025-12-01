@@ -1,99 +1,95 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-// ✅ Hàm format giá kiểu Việt Nam
+// ===================== FORMAT GIÁ VN =====================
 const formatVND = (value) => {
   const num = Number(value) || 0;
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-    minimumFractionDigits: 0,
-  })
-    .format(num)
-    .replace("₫", "₫");
+  return num.toLocaleString("vi-VN") + "₫";
 };
 
 export default function ProductInfo({ product, addToCart }) {
-  const sizes = Array.isArray(product?.sizes)
-    ? product.sizes
-    : typeof product?.sizes === "string"
-      ? product.sizes.split(",").map((s) => s.trim())
-      : [];
+  // ---- CHUẨN HOÁ LIST ----
+  const normalize = (list) => {
+    if (!list) return [];
+    if (Array.isArray(list)) return list.map((v) => v?.toString());
+    if (typeof list === "string") return list.split(",").map((s) => s.trim());
+    return [];
+  };
 
-  const colors = Array.isArray(product?.colors)
-    ? product.colors
-    : typeof product?.colors === "string"
-      ? product.colors.split(",").map((c) => c.trim())
-      : [];
+  const sizes = normalize(product?.sizes);
+  const colors = normalize(product?.colors);
 
-  const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
-  const [selectedColor, setSelectedColor] = useState(colors[0] || "");
+  // ---- STATE ----
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
 
+  // ⭐ Reset lại chọn size/màu khi đổi sản phẩm!
+  useEffect(() => {
+    setSelectedSize(sizes[0] || "");
+    setSelectedColor(colors[0] || "");
+  }, [product?.id]);
+
+  // ---- ADD CART ----
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) {
+    if (!selectedSize || !selectedColor)
       return alert("Vui lòng chọn size và màu!");
-    }
 
-    const safeProduct = {
+    const safe = {
       ...product,
-      id: product.id || product.product_id || crypto.randomUUID(),
+      id: product.id,
       selectedSize,
       selectedColor,
     };
 
-    console.log("🛒 Adding to cart:", safeProduct);
-    addToCart(safeProduct);
+    addToCart(safe);
   };
 
-  // ✅ Tính toán giảm giá nếu có
-  const discountPercent = product.discount || 0;
+  // ---- DISCOUNT ----
+  const discountPercent = product?.discount || 0;
   const originalPrice = discountPercent
     ? Math.floor(product.price / (1 - discountPercent / 100))
     : product.price;
 
   return (
     <div>
-      {/* Tên sản phẩm */}
+      {/* TÊN */}
       <h1 className="text-3xl font-bold mb-3 text-gray-900">
         {product?.name || "Không tên"}
       </h1>
 
-      {/* Đánh giá sao */}
+      {/* SAO */}
       <div className="flex items-center gap-1 text-yellow-400 mb-2">
         {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i}>
-            {i < Math.round(product?.rating || 0) ? "★" : "☆"}
-          </span>
+          <span key={i}>{i < product.rating ? "★" : "☆"}</span>
         ))}
         <span className="text-gray-500 text-sm ml-2">
           {product?.rating?.toFixed?.(1) || "0.0"} / 5
         </span>
       </div>
 
-      {/* ✅ Hiển thị giá chuẩn Việt Nam */}
-      <div className="mb-3">
-        <div className="flex items-baseline gap-2">
-          <span className="text-2xl text-red-600 font-bold">
-            {formatVND(product?.price)}
-          </span>
-          {discountPercent > 0 && (
-            <>
-              <span className="text-gray-400 line-through text-sm">
-                {formatVND(originalPrice)}
-              </span>
-              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
-                -{discountPercent}%
-              </span>
-            </>
-          )}
-        </div>
+      {/* GIÁ */}
+      <div className="mb-4">
+        <span className="text-2xl text-red-600 font-bold">
+          {formatVND(product?.price)}
+        </span>
+
+        {discountPercent > 0 && (
+          <>
+            <span className="ml-2 text-gray-400 line-through text-sm">
+              {formatVND(originalPrice)}
+            </span>
+            <span className="ml-2 bg-red-500 text-white px-2 py-0.5 rounded text-xs">
+              -{discountPercent}%
+            </span>
+          </>
+        )}
       </div>
 
-      {/* Tồn kho */}
+      {/* TỒN KHO */}
       <p className="text-sm text-gray-600 mb-4">
         {product?.stock > 0 ? `Còn ${product.stock} sản phẩm` : "❌ Hết hàng"}
       </p>
 
-      {/* Chọn size */}
+      {/* SIZE */}
       {sizes.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn size</label>
@@ -102,10 +98,10 @@ export default function ProductInfo({ product, addToCart }) {
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
-                className={`px-3 py-1 rounded border transition-all ${
+                className={`px-3 py-1 rounded border text-sm transition-all ${
                   selectedSize === size
                     ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white hover:bg-gray-100"
+                    : "bg-white hover:bg-gray-100 border-gray-300"
                 }`}
               >
                 {size}
@@ -115,7 +111,7 @@ export default function ProductInfo({ product, addToCart }) {
         </div>
       )}
 
-      {/* Chọn màu */}
+      {/* MÀU */}
       {colors.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Chọn màu</label>
@@ -124,10 +120,10 @@ export default function ProductInfo({ product, addToCart }) {
               <button
                 key={color}
                 onClick={() => setSelectedColor(color)}
-                className={`px-3 py-1 rounded border transition-all ${
+                className={`px-3 py-1 rounded border text-sm transition-all ${
                   selectedColor === color
                     ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white hover:bg-gray-100"
+                    : "bg-white hover:bg-gray-100 border-gray-300"
                 }`}
               >
                 {color}
@@ -137,12 +133,10 @@ export default function ProductInfo({ product, addToCart }) {
         </div>
       )}
 
-      {/* Mô tả */}
-      <p className="text-gray-700 mb-6 leading-relaxed">
-        {product?.description || "Không có mô tả."}
-      </p>
+      {/* MÔ TẢ */}
+      <p className="text-gray-700 mb-6">{product?.description}</p>
 
-      {/* Nút thêm vào giỏ */}
+      {/* BUTTON */}
       <button
         onClick={handleAddToCart}
         disabled={product?.stock <= 0}

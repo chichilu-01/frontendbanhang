@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@context/AuthContext";
-
-// 👍 Dùng đúng API instance
 import { uploadFileToCloudinary, deleteProductImage } from "@services/api";
 
 export default function ProductForm({ product, onClose, onSave }) {
@@ -9,6 +7,7 @@ export default function ProductForm({ product, onClose, onSave }) {
     name: "",
     price: "",
     description: "",
+    stock: 0, // ⭐ THÊM TỒN KHO
     gallery: [],
     image_url: "",
   });
@@ -18,14 +17,15 @@ export default function ProductForm({ product, onClose, onSave }) {
 
   useEffect(() => {
     let gallery = [];
-    if (Array.isArray(product?.images)) {
-      gallery = product.images;
+    if (Array.isArray(product?.media)) {
+      gallery = product.media.map((m) => m.url);
     }
 
     setForm({
       name: product?.name || "",
       price: product?.price || "",
       description: product?.description || "",
+      stock: product?.stock || 0, // ⭐ LOAD TỒN KHO
       gallery,
       image_url: product?.image_url || gallery[0] || "",
     });
@@ -36,7 +36,7 @@ export default function ProductForm({ product, onClose, onSave }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ⭐ SỬA LẠI HÀM UPLOAD ẢNH
+  // ⭐ UPLOAD ẢNH SANG CLOUDINARY
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -69,7 +69,7 @@ export default function ProductForm({ product, onClose, onSave }) {
 
   const handleDeleteImage = async (img) => {
     try {
-      const mediaObj = product?.images?.find((m) => m.url === img);
+      const mediaObj = product?.media?.find((m) => m.url === img);
       if (mediaObj) {
         await deleteProductImage(mediaObj.id, token);
       }
@@ -98,6 +98,7 @@ export default function ProductForm({ product, onClose, onSave }) {
       name: form.name,
       price: parseFloat(form.price),
       description: form.description,
+      stock: parseInt(form.stock), // ⭐ TRẢ STOCK VỀ HOOK
       image_url: form.image_url,
       gallery: form.gallery,
     });
@@ -107,7 +108,7 @@ export default function ProductForm({ product, onClose, onSave }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Tên */}
       <div>
-        <label className="block text-sm font-medium">Tên sản phẩm</label>
+        <label className="block text-sm font-semibold">Tên sản phẩm</label>
         <input
           name="name"
           value={form.name}
@@ -119,7 +120,7 @@ export default function ProductForm({ product, onClose, onSave }) {
 
       {/* Giá */}
       <div>
-        <label className="block text-sm font-medium">Giá</label>
+        <label className="block text-sm font-semibold">Giá</label>
         <input
           name="price"
           type="number"
@@ -127,35 +128,46 @@ export default function ProductForm({ product, onClose, onSave }) {
           onChange={handleChange}
           className="w-full border px-3 py-2 rounded"
           required
+        />
+      </div>
+
+      {/* ⭐ TỒN KHO */}
+      <div>
+        <label className="block text-sm font-semibold">Tồn kho</label>
+        <input
+          name="stock"
+          type="number"
           min="0"
+          value={form.stock}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
         />
       </div>
 
       {/* Mô tả */}
       <div>
-        <label className="block text-sm font-medium">Mô tả</label>
+        <label className="block text-sm font-semibold">Mô tả</label>
         <textarea
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
           rows="3"
-        ></textarea>
+          className="w-full border px-3 py-2 rounded"
+        />
       </div>
 
       {/* Ảnh */}
       <div>
-        <label className="block text-sm font-medium">Ảnh sản phẩm</label>
+        <label className="block text-sm font-semibold">Ảnh sản phẩm</label>
 
-        {user?.is_admin && (
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFileChange}
-            className="w-full mt-1"
-          />
-        )}
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleFileChange}
+          className="w-full mt-1"
+        />
 
         <div className="grid grid-cols-3 gap-2 mt-3">
           {form.gallery.map((img) => (
@@ -183,6 +195,7 @@ export default function ProductForm({ product, onClose, onSave }) {
         )}
       </div>
 
+      {/* Buttons */}
       <div className="flex justify-end gap-2 pt-4">
         <button
           type="button"
@@ -191,7 +204,6 @@ export default function ProductForm({ product, onClose, onSave }) {
         >
           Huỷ
         </button>
-
         <button
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white rounded"

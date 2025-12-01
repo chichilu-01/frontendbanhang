@@ -17,15 +17,33 @@ export default function AdminPage() {
     handleSave,
     handleDelete,
     loading,
-    refetch,
   } = useProducts();
+
+  const handleAddNew = () => {
+    setEditingProduct({
+      id: null,
+      name: "",
+      price: "",
+      stock: 0,
+      description: "",
+      image_url: "",
+      gallery: [],
+      media: [],
+      sizes: [],
+      colors: [],
+    });
+
+    setAddingNew(true);
+  };
 
   return (
     <div className="p-6">
+      {/* TITLE */}
       <h1 className="text-3xl font-bold mb-6 text-blue-700 flex items-center gap-2">
         🧰 Quản lý kho hàng
       </h1>
 
+      {/* TOP BAR */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <input
           type="text"
@@ -36,24 +54,14 @@ export default function AdminPage() {
         />
 
         <button
-          onClick={() => {
-            setEditingProduct({
-              name: "",
-              price: "",
-              description: "",
-              image_url: "",
-              sizes: [],
-              colors: [],
-              stock: 0,
-            });
-            setAddingNew(true);
-          }}
+          onClick={handleAddNew}
           className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-md flex items-center gap-2"
         >
           ➕ Thêm mới
         </button>
       </div>
 
+      {/* TABLE */}
       {loading ? (
         <p className="text-gray-500 italic text-sm flex items-center gap-1">
           ⏳ Đang tải danh sách sản phẩm...
@@ -62,13 +70,20 @@ export default function AdminPage() {
         <ProductTable
           products={filteredProducts}
           onEdit={(p) => {
-            setEditingProduct(p);
+            const prepared = {
+              ...p,
+              stock: p.stock ?? 0,
+              gallery: Array.isArray(p.media) ? p.media.map((m) => m.url) : [],
+            };
+
+            setEditingProduct(prepared);
             setAddingNew(false);
           }}
           onDelete={handleDelete}
         />
       )}
 
+      {/* MODAL EDIT */}
       {editingProduct && (
         <EditProductModal
           product={editingProduct}

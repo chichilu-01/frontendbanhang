@@ -5,7 +5,7 @@ import {
   deleteProduct,
   createProduct,
   createMedia,
-  API, // ⚠️ cần export API từ @services/api
+  API,
 } from "@services/api";
 import { useAuth } from "@context/AuthContext";
 import toast from "react-hot-toast";
@@ -16,31 +16,37 @@ export default function useProducts() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [addingNew, setAddingNew] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const { token } = useAuth();
 
-  // 🟢 Hàm tải sản phẩm + media thật từ Cloudinary
+  // 📌 Load danh sách sản phẩm + media thật từ Cloudinary
   const fetchProducts = async () => {
     setLoading(true);
     try {
       const res = await getProducts();
       const data = res.data;
 
-      // 🖼️ Gắn thêm ảnh từ bảng media
       const withMedia = await Promise.all(
         data.map(async (p) => {
           try {
             const mediaRes = await API.get(`/media/product/${p.id}`);
-            return { ...p, media: mediaRes.data || [] };
+            const media = mediaRes.data || [];
+
+            return {
+              ...p,
+              media,
+              image_url: p.image_url || media[0]?.url || "",
+            };
           } catch {
             return { ...p, media: [] };
           }
-        }),
+        })
       );
 
       setProducts(withMedia);
     } catch (err) {
-      toast.error("Lỗi tải danh sách sản phẩm");
       console.error("❌ Lỗi tải sản phẩm:", err);
+      toast.error("Không thể tải danh sách sản phẩm");
     } finally {
       setLoading(false);
     }
@@ -50,92 +56,95 @@ export default function useProducts() {
     fetchProducts();
   }, []);
 
-  // 🧩 Lưu hoặc thêm sản phẩm
+  // 📌 Lưu hoặc thêm sản phẩm
   const handleSave = async (product) => {
     try {
-      // ----- 1️⃣ VALIDATE ID -----
-      if (!addingNew && !product?.id) {
-        toast.error("Không thể cập nhật: thiếu ID sản phẩm.");
-        return;
-      }
-
-      // ----- 2️⃣ BUILD PAYLOAD -----
       const payload = {
         name: product.name,
         price: parseFloat(product.price),
         description: product.description || "",
         stock: parseInt(product.stock || 0),
         image_url: product.image_url || "",
-        sizes: Array.isArray(product.sizes)
-          ? product.sizes
-          : (product.sizes || "").split(",").map((s) => s.trim()),
-        colors: Array.isArray(product.colors)
-          ? product.colors
-          : (product.colors || "").split(",").map((c) => c.trim()),
-
-        // ⭐ THÊM GALLERY VÀO UPDATE (bạn QUÊN)
-        gallery: product.gallery || [],
       };
 
-      // ----- 3️⃣ ADD PRODUCT -----
+      // /////////////////////////////////////////////////////
+      // 1️⃣ THÊM MỚI
+      // /////////////////////////////////////////////////////
       if (addingNew) {
         const res = await createProduct(payload, token);
         const newProduct = res.data;
 
-        if (!newProduct?.id)
-          throw new Error("API trả về sản phẩm không hợp lệ");
+        if (!newProduct?.id) {
+          toast.error("Không tạo được sản phẩm mới");
+          return;
+        }
 
-        // Thêm media vào bảng media
+        // Thêm ảnh gallery
         if (product.gallery && product.gallery.length > 0) {
           await Promise.all(
             product.gallery.map((url) =>
-              createMedia({ product_id: newProduct.id, url }, token),
-            ),
+              createMedia(
+                {
+                  product_id: newProduct.id,
+                  url,
+                  is_main: url === product.image_url ? 1 : 0,
+                },
+                token
+              )
+            )
           );
         }
 
-        setProducts((prev) => [...prev, newProduct]);
         toast.success("🎉 Đã thêm sản phẩm mới");
-      } else {
-        // ----- 4️⃣ UPDATE PRODUCT -----
-        const res = await updateProduct(product.id, payload, token);
-
-        setProducts((prev) =>
-          prev.map((p) => (p.id === res.data.id ? res.data : p)),
-        );
-
-        toast.success("💾 Đã cập nhật sản phẩm");
+        fetchProducts();
+        setEditingProduct(null);
+        setAddingNew(false);
+        return;
       }
 
-      // ----- 5️⃣ CLEAN UP -----
+      // /////////////////////////////////////////////////////
+      // 2️⃣ UPDATE SẢN PHẨM
+      // /////////////////////////////////////////////////////
+      if (!product.id) {
+        toast.error("Thiếu ID sản phẩm, không thể cập nhật");
+        return;
+      }
+
+      const res = await updateProduct(product.id, payload, token);
+
+      // update state nhanh mà không cần gọi API
+      setProducts((prev) =>
+        prev.map((p) => (p.id === res.data.id ? res.data : p))
+      );
+
+      toast.success("💾 Đã cập nhật sản phẩm");
       setEditingProduct(null);
-      setAddingNew(false);
-    } catch (error) {
-      console.error("❌ Lỗi lưu sản phẩm:", error);
-      toast.error("Lỗi khi lưu sản phẩm");
+    } catch (err) {
+      console.error("❌ Lỗi lưu sản phẩm:", err);
+      toast.error("Không thể lưu sản phẩm");
     }
   };
 
-  // 🗑️ Xoá sản phẩm
+  // 📌 Xoá sản phẩm
   const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc muốn xoá sản phẩm này?")) return;
+    if (!window.confirm("Bạn chắc muốn xoá?")) return;
+
     try {
       await deleteProduct(id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
       toast.success("🗑️ Đã xoá sản phẩm");
     } catch (err) {
-      toast.error("Lỗi xoá sản phẩm");
-      console.error("❌ Lỗi xoá:", err);
+      toast.error("Xoá thất bại");
     }
   };
 
-  // 🔍 Bộ lọc tìm kiếm
+  // 📌 Tìm kiếm
   const filteredProducts = useMemo(
     () =>
       products.filter((p) =>
-        (p.name || "").toLowerCase().includes(search.toLowerCase()),
+        (p.name || "").toLowerCase().includes(search.toLowerCase())
       ),
-    [products, search],
+    [products, search]
   );
 
   return {

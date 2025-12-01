@@ -94,6 +94,7 @@ export default function ProductDetail() {
         product={product}
         addToCart={addToCart}
         mainImage={mainImage}
+        setMainImage={setMainImage}
       />
 
       {/* --- ĐÁNH GIÁ --- */}

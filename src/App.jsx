@@ -11,7 +11,7 @@ import VerifyResetCode from "@pages/VerifyResetCode";
 import ForgotPassword from "@pages/ForgotPassword";
 import ResetPassword from "@pages/ResetPassword";
 import CartPage from "@pages/CartPage";
-import AccountPage from "@pages/AccountPage"; // ⭐ THÊM TRANG TÀI KHOẢN
+import AccountPage from "@pages/AccountPage";
 
 // ADMIN PAGES
 import AdminPage from "@pages/AdminPage";
@@ -32,10 +32,11 @@ export default function App() {
       <Routes>
         {/* --- 📱 MOBILE BOTTOM TAB LAYOUT --- */}
         <Route element={<MobileLayout />}>
+          {/* HOME + PRODUCT DETAIL */}
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetail />} />
 
-          {/* CART (user phải login) */}
+          {/* CART */}
           <Route
             path="/cart"
             element={
@@ -45,13 +46,41 @@ export default function App() {
             }
           />
 
-          {/* ACCOUNT PAGE (user phải login) */}
+          {/* ACCOUNT */}
           <Route
             path="/account"
             element={
               <ProtectedRoute>
                 <AccountPage />
               </ProtectedRoute>
+            }
+          />
+
+          {/* ⭐ ADMIN ROUTES CHẠY TRONG MOBILE LAYOUT (CÓ BOTTOM TAB) */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/add-product"
+            element={
+              <AdminRoute>
+                <AdminAddProductPage />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/product/:id/media"
+            element={
+              <AdminRoute>
+                <ProductMediaManager />
+              </AdminRoute>
             }
           />
         </Route>
@@ -63,34 +92,6 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-reset-code" element={<VerifyResetCode />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-
-        {/* --- 🛠️ ADMIN ROUTES (không có bottom tab) --- */}
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminPage />
-            </AdminRoute>
-          }
-        />
-
-        <Route
-          path="/admin/add-product"
-          element={
-            <AdminRoute>
-              <AdminAddProductPage />
-            </AdminRoute>
-          }
-        />
-
-        <Route
-          path="/admin/product/:id/media"
-          element={
-            <AdminRoute>
-              <ProductMediaManager />
-            </AdminRoute>
-          }
-        />
       </Routes>
     </Router>
   );

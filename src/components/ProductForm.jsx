@@ -161,12 +161,20 @@ export default function ProductForm({ product, onClose, onSave }) {
       <div>
         <label className="block text-sm font-semibold">Ảnh sản phẩm</label>
 
+        <label
+          htmlFor="fileUpload"
+          className="inline-flex items-center gap-2 bg-indigo-500 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-600 cursor-pointer"
+        >
+          <span>📤</span> <span>Chọn ảnh</span>
+        </label>
+
         <input
+          id="fileUpload"
           type="file"
           accept="image/*"
           multiple
           onChange={handleFileChange}
-          className="w-full mt-1"
+          className="hidden"
         />
 
         <div className="grid grid-cols-3 gap-2 mt-3">

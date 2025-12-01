@@ -90,7 +90,11 @@ export default function ProductDetail() {
       />
 
       {/* --- THÔNG TIN + SIZE + MÀU + ADD CART --- */}
-      <ProductInfo product={product} addToCart={addToCart} />
+      <ProductInfo
+        product={product}
+        addToCart={addToCart}
+        mainImage={mainImage}
+      />
 
       {/* --- ĐÁNH GIÁ --- */}
       <div className="md:col-span-2">

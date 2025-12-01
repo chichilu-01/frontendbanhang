@@ -1,7 +1,7 @@
 import React from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
-// ✅ Hàm format tiền kiểu Việt Nam (chuẩn đẹp)
+// Format VND
 const formatVND = (value) => {
   const num = Number(value) || 0;
   return new Intl.NumberFormat("vi-VN", {
@@ -10,16 +10,15 @@ const formatVND = (value) => {
     minimumFractionDigits: 0,
   })
     .format(num)
-    .replace("₫", "₫"); // đảm bảo ký hiệu ở cuối
+    .replace("₫", "₫");
 };
 
 export default function CartItem({ item, onRemove, onQuantityChange }) {
   const safeId = item.id || item.product_id || item._id || "unknown";
+
+  // ⭐ CHỈ LẤY 1 NGUỒN ẢNH DUY NHẤT → image_url
   const imageUrl =
-    item.image ||
-    item.thumbnail ||
-    item.mainImage ||
-    "https://via.placeholder.com/80?text=No+Image";
+    item.image_url || "https://via.placeholder.com/80?text=No+Image";
 
   const handleQuantityChange = (newQty) => {
     if (newQty < 1) return;
@@ -28,7 +27,7 @@ export default function CartItem({ item, onRemove, onQuantityChange }) {
 
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border border-gray-200 p-4 rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200">
-      {/* --- Ảnh + Thông tin --- */}
+      {/* --- ẢNH + THÔNG TIN --- */}
       <div className="flex items-center gap-4 w-full sm:w-auto">
         <img
           src={imageUrl}
@@ -55,7 +54,6 @@ export default function CartItem({ item, onRemove, onQuantityChange }) {
             </p>
           </div>
 
-          {/* ✅ Hiển thị giá chuẩn VND */}
           <p className="text-blue-600 font-semibold mt-2">
             {formatVND(item.price)} × {item.quantity}
           </p>
@@ -64,7 +62,6 @@ export default function CartItem({ item, onRemove, onQuantityChange }) {
 
       {/* --- Điều khiển số lượng + Xoá --- */}
       <div className="flex items-center gap-3 mt-4 sm:mt-0">
-        {/* Nút tăng giảm số lượng */}
         <div className="flex items-center border rounded-lg overflow-hidden shadow-sm">
           <button
             onClick={() => handleQuantityChange(item.quantity - 1)}
@@ -72,9 +69,11 @@ export default function CartItem({ item, onRemove, onQuantityChange }) {
           >
             <Minus size={16} />
           </button>
+
           <span className="px-4 py-1 text-gray-700 font-medium select-none">
             {item.quantity}
           </span>
+
           <button
             onClick={() => handleQuantityChange(item.quantity + 1)}
             className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition active:scale-95"
@@ -83,7 +82,6 @@ export default function CartItem({ item, onRemove, onQuantityChange }) {
           </button>
         </div>
 
-        {/* Nút xoá */}
         <button
           onClick={() =>
             onRemove(safeId, item.selectedSize, item.selectedColor)

@@ -6,7 +6,7 @@ const formatVND = (value) => {
   return num.toLocaleString("vi-VN") + "₫";
 };
 
-export default function ProductInfo({ product, addToCart }) {
+export default function ProductInfo({ product, addToCart, mainImage}) {
   // ---- CHUẨN HOÁ LIST ----
   const normalize = (list) => {
     if (!list) return [];
@@ -38,6 +38,7 @@ export default function ProductInfo({ product, addToCart }) {
       id: product.id,
       selectedSize,
       selectedColor,
+      image_url: mainImage || product.image_url || product.gallery?.[0] || "",
     };
 
     addToCart(safe);

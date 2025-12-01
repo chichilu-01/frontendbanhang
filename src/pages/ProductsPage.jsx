@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getProducts } from "@services/api";
 import ProductCard from "@components/ProductCard"; // dùng giống Home
 
-const formatVND = (value) =>
-  (Number(value) || 0).toLocaleString("vi-VN") + "₫";
+const formatVND = (value) => (Number(value) || 0).toLocaleString("vi-VN") + "₫";
 
 const CATEGORIES = [
   { key: "all", label: "Tất cả" },
@@ -56,7 +55,7 @@ export default function ProductsPage() {
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">🛒 Sản phẩm</h1>
+      <h1 className="text-2xl font-bold mb-4">🗂️ Sản phẩm</h1>
 
       {/* Nút lọc */}
       <div className="flex flex-wrap gap-2 mb-4">

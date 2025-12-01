@@ -65,19 +65,23 @@ export default function useProducts() {
         description: product.description || "",
         stock: parseInt(product.stock || 0),
         image_url: product.image_url || "",
+
+        // ⭐ LUÔN LƯU DƯỚI DẠNG CSV (không gửi array)
         sizes: Array.isArray(product.sizes)
-          ? product.sizes
+          ? product.sizes.join(",")
           : (product.sizes || "")
               .split(",")
               .map((s) => s.trim())
-              .filter(Boolean),
+              .filter(Boolean)
+              .join(","),
 
         colors: Array.isArray(product.colors)
-          ? product.colors
+          ? product.colors.join(",")
           : (product.colors || "")
               .split(",")
               .map((c) => c.trim())
-              .filter(Boolean),
+              .filter(Boolean)
+              .join(","),
       };
 
       // /////////////////////////////////////////////////////

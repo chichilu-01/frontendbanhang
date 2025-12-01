@@ -6,14 +6,12 @@ import { useCart } from "@context/CartContext";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
-  console.log("👤 NAVBAR USER:", user);
-  console.log("🧪 is_admin:", typeof user?.is_admin, user?.is_admin);
 
   const totalItems = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
     [cartItems],
   );
-  const isAdmin = true; // 👈 ép cứng để kiểm tra
+
   const menuItems = [
     { to: "/", label: "🏠 Trang chủ" },
     {
@@ -24,10 +22,8 @@ export default function Navbar() {
     user?.is_admin && { to: "/admin", label: "⚙️ Quản trị" },
   ].filter(Boolean);
 
-  
-
   return (
-    <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center z-50">
+    <nav className="hidden md:flex bg-white shadow-md py-4 px-6 justify-between items-center z-50">
       {/* Logo */}
       <Link to="/" className="text-xl font-bold text-blue-600">
         🛍️ CHICHILU SHOP
@@ -53,7 +49,10 @@ export default function Navbar() {
         {user ? (
           <>
             <span className="text-gray-700">👤 {user.name}</span>
-            <button onClick={logout} className="text-red-500 hover:underline">
+            <button
+              onClick={logout}
+              className="text-red-500 hover:underline ml-2"
+            >
               🚪 Đăng xuất
             </button>
           </>

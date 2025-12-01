@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { Home, ShoppingCart, User, Shield } from "lucide-react";
 import { useAuth } from "@context/AuthContext";
 import { useCart } from "@context/CartContext";
+import { Home, ShoppingCart, Grid3x3, User } from "lucide-react";
 
 export default function BottomTab() {
   const { user } = useAuth();
@@ -10,18 +11,20 @@ export default function BottomTab() {
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="
+    <div
+      className="
       fixed bottom-3 left-1/2 -translate-x-1/2
       w-[92%] bg-white/85 backdrop-blur-md
       border border-gray-200 shadow-lg
       rounded-2xl py-2 px-4
       flex justify-around items-center
       z-50 md:hidden
-    ">
+    "
+    >
       <Tab to="/" icon={<Home size={24} />} label="Home" />
       <Tab
-        to="/products"               // ⭐ TAB SẢN PHẨM
-        icon={<Grid3X3 size={22} />}
+        to="/products" // ⭐ TAB SẢN PHẨM
+        icon={<Grid3x3 size={22} />}
         label="Sản phẩm"
       />
 
@@ -33,11 +36,7 @@ export default function BottomTab() {
       />
 
       {user?.is_admin && (
-        <Tab
-          to="/admin"
-          icon={<Shield size={24} />}
-          label="Quản trị"
-        />
+        <Tab to="/admin" icon={<Shield size={24} />} label="Quản trị" />
       )}
 
       <Tab

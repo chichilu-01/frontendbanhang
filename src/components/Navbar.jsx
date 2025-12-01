@@ -14,6 +14,7 @@ export default function Navbar() {
 
   const menuItems = [
     { to: "/", label: "🏠 Trang chủ" },
+    { to: "/products", label: "🛒 Sản phẩm" },
     {
       to: "/cart",
       label: "🛒 Giỏ hàng",

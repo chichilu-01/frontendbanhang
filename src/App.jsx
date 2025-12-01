@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // USER PAGES
 import Home from "@pages/Home";
+import ProductsPage from "@pages/ProductsPage";
 import ProductDetail from "@pages/ProductDetail";
 import Login from "@pages/Login";
 import Register from "@pages/Register";
@@ -34,6 +35,7 @@ export default function App() {
         <Route element={<MobileLayout />}>
           {/* HOME + PRODUCT DETAIL */}
           <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetail />} />
 
           {/* CART */}

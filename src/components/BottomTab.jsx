@@ -19,6 +19,11 @@ export default function BottomTab() {
       z-50 md:hidden
     ">
       <Tab to="/" icon={<Home size={24} />} label="Home" />
+      <Tab
+        to="/products"               // ⭐ TAB SẢN PHẨM
+        icon={<Grid3X3 size={22} />}
+        label="Sản phẩm"
+      />
 
       <Tab
         to="/cart"

@@ -94,6 +94,7 @@ export default function ProductForm({ product, onClose, onSave }) {
     }
 
     onSave({
+      id: product?.id,
       name: form.name,
       price: parseFloat(form.price),
       description: form.description,

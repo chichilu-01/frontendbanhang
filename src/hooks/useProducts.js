@@ -52,36 +52,41 @@ export default function useProducts() {
 
   // 🧩 Lưu hoặc thêm sản phẩm
   const handleSave = async (product) => {
-    if (!product || (!addingNew && !product.id)) {
-      toast.error("Thiếu thông tin sản phẩm (id không hợp lệ)");
-      return;
-    }
-
-    const payload = {
-      name: product.name,
-      price: parseFloat(product.price),
-      description: product.description,
-      stock: parseInt(product.stock || 0),
-      image_url: product.image_url || product.imageUrl || "",
-      sizes:
-        typeof product.sizes === "string"
-          ? product.sizes.split(",").map((s) => s.trim())
-          : product.sizes || [],
-      colors:
-        typeof product.colors === "string"
-          ? product.colors.split(",").map((c) => c.trim())
-          : product.colors || [],
-    };
-
     try {
+      // ----- 1️⃣ VALIDATE ID -----
+      if (!addingNew && !product?.id) {
+        toast.error("Không thể cập nhật: thiếu ID sản phẩm.");
+        return;
+      }
+
+      // ----- 2️⃣ BUILD PAYLOAD -----
+      const payload = {
+        name: product.name,
+        price: parseFloat(product.price),
+        description: product.description || "",
+        stock: parseInt(product.stock || 0),
+        image_url: product.image_url || "",
+        sizes: Array.isArray(product.sizes)
+          ? product.sizes
+          : (product.sizes || "").split(",").map((s) => s.trim()),
+        colors: Array.isArray(product.colors)
+          ? product.colors
+          : (product.colors || "").split(",").map((c) => c.trim()),
+
+        // ⭐ THÊM GALLERY VÀO UPDATE (bạn QUÊN)
+        gallery: product.gallery || [],
+      };
+
+      // ----- 3️⃣ ADD PRODUCT -----
       if (addingNew) {
         const res = await createProduct(payload, token);
         const newProduct = res.data;
-        if (!newProduct?.id)
-          throw new Error("API không trả về sản phẩm hợp lệ");
 
-        // Nếu có ảnh, tải lên bảng media
-        if (product.gallery && Array.isArray(product.gallery)) {
+        if (!newProduct?.id)
+          throw new Error("API trả về sản phẩm không hợp lệ");
+
+        // Thêm media vào bảng media
+        if (product.gallery && product.gallery.length > 0) {
           await Promise.all(
             product.gallery.map((url) =>
               createMedia({ product_id: newProduct.id, url }, token),
@@ -90,19 +95,24 @@ export default function useProducts() {
         }
 
         setProducts((prev) => [...prev, newProduct]);
-        toast.success("✅ Đã thêm sản phẩm mới");
-        setAddingNew(false);
+        toast.success("🎉 Đã thêm sản phẩm mới");
       } else {
+        // ----- 4️⃣ UPDATE PRODUCT -----
         const res = await updateProduct(product.id, payload, token);
+
         setProducts((prev) =>
           prev.map((p) => (p.id === res.data.id ? res.data : p)),
         );
+
         toast.success("💾 Đã cập nhật sản phẩm");
       }
+
+      // ----- 5️⃣ CLEAN UP -----
       setEditingProduct(null);
+      setAddingNew(false);
     } catch (error) {
+      console.error("❌ Lỗi lưu sản phẩm:", error);
       toast.error("Lỗi khi lưu sản phẩm");
-      console.error("❌ Lỗi lưu:", error);
     }
   };
 

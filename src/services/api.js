@@ -126,7 +126,7 @@ export const uploadProductImage = (productId, formData, token) =>
 
 // Xoá ảnh theo ID
 export const deleteProductImage = (mediaId, token) =>
-  API.delete(`/products/media/${mediaId}`, {
+  API.delete(`/media/${mediaId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

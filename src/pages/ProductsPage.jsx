@@ -1,20 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { getProducts } from "@services/api";
-import ProductCard from "@components/ProductCard"; // dùng giống Home
+import ProductCard from "@components/ProductCard";
+import { useSearchParams } from "react-router-dom"; // 👈 thêm
 
-const formatVND = (value) => (Number(value) || 0).toLocaleString("vi-VN") + "₫";
-
+// Các tab filter hiển thị trên trang
 const CATEGORIES = [
   { key: "all", label: "Tất cả" },
+  { key: "thoitrang", label: "Thời trang" },
   { key: "giay", label: "Giày / Dép" },
-  { key: "ao", label: "Áo" },
-  { key: "quan", label: "Quần" },
+  { key: "tuixach", label: "Túi xách" },
+  { key: "congnghe", label: "Công nghệ" },
+  { key: "phukien", label: "Phụ kiện" },
+  { key: "khac", label: "Khác" },
 ];
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
-  const [activeCat, setActiveCat] = useState("all");
   const [loading, setLoading] = useState(false);
+
+  const [searchParams] = useSearchParams();
+
+  // Lấy category từ URL lần đầu
+  const [activeCat, setActiveCat] = useState(() => {
+    return searchParams.get("category") || "all";
+  });
+
+  // Nếu URL đổi (vd: user click từ Home lần nữa khi đang ở /products),
+  // thì cập nhật lại activeCat
+  useEffect(() => {
+    const cat = searchParams.get("category") || "all";
+    setActiveCat(cat);
+  }, [searchParams]);
 
   useEffect(() => {
     const load = async () => {
@@ -31,10 +47,18 @@ export default function ProductsPage() {
     load();
   }, []);
 
+  // Hàm lọc theo category
   const filterByCategory = (p) => {
     const name = (p.name || "").toLowerCase();
+    const cat = (p.category || "").toLowerCase();
+
+    if (activeCat === "thoitrang") {
+      return cat === "thời trang".toLowerCase();
+    }
 
     if (activeCat === "giay") {
+      // ưu tiên cột category, nếu chưa set thì fallback theo tên
+      if (cat === "giày dép".toLowerCase()) return true;
       return (
         name.includes("giày") ||
         name.includes("giay") ||
@@ -42,13 +66,40 @@ export default function ProductsPage() {
         name.includes("dep")
       );
     }
-    if (activeCat === "ao") {
-      return name.includes("áo") || name.includes("ao ");
+
+    if (activeCat === "tuixach") {
+      if (cat === "túi xách".toLowerCase()) return true;
+      return (
+        name.includes("túi") ||
+        name.includes("tui") ||
+        name.includes("túi xách")
+      );
     }
-    if (activeCat === "quan") {
-      return name.includes("quần") || name.includes("quan ");
+
+    if (activeCat === "congnghe") {
+      if (cat === "công nghệ".toLowerCase()) return true;
+      return name.includes("công nghệ") || name.includes("cong nghe");
     }
-    return true; // all
+
+    if (activeCat === "phukien") {
+      if (cat === "phụ kiện".toLowerCase()) return true;
+      return name.includes("phụ kiện") || name.includes("phu kien");
+    }
+
+    if (activeCat === "khac") {
+      // Những sản phẩm không thuộc các nhóm trên
+      const knownCats = [
+        "thời trang",
+        "giày dép",
+        "túi xách",
+        "công nghệ",
+        "phụ kiện",
+      ];
+      return !knownCats.includes(cat);
+    }
+
+    // "all"
+    return true;
   };
 
   const filtered = products.filter(filterByCategory);
@@ -57,7 +108,7 @@ export default function ProductsPage() {
     <div className="p-4 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">🗂️ Sản phẩm</h1>
 
-      {/* Nút lọc */}
+      {/* Nút lọc (tab) */}
       <div className="flex flex-wrap gap-2 mb-4">
         {CATEGORIES.map((c) => (
           <button

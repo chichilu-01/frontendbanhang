@@ -76,21 +76,23 @@ export default function Home() {
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">
           🌟 Danh mục nổi bật
         </h2>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           {[
-            "Thời trang",
-            "Giày dép",
-            "Túi xách",
-            "Công nghệ",
-            "Phụ kiện",
-            "Khác",
-          ].map((cat, i) => (
-            <div
-              key={i}
+            { label: "Thời trang", key: "thoitrang" },
+            { label: "Giày dép", key: "giay" },
+            { label: "Túi xách", key: "tuixach" },
+            { label: "Công nghệ", key: "congnghe" },
+            { label: "Phụ kiện", key: "phukien" },
+            { label: "Khác", key: "khac" },
+          ].map((cat) => (
+            <Link
+              key={cat.key}
+              to={`/products?category=${cat.key}`}
               className="bg-white border rounded-xl py-4 text-center text-gray-700 font-medium shadow hover:shadow-xl cursor-pointer transition-transform duration-300 hover:-translate-y-2"
             >
-              {cat}
-            </div>
+              {cat.label}
+            </Link>
           ))}
         </div>
       </section>

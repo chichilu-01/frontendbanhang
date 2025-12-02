@@ -80,11 +80,11 @@ export default function Home() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           {[
             { label: "Thời trang", key: "thoitrang" },
+            { label: "Áo", key: "ao" },
+            { label: "Quần", key: "quan" },
             { label: "Giày dép", key: "giay" },
             { label: "Túi xách", key: "tuixach" },
-            { label: "Công nghệ", key: "congnghe" },
             { label: "Phụ kiện", key: "phukien" },
-            { label: "Khác", key: "khac" },
           ].map((cat) => (
             <Link
               key={cat.key}

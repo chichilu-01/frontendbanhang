@@ -6,11 +6,13 @@ import { useSearchParams } from "react-router-dom"; // 👈 thêm
 // Các tab filter hiển thị trên trang
 const CATEGORIES = [
   { key: "all", label: "Tất cả" },
-  { key: "thoitrang", label: "Thời trang" },
+  { key: "ao", label: "Áo" },
+  { key: "quan", label: "Quần" },
   { key: "giay", label: "Giày / Dép" },
   { key: "tuixach", label: "Túi xách" },
   { key: "congnghe", label: "Công nghệ" },
   { key: "phukien", label: "Phụ kiện" },
+  { key: "thoitrang", label: "Thời trang" },
   { key: "khac", label: "Khác" },
 ];
 
@@ -56,6 +58,18 @@ export default function ProductsPage() {
       return cat === "thời trang".toLowerCase();
     }
 
+    if (activeCat === "ao") {
+      if (cat === "áo") return true;
+      return (
+        name.includes("áo ") || name.startsWith("ao ") || name.includes("áo")
+      );
+    }
+
+    if (activeCat === "quan") {
+      if (cat === "quần") return true;
+      return name.includes("quần") || name.includes("quan ");
+    }
+
     if (activeCat === "giay") {
       // ưu tiên cột category, nếu chưa set thì fallback theo tên
       if (cat === "giày dép".toLowerCase()) return true;
@@ -94,6 +108,8 @@ export default function ProductsPage() {
         "túi xách",
         "công nghệ",
         "phụ kiện",
+        "quần",
+        "áo",
       ];
       return !knownCats.includes(cat);
     }

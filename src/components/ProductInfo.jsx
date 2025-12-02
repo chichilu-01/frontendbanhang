@@ -160,13 +160,23 @@ export default function ProductInfo({
       </h1>
 
       {/* SAO */}
+      {/* ⭐ RATING CHUẨN */}
       <div className="flex items-center gap-1 text-yellow-400 mb-2">
         {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i}>{i < product.rating ? "★" : "☆"}</span>
+          <span key={i}>
+            {i < (Number(product.average_rating) || 0) ? "★" : "☆"}
+          </span>
         ))}
+
         <span className="text-gray-500 text-sm ml-2">
-          {product?.rating?.toFixed?.(1) || "0.0"} / 5
+          {(Number(product.average_rating) || 0).toFixed(1)} / 5
         </span>
+
+        {product.review_count > 0 && (
+          <span className="text-gray-400 text-xs ml-2">
+            ({product.review_count} đánh giá)
+          </span>
+        )}
       </div>
 
       {/* GIÁ */}

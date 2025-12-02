@@ -1,5 +1,14 @@
 import { useAuth } from "@context/AuthContext";
-import { LogOut, ShoppingBag, Pencil, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import {
+  LogOut,
+  ShoppingBag,
+  Pencil,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { API } from "@services/api";
@@ -54,24 +63,14 @@ export default function AccountPage() {
     try {
       setSaving(true);
 
-      const payload = {
-        name: form.name,
-        email: form.email,
-        phone: form.phone || null,
-        birthday: form.birthday || null,
-        gender: form.gender || null,
-        address: form.address || null,
-      };
+      const payload = { ...form };
 
       const res = await API.put("/auth/profile", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const updatedUser = res.data.user;
+      updateUser(res.data.user);
       toast.success("✨ Đã lưu thay đổi!");
-
-      updateUser(updatedUser);
-
       setIsEditing(false);
     } catch (err) {
       toast.error(err.response?.data?.error || "Không thể cập nhật.");
@@ -82,7 +81,6 @@ export default function AccountPage() {
 
   const handleCancel = () => {
     setIsEditing(false);
-
     setForm({
       name: user.name || "",
       email: user.email || "",
@@ -101,12 +99,12 @@ export default function AccountPage() {
   if (loading) return <div className="p-4 text-center">Đang tải...</div>;
 
   return (
-    <div className="p-4 pb-24 mx-auto w-full max-w-2xl bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    <div className="p-4 pb-24 mx-auto w-full max-w-3xl bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+      {/* 🔥 ULTRA MENU GLASS */}
+      <UltraMenu user={user} navigate={navigate} />
 
       {/* HEADER */}
       <div className="flex items-center justify-between p-5 bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-white/40">
-
-        {/* Avatar */}
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
             {form.name?.charAt(0)?.toUpperCase()}
@@ -128,57 +126,55 @@ export default function AccountPage() {
         )}
       </div>
 
-      {/* FORM CONTAINER */}
+      {/* FORM */}
       <div className="mt-6 bg-white/80 backdrop-blur-xl p-5 rounded-2xl shadow border border-white/40 space-y-6">
-
-        <h3 className="text-xl font-semibold text-gray-800">Thông tin cá nhân</h3>
+        <h3 className="text-xl font-semibold text-gray-800">
+          Thông tin cá nhân
+        </h3>
 
         <ProfileField icon={<User />} label="Họ và tên">
           <input
-            type="text"
-            value={form.name}
-            readOnly={!isEditing}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="input-box"
+            readOnly={!isEditing}
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
         </ProfileField>
 
         <ProfileField icon={<Mail />} label="Email">
           <input
-            type="email"
-            value={form.email}
-            readOnly={!isEditing}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
             className="input-box"
+            readOnly={!isEditing}
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
         </ProfileField>
 
         <ProfileField icon={<Phone />} label="Số điện thoại">
           <input
-            type="text"
-            value={form.phone}
-            readOnly={!isEditing}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
             className="input-box"
+            readOnly={!isEditing}
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
           />
         </ProfileField>
 
         <ProfileField icon={<Calendar />} label="Ngày sinh">
           <input
             type="date"
-            value={form.birthday}
-            disabled={!isEditing}
-            onChange={(e) => setForm({ ...form, birthday: e.target.value })}
             className="input-box"
+            disabled={!isEditing}
+            value={form.birthday}
+            onChange={(e) => setForm({ ...form, birthday: e.target.value })}
           />
         </ProfileField>
 
         <ProfileField label="Giới tính">
           <select
-            value={form.gender}
-            disabled={!isEditing}
-            onChange={(e) => setForm({ ...form, gender: e.target.value })}
             className="input-box"
+            disabled={!isEditing}
+            value={form.gender}
+            onChange={(e) => setForm({ ...form, gender: e.target.value })}
           >
             <option value="">Không chọn</option>
             <option value="male">Nam</option>
@@ -189,15 +185,14 @@ export default function AccountPage() {
 
         <ProfileField icon={<MapPin />} label="Địa chỉ nhận hàng">
           <textarea
-            rows="2"
-            value={form.address}
-            readOnly={!isEditing}
-            onChange={(e) => setForm({ ...form, address: e.target.value })}
             className="input-box"
+            rows="2"
+            readOnly={!isEditing}
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
           />
         </ProfileField>
 
-        {/* BUTTONS */}
         {isEditing && (
           <div className="flex gap-3 pt-2">
             <button
@@ -207,7 +202,6 @@ export default function AccountPage() {
             >
               {saving ? "Đang lưu..." : "💾 Lưu thay đổi"}
             </button>
-
             <button
               onClick={handleCancel}
               className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl text-lg shadow hover:bg-gray-300 transition"
@@ -216,33 +210,89 @@ export default function AccountPage() {
             </button>
           </div>
         )}
-
       </div>
 
       {/* MENU */}
       <div className="mt-8 space-y-3">
-        <button
-          onClick={() => navigate("/orders")}
-          className="menu-btn"
-        >
-          <ShoppingBag />
-          <span>Đơn hàng của tôi</span>
+        <button onClick={() => navigate("/orders")} className="menu-btn">
+          <ShoppingBag /> <span>Đơn hàng của tôi</span>
         </button>
 
         <button
           onClick={handleLogout}
           className="menu-btn bg-red-50 text-red-600 hover:bg-red-100"
         >
-          <LogOut />
-          <span>Đăng xuất</span>
+          <LogOut /> <span>Đăng xuất</span>
         </button>
       </div>
     </div>
   );
 }
 
+/* -------------- ULTRA MENU COMPONENT -------------- */
+function UltraMenu({ user, navigate }) {
+  return (
+    <div
+      className="
+      hidden md:flex justify-center gap-10 
+      py-3 px-6 mb-6 rounded-3xl mx-auto max-w-5xl sticky top-4 z-50
+      backdrop-blur-2xl bg-white/20 
+      shadow-[0_8px_32px_rgba(31,38,135,0.2)]
+      border border-white/30 relative overflow-hidden
+      animate-fadeIn
+    "
+    >
+      {/* Glow background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-2xl"></div>
 
-// COMPONENT FIELD
+      <MenuItem icon="🏠" label="Trang chủ" onClick={() => navigate("/")} />
+      <MenuItem
+        icon="🛍️"
+        label="Sản phẩm"
+        onClick={() => navigate("/products")}
+      />
+      <MenuItem icon="🛒" label="Giỏ hàng" onClick={() => navigate("/cart")} />
+
+      {user?.is_admin && (
+        <MenuItem
+          icon="⚙️"
+          label="Quản trị"
+          onClick={() => navigate("/admin")}
+        />
+      )}
+
+      <MenuItemActive icon="👤" label="Tài khoản" />
+    </div>
+  );
+}
+
+/* -------------- MENU ITEM COMPONENTS -------------- */
+function MenuItem({ icon, label, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="group relative px-4 py-2 text-gray-800 font-medium rounded-xl hover:text-blue-600 transition"
+    >
+      <span className="text-lg">{icon}</span> {label}
+      <div className="absolute inset-0 rounded-xl bg-blue-400/10 blur-xl opacity-0 group-hover:opacity-100 transition"></div>
+    </button>
+  );
+}
+
+function MenuItemActive({ icon, label }) {
+  return (
+    <div
+      className="
+      px-5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 
+      text-white font-semibold shadow-lg shadow-blue-500/30 scale-105
+    "
+    >
+      <span className="text-lg">{icon}</span> {label}
+    </div>
+  );
+}
+
+/* -------------- FIELD COMPONENT -------------- */
 function ProfileField({ icon, label, children }) {
   return (
     <div className="space-y-1">

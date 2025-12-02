@@ -6,6 +6,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -99,9 +100,12 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-gray-800">
             🆕 Sản phẩm mới nhất
           </h2>
-          <button className="text-sm text-blue-600 hover:underline">
+          <Link
+            to="/products"
+            className="text-sm text-blue-600 hover:underline"
+          >
             Xem tất cả →
-          </button>
+          </Link>
         </div>
 
         {loading ? (

@@ -1,4 +1,13 @@
 @import "tailwindcss";
+
 .bg-login {
   background-image: url("/bg-login.jpg");
+}
+
+.input-box {
+  @apply w-full border border-gray-300 p-3 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition disabled:bg-gray-100;
+}
+
+.menu-btn {
+  @apply w-full flex items-center gap-3 p-4 bg-white rounded-2xl shadow hover:bg-gray-50 border border-white/60 transition;
 }

@@ -1,12 +1,12 @@
 import { useAuth } from "@context/AuthContext";
-import { LogOut, ShoppingBag } from "lucide-react";
+import { LogOut, ShoppingBag, Pencil, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { API } from "@services/api";
 import toast from "react-hot-toast";
 
 export default function AccountPage() {
-  const { user, logout, token, updateUser } = useAuth(); // ✔ đúng rồi
+  const { user, logout, token, updateUser } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -20,10 +20,8 @@ export default function AccountPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  // ===========================
-  // 📌 Load dữ liệu từ backend
-  // ===========================
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -32,8 +30,7 @@ export default function AccountPage() {
         });
 
         const fresh = res.data.user;
-
-        updateUser(fresh); // ✔ dùng updateUser đúng cách
+        updateUser(fresh);
 
         setForm({
           name: fresh.name || "",
@@ -53,161 +50,180 @@ export default function AccountPage() {
     fetchUser();
   }, []);
 
-  // ===========================
-  // 📌 Lưu thông tin đã sửa
-  // ===========================
   const handleSave = async () => {
     try {
       setSaving(true);
 
-      const payload = {};
-      Object.keys(form).forEach((key) => {
-        if (form[key] !== user[key]) {
-          payload[key] = form[key] || null;
-        }
-      });
-
-      if (Object.keys(payload).length === 0) {
-        toast("Không có gì để cập nhật!");
-        setSaving(false);
-        return;
-      }
+      const payload = {
+        name: form.name,
+        email: form.email,
+        phone: form.phone || null,
+        birthday: form.birthday || null,
+        gender: form.gender || null,
+        address: form.address || null,
+      };
 
       const res = await API.put("/auth/profile", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const updatedUser = res.data.user;
+      toast.success("✨ Đã lưu thay đổi!");
 
-      toast.success("Đã cập nhật thông tin!");
+      updateUser(updatedUser);
 
-      updateUser(updatedUser); // ✔ dùng đúng hàm updateUser
-
-      setForm({
-        name: updatedUser.name || "",
-        email: updatedUser.email || "",
-        phone: updatedUser.phone || "",
-        birthday: updatedUser.birthday?.slice(0, 10) || "",
-        address: updatedUser.address || "",
-        gender: updatedUser.gender || "",
-      });
+      setIsEditing(false);
     } catch (err) {
-      console.error("Update error:", err);
       toast.error(err.response?.data?.error || "Không thể cập nhật.");
     } finally {
       setSaving(false);
     }
   };
 
-  // ===========================
-  // 📌 Đăng xuất
-  // ===========================
+  const handleCancel = () => {
+    setIsEditing(false);
+
+    setForm({
+      name: user.name || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      birthday: user.birthday?.slice(0, 10) || "",
+      address: user.address || "",
+      gender: user.gender || "",
+    });
+  };
+
   const handleLogout = () => {
-    logout(); // ✔ từ context
+    logout();
     navigate("/login");
   };
 
-  if (loading) {
-    return <div className="p-4 text-center">Đang tải...</div>;
-  }
+  if (loading) return <div className="p-4 text-center">Đang tải...</div>;
 
   return (
-    <div className="p-4 pb-24 mx-auto w-full max-w-2xl">
-      {/* USER HEADER */}
-      <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow">
-        <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
-          {form.name?.charAt(0)?.toUpperCase()}
+    <div className="p-4 pb-24 mx-auto w-full max-w-2xl bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+
+      {/* HEADER */}
+      <div className="flex items-center justify-between p-5 bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-white/40">
+
+        {/* Avatar */}
+        <div className="flex items-center gap-4">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            {form.name?.charAt(0)?.toUpperCase()}
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold text-gray-800">{form.name}</h2>
+            <p className="text-gray-500 text-sm">{form.email}</p>
+          </div>
         </div>
 
-        <div>
-          <h2 className="text-lg font-bold">{form.name}</h2>
-          <p className="text-gray-500 text-sm">{form.email}</p>
-        </div>
+        {!isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+          >
+            <Pencil size={18} /> Sửa
+          </button>
+        )}
       </div>
 
-      {/* FORM */}
-      <div className="mt-6 bg-white p-4 rounded-xl shadow space-y-4">
-        <h3 className="text-lg font-bold">Thông tin cá nhân</h3>
+      {/* FORM CONTAINER */}
+      <div className="mt-6 bg-white/80 backdrop-blur-xl p-5 rounded-2xl shadow border border-white/40 space-y-6">
 
-        <Field label="Họ và tên">
+        <h3 className="text-xl font-semibold text-gray-800">Thông tin cá nhân</h3>
+
+        <ProfileField icon={<User />} label="Họ và tên">
           <input
             type="text"
-            name="name"
             value={form.name}
+            readOnly={!isEditing}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full border p-2 rounded mt-1"
+            className="input-box"
           />
-        </Field>
+        </ProfileField>
 
-        <Field label="Email">
+        <ProfileField icon={<Mail />} label="Email">
           <input
             type="email"
-            name="email"
             value={form.email}
+            readOnly={!isEditing}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full border p-2 rounded mt-1"
+            className="input-box"
           />
-        </Field>
+        </ProfileField>
 
-        <Field label="Số điện thoại">
+        <ProfileField icon={<Phone />} label="Số điện thoại">
           <input
             type="text"
-            name="phone"
             value={form.phone}
+            readOnly={!isEditing}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full border p-2 rounded mt-1"
+            className="input-box"
           />
-        </Field>
+        </ProfileField>
 
-        <Field label="Ngày sinh">
+        <ProfileField icon={<Calendar />} label="Ngày sinh">
           <input
             type="date"
-            name="birthday"
-            value={form.birthday || ""}
+            value={form.birthday}
+            disabled={!isEditing}
             onChange={(e) => setForm({ ...form, birthday: e.target.value })}
-            className="w-full border p-2 rounded mt-1"
+            className="input-box"
           />
-        </Field>
+        </ProfileField>
 
-        <Field label="Giới tính">
+        <ProfileField label="Giới tính">
           <select
-            name="gender"
             value={form.gender}
+            disabled={!isEditing}
             onChange={(e) => setForm({ ...form, gender: e.target.value })}
-            className="w-full border p-2 rounded mt-1"
+            className="input-box"
           >
             <option value="">Không chọn</option>
             <option value="male">Nam</option>
             <option value="female">Nữ</option>
             <option value="other">Khác</option>
           </select>
-        </Field>
+        </ProfileField>
 
-        <Field label="Địa chỉ nhận hàng">
+        <ProfileField icon={<MapPin />} label="Địa chỉ nhận hàng">
           <textarea
-            name="address"
             rows="2"
             value={form.address}
+            readOnly={!isEditing}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
-            className="w-full border p-2 rounded mt-1"
+            className="input-box"
           />
-        </Field>
+        </ProfileField>
 
-        {/* SAVE BUTTON */}
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg mt-3 disabled:opacity-50"
-        >
-          {saving ? "Đang lưu..." : "💾 Lưu thay đổi"}
-        </button>
+        {/* BUTTONS */}
+        {isEditing && (
+          <div className="flex gap-3 pt-2">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 bg-blue-600 text-white py-3 rounded-xl text-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              {saving ? "Đang lưu..." : "💾 Lưu thay đổi"}
+            </button>
+
+            <button
+              onClick={handleCancel}
+              className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl text-lg shadow hover:bg-gray-300 transition"
+            >
+              Hủy
+            </button>
+          </div>
+        )}
+
       </div>
 
       {/* MENU */}
-      <div className="mt-6 space-y-3">
+      <div className="mt-8 space-y-3">
         <button
           onClick={() => navigate("/orders")}
-          className="w-full flex items-center gap-3 p-4 bg-white rounded-xl shadow text-left"
+          className="menu-btn"
         >
           <ShoppingBag />
           <span>Đơn hàng của tôi</span>
@@ -215,7 +231,7 @@ export default function AccountPage() {
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 p-4 bg-red-50 text-red-600 rounded-xl shadow text-left"
+          className="menu-btn bg-red-50 text-red-600 hover:bg-red-100"
         >
           <LogOut />
           <span>Đăng xuất</span>
@@ -225,10 +241,15 @@ export default function AccountPage() {
   );
 }
 
-function Field({ label, children }) {
+
+// COMPONENT FIELD
+function ProfileField({ icon, label, children }) {
   return (
-    <div>
-      <label className="text-sm font-medium">{label}</label>
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+        {icon && <span className="text-gray-500">{icon}</span>}
+        {label}
+      </label>
       {children}
     </div>
   );

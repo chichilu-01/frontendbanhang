@@ -6,14 +6,14 @@ import { API } from "@services/api";
 import toast from "react-hot-toast";
 
 export default function AccountPage() {
-  const { user, logout, token, setUser } = useAuth();
+  const { user, logout, token, setUser: updateUser } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: user?.name || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    birthday: user?.birthday || "", // Nếu null vẫn là "", tránh lỗi input date
+    birthday: user?.birthday?.slice(0, 10) || "",
     address: user?.address || "",
     gender: user?.gender || "",
   });
@@ -35,7 +35,7 @@ export default function AccountPage() {
 
       const payload = {
         ...form,
-        birthday: form.birthday || null, // thêm dòng này
+        birthday: form.birthday || null, // tránh lỗi MySQL
       };
 
       const res = await API.put("/auth/profile", payload, {
@@ -43,9 +43,14 @@ export default function AccountPage() {
       });
 
       toast.success("Đã cập nhật thông tin!");
-      setUser({ ...user, ...res.data.user });
+
+      // tránh lỗi minify → luôn dùng callback
+      updateUser((prev) => ({
+        ...prev,
+        ...res.data.user,
+      }));
     } catch (err) {
-      console.error(err);
+      console.error("Update error:", err);
       toast.error(err.response?.data?.error || "Không thể cập nhật.");
     } finally {
       setSaving(false);
@@ -53,10 +58,10 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="p-4 pb-24 max-w-lg mx-auto">
+    <div className="p-4 pb-24 mx-auto w-full max-w-2xl">
       {/* USER HEADER */}
       <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow">
-        <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+        <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
           {user?.name?.charAt(0)?.toUpperCase()}
         </div>
 

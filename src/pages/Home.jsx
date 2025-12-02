@@ -16,6 +16,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const res = await getProducts();
+        console.log("📦 DATA SẢN PHẨM:", res.data);
         setProducts(res.data);
       } catch (error) {
         console.error("Lỗi khi tải sản phẩm:", error);

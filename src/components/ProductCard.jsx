@@ -12,7 +12,7 @@ const formatVND = (value) => {
 };
 
 export default function ProductCard({ product }) {
-  const rating = Number(product.rating) || 0;
+  const rating = Number(product.average_rating) || 0;
 
   // ⭐ Tính số sao
   const fullStars = Math.floor(rating); // Sao đầy

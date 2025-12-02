@@ -20,7 +20,7 @@ function StarRating({ value, size = 18 }) {
         ))}
 
       {half === 1 && (
-        <span style={{ fontSize: size, color: "#fbbf24" }}>⯨</span> // half star icon
+        <span style={{ fontSize: size, color: "#fbbf24" }}>⯨</span>
       )}
 
       {Array(empty)
@@ -43,6 +43,10 @@ export default function ProductReviews({ productId }) {
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+
+  // ⭐ NEW: filter + show more controls
+  const [filter, setFilter] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(3);
 
   const fetchReviews = async () => {
     try {
@@ -91,6 +95,15 @@ export default function ProductReviews({ productId }) {
         ).toFixed(1)
       : null;
 
+  // ===================== ⭐ FILTER REVIEWS =====================
+  const filteredReviews = reviews.filter((r) => {
+    if (filter === "all") return true;
+    return r.rating === Number(filter);
+  });
+
+  // ===================== ⭐ LIMIT REVIEW SHOWING =====================
+  const displayedReviews = filteredReviews.slice(0, visibleCount);
+
   return (
     <div className="mt-10 p-4 bg-white rounded-xl shadow">
       {/* =================== HEADER =================== */}
@@ -109,12 +122,39 @@ export default function ProductReviews({ productId }) {
         )}
       </div>
 
+      {/* =================== ⭐ FILTER BUTTONS =================== */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {[
+          { label: "Tất cả", value: "all" },
+          { label: "5 sao", value: 5 },
+          { label: "4 sao", value: 4 },
+          { label: "3 sao", value: 3 },
+          { label: "2 sao", value: 2 },
+          { label: "1 sao", value: 1 },
+        ].map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => {
+              setFilter(opt.value);
+              setVisibleCount(3); // reset to 3 when filter changes
+            }}
+            className={`px-3 py-1 rounded-full text-sm border ${
+              filter == opt.value
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
       {/* =================== LIST REVIEWS =================== */}
-      {reviews.length === 0 && (
+      {displayedReviews.length === 0 && (
         <p className="text-gray-500 mb-4">Chưa có đánh giá nào.</p>
       )}
 
-      {reviews.map((r, i) => (
+      {displayedReviews.map((r, i) => (
         <div
           key={i}
           className="border-b py-4 flex flex-col gap-1 bg-gray-50 rounded-lg px-3 mb-3"
@@ -138,6 +178,16 @@ export default function ProductReviews({ productId }) {
           </p>
         </div>
       ))}
+
+      {/* =================== ⭐ SHOW MORE =================== */}
+      {visibleCount < filteredReviews.length && (
+        <button
+          onClick={() => setVisibleCount(visibleCount + 5)}
+          className="w-full py-2 border rounded-lg text-gray-700 hover:bg-gray-100 mt-2"
+        >
+          Xem thêm đánh giá
+        </button>
+      )}
 
       {/* =================== FORM USER =================== */}
       {user ? (

@@ -6,7 +6,7 @@ import { API } from "@services/api";
 import toast from "react-hot-toast";
 
 export default function AccountPage() {
-  const { user, logout, token, setUser: updateUser } = useAuth();
+  const { user, logout, token, updateUser } = useAuth(); // ✔ đúng rồi
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -22,7 +22,7 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false);
 
   // ===========================
-  // 📌 1. Load dữ liệu từ MySQL
+  // 📌 Load dữ liệu từ backend
   // ===========================
   useEffect(() => {
     const fetchUser = async () => {
@@ -33,10 +33,8 @@ export default function AccountPage() {
 
         const fresh = res.data.user;
 
-        // cập nhật vào AuthContext
-        updateUser(fresh);
+        updateUser(fresh); // ✔ dùng updateUser đúng cách
 
-        // cập nhật vào form
         setForm({
           name: fresh.name || "",
           email: fresh.email || "",
@@ -56,13 +54,12 @@ export default function AccountPage() {
   }, []);
 
   // ===========================
-  // 📌 2. Update dữ liệu đã sửa
+  // 📌 Lưu thông tin đã sửa
   // ===========================
   const handleSave = async () => {
     try {
       setSaving(true);
 
-      // chỉ gửi field nào thay đổi
       const payload = {};
       Object.keys(form).forEach((key) => {
         if (form[key] !== user[key]) {
@@ -84,13 +81,8 @@ export default function AccountPage() {
 
       toast.success("Đã cập nhật thông tin!");
 
-      // tránh lỗi minify -> luôn dùng callback
-      updateUser((prev) => ({
-        ...prev,
-        ...updatedUser,
-      }));
+      updateUser(updatedUser); // ✔ dùng đúng hàm updateUser
 
-      // cập nhật form với dữ liệu thực mới từ backend
       setForm({
         name: updatedUser.name || "",
         email: updatedUser.email || "",
@@ -105,6 +97,14 @@ export default function AccountPage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  // ===========================
+  // 📌 Đăng xuất
+  // ===========================
+  const handleLogout = () => {
+    logout(); // ✔ từ context
+    navigate("/login");
   };
 
   if (loading) {
@@ -225,7 +225,6 @@ export default function AccountPage() {
   );
 }
 
-// Component nhỏ giúp form gọn hơn
 function Field({ label, children }) {
   return (
     <div>

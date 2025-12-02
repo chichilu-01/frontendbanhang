@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
     () => localStorage.getItem("token") || null,
   );
 
+  // Load user khi có token
   useEffect(() => {
     if (token) {
       const storedUser = localStorage.getItem("user");
@@ -31,6 +32,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
+  // Login
   const login = (token, userData) => {
     const safeUser = {
       ...userData,
@@ -48,6 +50,14 @@ export const AuthProvider = ({ children }) => {
     setUser(safeUser);
   };
 
+  // 🔥 Hàm updateUser bạn đang thiếu
+  const updateUser = (newData) => {
+    const updated = { ...user, ...newData };
+    localStorage.setItem("user", JSON.stringify(updated));
+    setUser(updated);
+  };
+
+  // Logout
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -59,7 +69,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, isLoggedIn: !!token }}
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        setUser, // ok
+        updateUser, // 🔥 giờ đã có thật
+        isLoggedIn: !!token,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -33,10 +33,20 @@ export default function AccountPage() {
     try {
       setSaving(true);
 
-      const payload = {
-        ...form,
-        birthday: form.birthday || null, // tránh lỗi MySQL
-      };
+      // chỉ gửi các thông tin đã thay đổi
+      const payload = {};
+
+      Object.keys(form).forEach((key) => {
+        if (form[key] !== user[key]) {
+          payload[key] = form[key] || null;
+        }
+      });
+
+      if (Object.keys(payload).length === 0) {
+        toast("Không có gì để cập nhật!");
+        setSaving(false);
+        return;
+      }
 
       const res = await API.put("/auth/profile", payload, {
         headers: { Authorization: `Bearer ${token}` },
@@ -44,11 +54,11 @@ export default function AccountPage() {
 
       toast.success("Đã cập nhật thông tin!");
 
-      // tránh lỗi minify → luôn dùng callback
       updateUser((prev) => ({
         ...prev,
         ...res.data.user,
       }));
+
     } catch (err) {
       console.error("Update error:", err);
       toast.error(err.response?.data?.error || "Không thể cập nhật.");
@@ -56,6 +66,7 @@ export default function AccountPage() {
       setSaving(false);
     }
   };
+
 
   return (
     <div className="p-4 pb-24 mx-auto w-full max-w-2xl">

@@ -33,14 +33,17 @@ export default function AccountPage() {
     try {
       setSaving(true);
 
-      const res = await API.put(
-        "/auth/profile",
-        { ...form },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const payload = {
+        ...form,
+        birthday: form.birthday || null, // thêm dòng này
+      };
+
+      const res = await API.put("/auth/profile", payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       toast.success("Đã cập nhật thông tin!");
-      setUser({ ...user, ...res.data.user }); // Cập nhật AuthContext
+      setUser({ ...user, ...res.data.user });
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.error || "Không thể cập nhật.");

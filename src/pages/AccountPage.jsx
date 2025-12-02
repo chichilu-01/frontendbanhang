@@ -31,6 +31,7 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  // 🔹 Load thông tin user từ backend
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -38,16 +39,16 @@ export default function AccountPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const fresh = res.data.user;
-        updateUser(fresh);
+        const freshUser = res.data.user;
+        updateUser(freshUser);
 
         setForm({
-          name: fresh.name || "",
-          email: fresh.email || "",
-          phone: fresh.phone || "",
-          birthday: fresh.birthday?.slice(0, 10) || "",
-          address: fresh.address || "",
-          gender: fresh.gender || "",
+          name: freshUser.name || "",
+          email: freshUser.email || "",
+          phone: freshUser.phone || "",
+          birthday: freshUser.birthday?.slice(0, 10) || "",
+          address: freshUser.address || "",
+          gender: freshUser.gender || "",
         });
       } catch (err) {
         console.error("Load user error:", err);
@@ -55,17 +56,15 @@ export default function AccountPage() {
         setLoading(false);
       }
     };
-
     fetchUser();
   }, []);
 
+  // 🔹 Lưu thay đổi
   const handleSave = async () => {
     try {
       setSaving(true);
 
-      const payload = { ...form };
-
-      const res = await API.put("/auth/profile", payload, {
+      const res = await API.put("/auth/profile", form, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -79,6 +78,7 @@ export default function AccountPage() {
     }
   };
 
+  // 🔹 Hủy chỉnh sửa
   const handleCancel = () => {
     setIsEditing(false);
     setForm({
@@ -91,20 +91,12 @@ export default function AccountPage() {
     });
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
   if (loading) return <div className="p-4 text-center">Đang tải...</div>;
 
   return (
     <div className="p-4 pb-24 mx-auto w-full max-w-3xl bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
-      {/* 🔥 ULTRA MENU GLASS */}
-      <UltraMenu user={user} navigate={navigate} />
-
-      {/* HEADER */}
-      <div className="flex items-center justify-between p-5 bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-white/40">
+      {/* === HEADER === */}
+      <div className="flex items-center justify-between p-5 bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-white/40 mt-4">
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
             {form.name?.charAt(0)?.toUpperCase()}
@@ -126,7 +118,7 @@ export default function AccountPage() {
         )}
       </div>
 
-      {/* FORM */}
+      {/* === FORM === */}
       <div className="mt-6 bg-white/80 backdrop-blur-xl p-5 rounded-2xl shadow border border-white/40 space-y-6">
         <h3 className="text-xl font-semibold text-gray-800">
           Thông tin cá nhân
@@ -212,82 +204,19 @@ export default function AccountPage() {
         )}
       </div>
 
-      {/* MENU */}
-      <div className="mt-8 space-y-3">
+      {/* === MENU === */}
+      <div className="mt-8 space-y-3 pb-16">
         <button onClick={() => navigate("/orders")} className="menu-btn">
           <ShoppingBag /> <span>Đơn hàng của tôi</span>
         </button>
 
         <button
-          onClick={handleLogout}
+          onClick={logout}
           className="menu-btn bg-red-50 text-red-600 hover:bg-red-100"
         >
           <LogOut /> <span>Đăng xuất</span>
         </button>
       </div>
-    </div>
-  );
-}
-
-/* -------------- ULTRA MENU COMPONENT -------------- */
-function UltraMenu({ user, navigate }) {
-  return (
-    <div
-      className="
-      hidden md:flex justify-center gap-10 
-      py-3 px-6 mb-6 rounded-3xl mx-auto max-w-5xl sticky top-4 z-50
-      backdrop-blur-2xl bg-white/20 
-      shadow-[0_8px_32px_rgba(31,38,135,0.2)]
-      border border-white/30 relative overflow-hidden
-      animate-fadeIn
-    "
-    >
-      {/* Glow background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-2xl"></div>
-
-      <MenuItem icon="🏠" label="Trang chủ" onClick={() => navigate("/")} />
-      <MenuItem
-        icon="🛍️"
-        label="Sản phẩm"
-        onClick={() => navigate("/products")}
-      />
-      <MenuItem icon="🛒" label="Giỏ hàng" onClick={() => navigate("/cart")} />
-
-      {user?.is_admin && (
-        <MenuItem
-          icon="⚙️"
-          label="Quản trị"
-          onClick={() => navigate("/admin")}
-        />
-      )}
-
-      <MenuItemActive icon="👤" label="Tài khoản" />
-    </div>
-  );
-}
-
-/* -------------- MENU ITEM COMPONENTS -------------- */
-function MenuItem({ icon, label, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className="group relative px-4 py-2 text-gray-800 font-medium rounded-xl hover:text-blue-600 transition"
-    >
-      <span className="text-lg">{icon}</span> {label}
-      <div className="absolute inset-0 rounded-xl bg-blue-400/10 blur-xl opacity-0 group-hover:opacity-100 transition"></div>
-    </button>
-  );
-}
-
-function MenuItemActive({ icon, label }) {
-  return (
-    <div
-      className="
-      px-5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 
-      text-white font-semibold shadow-lg shadow-blue-500/30 scale-105
-    "
-    >
-      <span className="text-lg">{icon}</span> {label}
     </div>
   );
 }

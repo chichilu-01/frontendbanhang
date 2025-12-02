@@ -129,6 +129,21 @@ export const deleteProductImage = (mediaId, token) =>
   API.delete(`/media/${mediaId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+// ✅ Đặt ảnh chính
+export const setMainImage = (mediaId, token) =>
+  API.patch(`/media/${mediaId}/set-main`, null, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+// ✅ Lưu thứ tự ảnh (drag & drop)
+export const reorderMedia = (productId, mediaIds, token) =>
+  API.patch(
+    "/media/reorder",
+    { product_id: productId, media_ids: mediaIds },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
 
 // ======================
 // ⭐ REVIEWS APIs

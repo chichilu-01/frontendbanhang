@@ -2,104 +2,139 @@ import { Facebook, Instagram, Phone, Mail, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="mt-20 bg-gradient-to-b from-white to-gray-100 pt-14 pb-10 border-t border-gray-200">
-      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-        {/* BRAND */}
-        <div>
-          <h2 className="text-2xl font-bold text-blue-600">ChiChiLu Shop</h2>
-          <p className="mt-2 text-gray-600">
-            Thương hiệu thời trang giá tốt – chất lượng cao.
-          </p>
+    <footer className="relative mt-20">
+      {/* 🔥 Animated Gradient Border */}
+      <div className="absolute inset-0 rounded-t-3xl border-t-[4px] animate-gradient-border"></div>
 
-          {/* SOCIAL */}
-          <div className="flex gap-4 mt-4">
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-icon"
-            >
-              <Facebook size={20} />
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-icon"
-            >
-              <Instagram size={20} />
-            </a>
-          </div>
-        </div>
-
-        {/* POLICIES */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">Chính sách</h3>
-          <ul className="mt-3 space-y-2 text-gray-600">
-            <li>
-              <a href="/policy/privacy" className="hover:text-blue-600">
-                🔒 Bảo mật thông tin
-              </a>
-            </li>
-            <li>
-              <a href="/policy/return" className="hover:text-blue-600">
-                📦 Chính sách đổi trả
-              </a>
-            </li>
-            <li>
-              <a href="/policy/shipping" className="hover:text-blue-600">
-                🚚 Chính sách vận chuyển
-              </a>
-            </li>
-            <li>
-              <a href="/policy/payment" className="hover:text-blue-600">
-                💳 Phương thức thanh toán
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* CONTACT */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">Liên hệ</h3>
-
-          <div className="mt-3 space-y-3 text-gray-600">
-            <p className="flex items-center gap-2">
-              <Phone size={18} />
-              <a href="tel:08058264308" className="hover:text-blue-600">
-                0123-456-789
-              </a>
-            </p>
-
-            <p className="flex items-center gap-2">
-              <Mail size={18} />
-              <a
-                href="mailto:hoangminhphuong270401@gmail.com"
-                className="hover:text-blue-600"
-              >
-                support@chichilu.jp
-              </a>
-            </p>
-
-            <p className="flex items-center gap-2">
-              <MapPin size={18} />
-              <a
-                href="https://www.google.com/maps/place/Nishi-Kawaguchi+Station/@35.8155416,139.7019305,17z/data=!4m10!1m2!2m1!1snishi-kawaguchi+station!3m6!1s0x601894a4e4fc1965:0x85fa8b0a2ecdee76!8m2!3d35.8155374!4d139.7043642!15sChduaXNoaS1rYXdhZ3VjaGkgc3RhdGlvbpIBF2xvZ2ljYWxfdHJhbnNpdF9zdGF0aW9u4AEA!16s%2Fm%2F03c7kyg?entry=ttu&g_ep=EgoyMDI1MTEzMC4wIKXMDSoASAFQAw%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-blue-600"
-              >
-                Tokyo, Japan
-              </a>
-            </p>
-          </div>
-        </div>
+      {/* 🔥 Particle floating layer */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="particle"></div>
+        <div className="particle delay-3000"></div>
+        <div className="particle delay-6000"></div>
       </div>
 
-      {/* Footer bottom */}
-      <div className="text-center mt-10 text-gray-500 text-sm pb-22 md:pb-0">
-        © 2025 ChiChiLu Shop — Built with ❤️ by Minh Phuong
+      {/* 🔥 Glass container */}
+      <div
+        className="
+          relative bg-white/40 backdrop-blur-2xl 
+          border-t border-white/30 
+          shadow-[0_8px_30px_rgba(0,0,0,0.15)]
+          bg-[url('https://i.pinimg.com/originals/fd/8e/b7/fd8eb781af16b1b78adad87f8e4b4992.jpg')]
+          bg-cover bg-center
+          rounded-t-3xl
+        "
+      >
+        <div className="max-w-6xl mx-auto px-6 pt-16 pb-28 md:pb-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+          {/* BRAND */}
+          <div>
+            <h2 className="text-3xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent drop-shadow">
+              ChiChiLu Shop
+            </h2>
+            <p className="mt-3 text-gray-700 font-medium">
+              Thương hiệu thời trang giá tốt – chất lượng cao.
+            </p>
+
+            {/* SOCIAL */}
+            <div className="flex gap-3 mt-5">
+              <SocialIcon href="https://facebook.com">
+                <Facebook size={20} />
+              </SocialIcon>
+
+              <SocialIcon href="https://instagram.com">
+                <Instagram size={20} />
+              </SocialIcon>
+            </div>
+          </div>
+
+          {/* POLICIES */}
+          <div>
+            <h3 className="footer-title">Chính sách</h3>
+            <ul className="space-y-2 text-gray-700 font-medium">
+              <FooterLink href="/policy/privacy">
+                🔒 Bảo mật thông tin
+              </FooterLink>
+              <FooterLink href="/policy/return">
+                📦 Chính sách đổi trả
+              </FooterLink>
+              <FooterLink href="/policy/shipping">
+                🚚 Chính sách vận chuyển
+              </FooterLink>
+              <FooterLink href="/policy/payment">
+                💳 Phương thức thanh toán
+              </FooterLink>
+            </ul>
+          </div>
+
+          {/* CONTACT */}
+          <div>
+            <h3 className="footer-title">Liên hệ</h3>
+
+            <div className="space-y-3 text-gray-700 font-medium">
+              <ContactItem
+                icon={<Phone size={18} />}
+                text="0123-456-789"
+                href="tel:0123456789"
+              />
+              <ContactItem
+                icon={<Mail size={18} />}
+                text="support@chichilu.jp"
+                href="mailto:support@chichilu.jp"
+              />
+              <ContactItem
+                icon={<MapPin size={18} />}
+                text="Tokyo, Japan"
+                href="https://maps.app.goo.gl/uV9eS5Wy5A3s"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="relative text-center text-gray-600 text-sm pb-24 md:pb-6">
+          © 2025 ChiChiLu Shop — Built with ❤️ by Minh Phuong
+        </div>
       </div>
     </footer>
+  );
+}
+
+/* COMPONENTS */
+function SocialIcon({ children, href }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="
+        w-10 h-10 flex items-center justify-center 
+        rounded-2xl bg-white/40 backdrop-blur-lg
+        border border-white/40 shadow-lg 
+        hover:bg-purple-600 hover:text-white hover:scale-110 
+        transition duration-300
+      "
+    >
+      {children}
+    </a>
+  );
+}
+
+function FooterLink({ href, children }) {
+  return (
+    <li>
+      <a href={href} className="footer-link">
+        {children}
+      </a>
+    </li>
+  );
+}
+
+function ContactItem({ icon, text, href }) {
+  return (
+    <p className="flex items-center gap-2">
+      {icon}
+      <a href={href} className="footer-link">
+        {text}
+      </a>
+    </p>
   );
 }

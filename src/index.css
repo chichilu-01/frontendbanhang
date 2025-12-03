@@ -41,3 +41,43 @@
   transform: scale(1.1);
   background: #eff6ff;
 }
+
+@keyframes border-move {
+  0% { border-color: #3b82f6; }
+  25% { border-color: #8b5cf6; }
+  50% { border-color: #ec4899; }
+  75% { border-color: #06b6d4; }
+  100% { border-color: #3b82f6; }
+}
+
+.animate-gradient-border {
+  animation: border-move 10s linear infinite;
+}
+.particle {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(rgba(255,255,255,0.35), transparent 70%);
+  border-radius: 50%;
+  top: 20%;
+  left: 10%;
+  filter: blur(30px);
+  animation: float 12s ease-in-out infinite;
+}
+
+.particle.delay-3000 { animation-delay: 3s; left: 60%; top: 40%; }
+.particle.delay-6000 { animation-delay: 6s; left: 30%; top: 70%; }
+
+@keyframes float {
+  0% { transform: translateY(0px) translateX(0px); opacity: 0.5; }
+  50% { transform: translateY(-30px) translateX(30px); opacity: 0.9; }
+  100% { transform: translateY(0px) translateX(0px); opacity: 0.5; }
+}
+.footer-link {
+  transition: 0.25s;
+}
+.footer-link:hover {
+  color: #4f46e5; 
+  text-shadow: 0 0 6px rgba(99,102,241,0.6);
+  padding-left: 4px;
+}

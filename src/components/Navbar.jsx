@@ -35,8 +35,12 @@ export default function Navbar() {
     [cartItems],
   );
 
-  const isActive = (path) =>
-    location.pathname === path || location.pathname.startsWith(path);
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(path);
+  };
 
   // 🎨 CLASS TAB
   const tabClass = (active) =>

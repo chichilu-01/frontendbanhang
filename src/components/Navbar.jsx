@@ -66,7 +66,7 @@ export default function Navbar() {
       </button>
 
       {/* MENU */}
-      <div className="flex items-center gap-6 relative z-10">
+      <div className="flex items-center gap-10 ml-6 relative z-10">
         {/* 🏠 Trang chủ */}
         <Link to="/" className={tabClass(isActive("/"))}>
           <Home size={18} /> Trang chủ

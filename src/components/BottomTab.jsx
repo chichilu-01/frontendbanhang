@@ -12,13 +12,15 @@ export default function BottomTab() {
   return (
     <div
       className="
-      fixed bottom-3 left-1/2 -translate-x-1/2
-      w-[92%] bg-white/85 backdrop-blur-md
-      border border-gray-200 shadow-lg
-      rounded-2xl py-2 px-4
-      flex justify-around items-center
-      z-50 md:hidden
-    "
+        fixed left-0 right-0 bottom-0 
+        bg-white/90 backdrop-blur-xl
+        border-t border-gray-200 
+        shadow-[0_-2px_10px_rgba(0,0,0,0.08)]
+        flex justify-around items-center
+        py-2
+        z-50 md:hidden
+        pb-[calc(env(safe-area-inset-bottom)+6px)]
+      "
     >
       <Tab to="/" icon={<Home size={24} />} label="Home" />
 

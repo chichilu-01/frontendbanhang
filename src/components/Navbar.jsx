@@ -31,7 +31,7 @@ export default function Navbar() {
 
   const totalItems = useMemo(
     () => cartItems.reduce((t, i) => t + i.quantity, 0),
-    [cartItems],
+    [cartItems]
   );
 
   const isActive = (path) =>
@@ -40,12 +40,7 @@ export default function Navbar() {
   const menu = [
     { to: "/", label: "Trang chủ", icon: <Home size={18} /> },
     { to: "/products", label: "Sản phẩm", icon: <Boxes size={18} /> },
-    {
-      to: "/cart",
-      label: "Giỏ hàng",
-      icon: <ShoppingCart size={18} />,
-      badge: totalItems,
-    },
+    { to: "/cart", label: "Giỏ hàng", icon: <ShoppingCart size={18} />, badge: totalItems },
     user?.is_admin && {
       to: "/admin",
       label: "Quản trị",

@@ -19,7 +19,7 @@ export default function Footer() {
           relative bg-white/40 backdrop-blur-2xl 
           border-t border-white/30 
           shadow-[0_8px_30px_rgba(0,0,0,0.15)]
-          bg-[url('/footerimage.jpg')]
+          bg-[url('/bg-login.jpg')]
           bg-cover bg-center
           rounded-t-3xl
         "

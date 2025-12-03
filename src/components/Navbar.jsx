@@ -1,7 +1,17 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useState, useLayoutEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@context/AuthContext";
 import { useCart } from "@context/CartContext";
+import { motion } from "framer-motion";
+
+import {
+  Home,
+  Boxes,
+  ShoppingCart,
+  Settings,
+  User,
+  LogOut,
+} from "lucide-react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -9,7 +19,6 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ❌ Các trang KHÔNG hiển thị navbar
   const hideOn = [
     "/login",
     "/register",
@@ -21,17 +30,41 @@ export default function Navbar() {
   if (hideOn.includes(location.pathname)) return null;
 
   const totalItems = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    () => cartItems.reduce((t, i) => t + i.quantity, 0),
     [cartItems],
   );
 
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path);
 
-  const tabClass = (active) =>
-    active
-      ? "px-5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-md scale-105"
-      : "px-4 py-2 text-gray-700 font-medium rounded-xl hover:text-blue-600 transition";
+  const menu = [
+    { to: "/", label: "Trang chủ", icon: <Home size={18} /> },
+    { to: "/products", label: "Sản phẩm", icon: <Boxes size={18} /> },
+    {
+      to: "/cart",
+      label: "Giỏ hàng",
+      icon: <ShoppingCart size={18} />,
+      badge: totalItems,
+    },
+    user?.is_admin && {
+      to: "/admin",
+      label: "Quản trị",
+      icon: <Settings size={18} />,
+    },
+    { to: "/account", label: "Tài khoản", icon: <User size={18} /> },
+  ].filter(Boolean);
+
+  // Animation indicator position
+  const itemRefs = useRef({});
+  const [indicator, setIndicator] = useState({ width: 0, left: 0 });
+
+  useLayoutEffect(() => {
+    const active = menu.find((m) => isActive(m.to));
+    if (active && itemRefs.current[active.to]) {
+      const el = itemRefs.current[active.to];
+      setIndicator({ width: el.offsetWidth, left: el.offsetLeft });
+    }
+  }, [location.pathname]);
 
   return (
     <div
@@ -43,7 +76,7 @@ export default function Navbar() {
       border border-white/30 relative overflow-hidden
     "
     >
-      {/* Glow background */}
+      {/* Background Glow Layer */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-2xl"></div>
 
       {/* LOGO */}
@@ -51,54 +84,64 @@ export default function Navbar() {
         onClick={() => navigate("/")}
         className="text-2xl font-bold text-blue-700 relative z-10"
       >
-        🛍️ ChiChiLu
+        ChiChiLu
       </button>
 
-      {/* MENU ITEMS */}
-      <div className="flex items-center gap-6 relative z-10">
-        <Link to="/" className={tabClass(isActive("/"))}>
-          🏠 Trang chủ
-        </Link>
+      {/* MENU */}
+      <div className="flex items-center gap-6 relative z-10 w-fit relative">
+        {/* 🔥 Animated Active Tab Indicator */}
+        <motion.div
+          className="absolute top-0 bottom-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl -z-10"
+          animate={{ width: indicator.width, left: indicator.left }}
+          transition={{ type: "spring", stiffness: 260, damping: 30 }}
+        />
 
-        <Link to="/products" className={tabClass(isActive("/products"))}>
-          🗂️ Sản phẩm
-        </Link>
+        {menu.map((item) => (
+          <button
+            key={item.to}
+            ref={(el) => (itemRefs.current[item.to] = el)}
+            onClick={() => navigate(item.to)}
+            className={`
+              relative flex items-center gap-2 px-4 py-2 font-medium rounded-xl
+              transition-all duration-200
+              ${isActive(item.to) ? "text-white" : "text-gray-700 hover:text-blue-600"}
+            `}
+          >
+            {item.icon}
+            {item.label}
 
-        <div className="relative">
-          <Link to="/cart" className={tabClass(isActive("/cart"))}>
-            🛒 Giỏ hàng
-          </Link>
-          {totalItems > 0 && (
-            <span
-              className="absolute -top-2 -right-2 bg-red-500 text-white text-xs 
-                px-1.5 py-0.5 rounded-full shadow"
-            >
-              {totalItems}
-            </span>
-          )}
-        </div>
+            {/* Badge giỏ hàng */}
+            {item.badge > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full shadow">
+                {item.badge}
+              </span>
+            )}
 
-        {user?.is_admin && (
-          <Link to="/admin" className={tabClass(isActive("/admin"))}>
-            ⚙️ Quản trị
-          </Link>
-        )}
-
-        <Link to="/account" className={tabClass(isActive("/account"))}>
-          👤 Tài khoản
-        </Link>
+            {/* Hover glow */}
+            <motion.div
+              className="absolute inset-0 rounded-xl bg-blue-500/10 opacity-0"
+              whileHover={{ opacity: 1 }}
+            />
+          </button>
+        ))}
 
         {/* USER / LOGOUT */}
         {user ? (
           <div className="flex items-center gap-3 ml-3">
-            <span className="text-gray-800 font-medium">👋 {user.name}</span>
-            <button onClick={logout} className="text-red-500 hover:underline">
-              🚪 Đăng xuất
+            <span className="text-gray-800 font-medium flex items-center gap-1">
+              <User size={16} className="text-blue-600" /> {user.name}
+            </span>
+
+            <button
+              onClick={logout}
+              className="flex items-center gap-1 text-red-500 hover:underline"
+            >
+              <LogOut size={16} /> Đăng xuất
             </button>
           </div>
         ) : (
           <Link to="/login" className="text-gray-700 hover:text-blue-600">
-            🔐 Đăng nhập
+            Đăng nhập
           </Link>
         )}
       </div>

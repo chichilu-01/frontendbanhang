@@ -107,22 +107,26 @@ export default function AccountPage() {
             <p className="text-gray-500 text-sm">{form.email}</p>
           </div>
         </div>
-
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
-          >
-            <Pencil size={18} /> Sửa
-          </button>
-        )}
       </div>
 
       {/* === FORM === */}
       <div className="mt-6 bg-white/80 backdrop-blur-xl p-5 rounded-2xl shadow border border-white/40 space-y-6">
-        <h3 className="text-xl font-semibold text-gray-800">
-          Thông tin cá nhân
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Thông tin cá nhân
+          </h3>
+
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="flex items-center gap-2 px-3 py-1.5 
+                         bg-blue-600 text-white rounded-lg 
+                         text-sm shadow hover:bg-blue-700 transition"
+            >
+              <Pencil size={16} /> Sửa
+            </button>
+          )}
+        </div>
 
         <ProfileField icon={<User />} label="Họ và tên">
           <input

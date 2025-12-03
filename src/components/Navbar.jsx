@@ -1,8 +1,7 @@
-import React, { useMemo, useRef, useState, useLayoutEffect } from "react";
+import React, { useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@context/AuthContext";
 import { useCart } from "@context/CartContext";
-import { motion } from "framer-motion";
 
 import {
   Home,
@@ -19,6 +18,7 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // ❌ ẨN NAVBAR Ở CÁC TRANG AUTH
   const hideOn = [
     "/login",
     "/register",
@@ -29,37 +29,20 @@ export default function Navbar() {
   ];
   if (hideOn.includes(location.pathname)) return null;
 
+  // 🛒 Tổng số item trong giỏ
   const totalItems = useMemo(
-    () => cartItems.reduce((t, i) => t + i.quantity, 0),
-    [cartItems]
+    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    [cartItems],
   );
 
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path);
 
-  const menu = [
-    { to: "/", label: "Trang chủ", icon: <Home size={18} /> },
-    { to: "/products", label: "Sản phẩm", icon: <Boxes size={18} /> },
-    { to: "/cart", label: "Giỏ hàng", icon: <ShoppingCart size={18} />, badge: totalItems },
-    user?.is_admin && {
-      to: "/admin",
-      label: "Quản trị",
-      icon: <Settings size={18} />,
-    },
-    { to: "/account", label: "Tài khoản", icon: <User size={18} /> },
-  ].filter(Boolean);
-
-  // Animation indicator position
-  const itemRefs = useRef({});
-  const [indicator, setIndicator] = useState({ width: 0, left: 0 });
-
-  useLayoutEffect(() => {
-    const active = menu.find((m) => isActive(m.to));
-    if (active && itemRefs.current[active.to]) {
-      const el = itemRefs.current[active.to];
-      setIndicator({ width: el.offsetWidth, left: el.offsetLeft });
-    }
-  }, [location.pathname]);
+  // 🎨 CLASS TAB
+  const tabClass = (active) =>
+    active
+      ? "flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-md scale-105"
+      : "flex items-center gap-2 px-4 py-2 text-gray-700 font-medium rounded-xl hover:text-blue-600 transition";
 
   return (
     <div
@@ -71,7 +54,7 @@ export default function Navbar() {
       border border-white/30 relative overflow-hidden
     "
     >
-      {/* Background Glow Layer */}
+      {/* Glow Background Layer */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-2xl"></div>
 
       {/* LOGO */}
@@ -83,44 +66,42 @@ export default function Navbar() {
       </button>
 
       {/* MENU */}
-      <div className="flex items-center gap-6 relative z-10 w-fit relative">
-        {/* 🔥 Animated Active Tab Indicator */}
-        <motion.div
-          className="absolute top-0 bottom-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl -z-10"
-          animate={{ width: indicator.width, left: indicator.left }}
-          transition={{ type: "spring", stiffness: 260, damping: 30 }}
-        />
+      <div className="flex items-center gap-6 relative z-10">
+        {/* 🏠 Trang chủ */}
+        <Link to="/" className={tabClass(isActive("/"))}>
+          <Home size={18} /> Trang chủ
+        </Link>
 
-        {menu.map((item) => (
-          <button
-            key={item.to}
-            ref={(el) => (itemRefs.current[item.to] = el)}
-            onClick={() => navigate(item.to)}
-            className={`
-              relative flex items-center gap-2 px-4 py-2 font-medium rounded-xl
-              transition-all duration-200
-              ${isActive(item.to) ? "text-white" : "text-gray-700 hover:text-blue-600"}
-            `}
-          >
-            {item.icon}
-            {item.label}
+        {/* 📦 Sản phẩm */}
+        <Link to="/products" className={tabClass(isActive("/products"))}>
+          <Boxes size={18} /> Sản phẩm
+        </Link>
 
-            {/* Badge giỏ hàng */}
-            {item.badge > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full shadow">
-                {item.badge}
-              </span>
-            )}
+        {/* 🛒 Giỏ hàng */}
+        <div className="relative">
+          <Link to="/cart" className={tabClass(isActive("/cart"))}>
+            <ShoppingCart size={18} /> Giỏ hàng
+          </Link>
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full shadow">
+              {totalItems}
+            </span>
+          )}
+        </div>
 
-            {/* Hover glow */}
-            <motion.div
-              className="absolute inset-0 rounded-xl bg-blue-500/10 opacity-0"
-              whileHover={{ opacity: 1 }}
-            />
-          </button>
-        ))}
+        {/* ⚙️ Admin */}
+        {user?.is_admin && (
+          <Link to="/admin" className={tabClass(isActive("/admin"))}>
+            <Settings size={18} /> Quản trị
+          </Link>
+        )}
 
-        {/* USER / LOGOUT */}
+        {/* 👤 Tài khoản */}
+        <Link to="/account" className={tabClass(isActive("/account"))}>
+          <User size={18} /> Tài khoản
+        </Link>
+
+        {/* LOGIN / USER / LOGOUT */}
         {user ? (
           <div className="flex items-center gap-3 ml-3">
             <span className="text-gray-800 font-medium flex items-center gap-1">

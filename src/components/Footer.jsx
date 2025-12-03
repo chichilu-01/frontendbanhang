@@ -13,10 +13,20 @@ export default function Footer() {
 
           {/* SOCIAL */}
           <div className="flex gap-4 mt-4">
-            <a href="#" className="footer-icon">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-icon"
+            >
               <Facebook size={20} />
             </a>
-            <a href="#" className="footer-icon">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-icon"
+            >
               <Instagram size={20} />
             </a>
           </div>
@@ -26,10 +36,26 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold text-gray-800">Chính sách</h3>
           <ul className="mt-3 space-y-2 text-gray-600">
-            <li>🔒 Bảo mật thông tin</li>
-            <li>📦 Chính sách đổi trả</li>
-            <li>🚚 Chính sách vận chuyển</li>
-            <li>💳 Phương thức thanh toán</li>
+            <li>
+              <a href="/policy/privacy" className="hover:text-blue-600">
+                🔒 Bảo mật thông tin
+              </a>
+            </li>
+            <li>
+              <a href="/policy/return" className="hover:text-blue-600">
+                📦 Chính sách đổi trả
+              </a>
+            </li>
+            <li>
+              <a href="/policy/shipping" className="hover:text-blue-600">
+                🚚 Chính sách vận chuyển
+              </a>
+            </li>
+            <li>
+              <a href="/policy/payment" className="hover:text-blue-600">
+                💳 Phương thức thanh toán
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -39,20 +65,39 @@ export default function Footer() {
 
           <div className="mt-3 space-y-3 text-gray-600">
             <p className="flex items-center gap-2">
-              <Phone size={18} /> 0123-456-789
+              <Phone size={18} />
+              <a href="tel:08058264308" className="hover:text-blue-600">
+                0123-456-789
+              </a>
             </p>
+
             <p className="flex items-center gap-2">
-              <Mail size={18} /> support@chichilu.jp
+              <Mail size={18} />
+              <a
+                href="mailto:hoangminhphuong270401@gmail.com"
+                className="hover:text-blue-600"
+              >
+                support@chichilu.jp
+              </a>
             </p>
+
             <p className="flex items-center gap-2">
-              <MapPin size={18} /> Tokyo, Japan
+              <MapPin size={18} />
+              <a
+                href="https://www.google.com/maps/place/Nishi-Kawaguchi+Station/@35.8155416,139.7019305,17z/data=!4m10!1m2!2m1!1snishi-kawaguchi+station!3m6!1s0x601894a4e4fc1965:0x85fa8b0a2ecdee76!8m2!3d35.8155374!4d139.7043642!15sChduaXNoaS1rYXdhZ3VjaGkgc3RhdGlvbpIBF2xvZ2ljYWxfdHJhbnNpdF9zdGF0aW9u4AEA!16s%2Fm%2F03c7kyg?entry=ttu&g_ep=EgoyMDI1MTEzMC4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-600"
+              >
+                Tokyo, Japan
+              </a>
             </p>
           </div>
         </div>
       </div>
 
-      {/* Bottom */}
-      <div className="text-center mt-10 text-gray-500 text-sm">
+      {/* Footer bottom */}
+      <div className="text-center mt-10 text-gray-500 text-sm pb-22 md:pb-0">
         © 2025 ChiChiLu Shop — Built with ❤️ by Minh Phuong
       </div>
     </footer>

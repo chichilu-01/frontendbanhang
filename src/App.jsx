@@ -24,12 +24,12 @@ import Navbar from "@components/Navbar";
 import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";
 import MobileLayout from "@layouts/MobileLayout";
+import Footer from "@components/Footer";
 
 export default function App() {
   return (
     <Router>
       <Routes>
-
         {/* ================= AUTH PAGES (Không dùng layout, không navbar) ================= */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -42,8 +42,9 @@ export default function App() {
         <Route
           element={
             <>
-              <Navbar />     {/* navbar chỉ desktop */}
+              <Navbar /> {/* navbar chỉ desktop */}
               <MobileLayout /> {/* bottom tab chỉ mobile */}
+              <Footer /> {/* footer toàn site */}
             </>
           }
         >

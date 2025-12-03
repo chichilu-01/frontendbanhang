@@ -27,3 +27,17 @@
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out;
 }
+
+.footer-icon {
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  color: #2563eb;
+  transition: 0.2s;
+}
+
+.footer-icon:hover {
+  transform: scale(1.1);
+  background: #eff6ff;
+}

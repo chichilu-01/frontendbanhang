@@ -143,12 +143,6 @@ export default function Home() {
           </Swiper>
         )}
       </section>
-
-      {/* 🧩 Footer */}
-      <footer className="mt-16 py-8 bg-gray-900 text-gray-300 text-center">
-        <p>© {new Date().getFullYear()} MyShop. All rights reserved.</p>
-        <p className="text-sm mt-2">Built with ❤️ by Minh Phuong</p>
-      </footer>
     </div>
   );
 }

@@ -26,8 +26,6 @@ import AdminRoute from "@components/AdminRoute";
 import MobileLayout from "@layouts/MobileLayout";
 import Footer from "@components/Footer";
 
-import FooterCinemaUltra from "@components/FooterCinemaUltra";
-
 export default function App() {
   return (
     <Router>
@@ -46,7 +44,6 @@ export default function App() {
             <>
               <Navbar /> {/* navbar chỉ desktop */}
               <MobileLayout /> {/* bottom tab chỉ mobile */}
-              <FooterCinemaUltra />
               <Footer /> {/* footer toàn site */}
             </>
           }

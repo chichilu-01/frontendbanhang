@@ -8,6 +8,47 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Link } from "react-router-dom";
 
+function SearchInput() {
+  const [keyword, setKeyword] = React.useState("");
+
+  return (
+    <div className="flex items-center w-full">
+      {/* Icon */}
+      <span className="text-gray-600 mr-3 transition-all duration-300 group-focus-within:text-purple-600">
+        🔍
+      </span>
+
+      {/* Input */}
+      <input
+        type="text"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        placeholder="Tìm kiếm sản phẩm..."
+        className="
+          w-full bg-transparent outline-none
+          text-gray-800 text-lg 
+          placeholder-gray-500
+        "
+      />
+
+      {/* Nút Search */}
+      <button
+        onClick={() => {
+          window.location.href = `/products?search=${keyword}`;
+        }}
+        className="
+          bg-gradient-to-r from-blue-500 to-purple-500 
+          text-white px-4 py-2 rounded-xl 
+          shadow-md hover:shadow-xl 
+          transition-all duration-300
+        "
+      >
+        Tìm
+      </button>
+    </div>
+  );
+}
+
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,6 +130,20 @@ export default function Home() {
           ))}
         </Swiper>
       </section>
+
+      {/* 🔎 Modern Search Bar */}
+      <div className="max-w-3xl mx-auto px-4 -mt-10 mb-10 relative z-20">
+        <div className="
+          flex items-center gap-3 
+          bg-white/30 backdrop-blur-xl 
+          border border-white/40 shadow-lg
+          px-4 py-3 rounded-2xl
+          transition-all duration-300
+          focus-within:shadow-2xl focus-within:bg-white/50
+        ">
+          <SearchInput />
+        </div>
+      </div>
 
       {/* 🌟 Danh mục nổi bật */}
       <section className="max-w-6xl mx-auto px-4 mb-12">

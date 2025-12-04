@@ -25,6 +25,7 @@ import ProtectedRoute from "@components/ProtectedRoute";
 import AdminRoute from "@components/AdminRoute";
 import MobileLayout from "@layouts/MobileLayout";
 import Footer from "@components/Footer";
+import FooterMap3D from "@components/FooterMap3D";
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
             <>
               <Navbar /> {/* navbar chỉ desktop */}
               <MobileLayout /> {/* bottom tab chỉ mobile */}
+              <FooterMap3D />
               <Footer /> {/* footer toàn site */}
             </>
           }

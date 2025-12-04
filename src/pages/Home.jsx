@@ -61,9 +61,31 @@ export default function Home() {
                 />
                 {/* Overlay chữ */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
-                  <h2 className="text-white text-3xl md:text-5xl font-extrabold drop-shadow-lg tracking-wide">
+                  <h2
+                    className="
+                      relative inline-block 
+                      text-4xl md:text-6xl font-extrabold 
+                      bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 
+                      bg-clip-text text-transparent
+                      tracking-wide leading-snug
+                      overflow-hidden
+                    "
+                  >
                     ✨ Welcome to MyShop ✨
+
+                    {/* SHIMMER LIGHT */}
+                    <span
+                      className="
+                        absolute inset-0 
+                        bg-gradient-to-r from-transparent via-white/60 to-transparent
+                        animate-shimmer
+                      "
+                      style={{
+                        transform: "skewX(-20deg)"
+                      }}
+                    ></span>
                   </h2>
+
                 </div>
               </div>
             </SwiperSlide>

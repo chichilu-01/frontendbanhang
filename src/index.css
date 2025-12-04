@@ -94,4 +94,7 @@
 .animate-shimmer {
   animation: shimmer 2.5s infinite ease-in-out;
 }
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+}
 

@@ -64,16 +64,14 @@ export default function Home() {
                   <h2
                     className="
                       relative inline-block 
-                      text-4xl md:text-6xl font-extrabold 
+                      text-4xl md:text-6xl font-pacifico
                       bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 
                       bg-clip-text text-transparent
                       tracking-wide leading-snug
                       overflow-hidden
                     "
                   >
-                    ✨ Welcome to MyShop ✨
-
-                    {/* SHIMMER LIGHT */}
+                    ✨ Welcome to MyShop ✨{/* SHIMMER LIGHT */}
                     <span
                       className="
                         absolute inset-0 
@@ -81,11 +79,10 @@ export default function Home() {
                         animate-shimmer
                       "
                       style={{
-                        transform: "skewX(-20deg)"
+                        transform: "skewX(-20deg)",
                       }}
                     ></span>
                   </h2>
-
                 </div>
               </div>
             </SwiperSlide>

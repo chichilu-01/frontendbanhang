@@ -67,21 +67,21 @@ export default function Home() {
                       text-4xl md:text-6xl font-pacifico
                       bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 
                       bg-clip-text text-transparent
-                      tracking-wide leading-snug
-                      overflow-hidden
+                      tracking-wide 
+                      leading-[1.3]               /* tăng chiều cao để không bị cắt chữ g */
+                      px-6 py-4                   /* tạo khoảng cách thoáng cho font */
                     "
                   >
-                    ✨ Welcome to MyShop ✨{/* SHIMMER LIGHT */}
+                    ✨ Welcome to MyShop ✨{/* Hiệu ứng shimmer */}
                     <span
                       className="
                         absolute inset-0 
                         bg-gradient-to-r from-transparent via-white/60 to-transparent
                         animate-shimmer
+                        pointer-events-none
                       "
-                      style={{
-                        transform: "skewX(-20deg)",
-                      }}
-                    ></span>
+                      style={{ transform: "skewX(-20deg)" }}
+                    />
                   </h2>
                 </div>
               </div>

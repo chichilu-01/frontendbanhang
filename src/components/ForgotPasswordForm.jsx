@@ -18,7 +18,7 @@ export default function ForgotPasswordForm() {
       localStorage.setItem("resetEmail", email); // ✅ Lưu lại email
       toast.success("📩 Mã xác nhận đã được gửi đến email!");
       setTimeout(() => {
-        navigate("/"); // ✅ Điều hướng tiếp theo
+        navigate("/verify-reset-code"); // ✅ Điều hướng tiếp theo
       }, 1000);
     } catch (err) {
       console.error("Lỗi gửi email:", err);

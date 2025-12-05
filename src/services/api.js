@@ -8,7 +8,9 @@ export const API = axios.create({
     import.meta.env.VITE_API_URL ||
     "https://backendbanhang-production.up.railway.app/api",
   withCredentials: true,
-  timeout: 15000,
+  // 🔥 TĂNG TIMEOUT TỪ 15 GIÂY LÊN 30 GIÂY (30000ms)
+  // Điều này giúp các truy vấn DB hoặc I/O chậm có thời gian phản hồi.
+  timeout: 30000,
 });
 
 if (!import.meta.env.VITE_API_URL) {
